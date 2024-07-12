@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/mkeilman/mkeilman.github.io/issues"
   },
-  "homepage": "https://github.com/mkeilman/mkeilman.github.io"
+  "homepage": "https://github.com/mkeilman/mkeilman.github.io",
+  "devDependencies": {
+    "gh-pages": "^6.1.1"
+  }
 }
