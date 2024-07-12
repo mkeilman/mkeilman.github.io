@@ -1,7 +1,7 @@
 {
   "name": "mkeilman.github.io",
   "version": "1.0.0",
-  "description": "Heads-up Texas holdem",
+  "description": "React Projects",
   "main": "index.js",
   "scripts": {
     "deploy": "gh-pages -d build",
@@ -17,5 +17,5 @@
   "bugs": {
     "url": "https://github.com/mkeilman/mkeilman.github.io/issues"
   },
-  "homepage": "https://github.com/mkeilman/mkeilman.github.io#readme"
+  "homepage": "https://github.com/mkeilman/mkeilman.github.io"
 }
