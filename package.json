@@ -4,6 +4,8 @@
   "description": "Heads-up Texas holdem",
   "main": "index.js",
   "scripts": {
+    "deploy": "gh-pages -d build",
+    "predeploy": "npm run build",
     "test": "react-scripts test"
   },
   "repository": {
