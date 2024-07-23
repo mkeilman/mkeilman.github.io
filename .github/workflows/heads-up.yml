@@ -9,8 +9,13 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                 node-version: '20'
-            - run: |
-                cd "heads-up"
+            - name: To heads-up
+              run: cd "heads-up"
+            - name: Install dependencies
+              run: |
+                npm ci
+            - name: Build
+              run: |
                 npm run build
 
     #deploy:
