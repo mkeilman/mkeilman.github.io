@@ -1,6 +1,9 @@
 name: heads-up-actions
 run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
+defaults:
+  run:
+    working-directory: ./heads-up
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -10,12 +13,8 @@ jobs:
               with:
                 node-version: '20'
             - name: Install dependencies
-              with:
-                path: 'heads-up'
               run: npm ci
             - name: Build
-              with:
-                  path: 'heads-up'
               run: npm run build
 
     #deploy:
