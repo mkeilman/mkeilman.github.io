@@ -9,7 +9,9 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                 node-version: '20'
-            - run: npm run build
+            - run: |
+                cd "heads-up"
+                npm run build
 
     #deploy:
     #    needs: build
