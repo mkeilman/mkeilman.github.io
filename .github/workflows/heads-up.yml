@@ -1,6 +1,5 @@
 name: heads-up-actions
 run-name: ${{ github.actor }} is learning GitHub Actions
-define: &app-dir './heads-up'
 on: [push]
 defaults:
   run:
