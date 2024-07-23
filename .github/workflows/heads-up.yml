@@ -16,6 +16,11 @@ jobs:
               run: npm ci
             - name: Build
               run: npm run build
+            - name: Upload production-ready build files
+              uses: actions/upload-artifact@v3
+              with:
+                name: dist-files
+                path: ./dist
 
     #deploy:
     #    needs: build
