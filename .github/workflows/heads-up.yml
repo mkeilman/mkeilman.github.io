@@ -2,12 +2,18 @@ name: heads-up-actions
 run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
 jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '20'
-      - run: echo BUILDING
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                node-version: '20'
+            - run: npm run build
+
+    #deploy:
+    #    needs: build
+    #    runs-on: ubuntu-latest
+    #    if: github.ref == 'refs/heads/main'
+
 
