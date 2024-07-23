@@ -20,7 +20,7 @@ jobs:
               uses: actions/upload-artifact@v3
               with:
                 name: dist-files
-                path: ${{ defaults.run.working-directory }}/dist
+                path: ./heads-up/dist
 
     #deploy:
     #    needs: build
