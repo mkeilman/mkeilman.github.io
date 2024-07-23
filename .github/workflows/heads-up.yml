@@ -1,5 +1,6 @@
 name: heads-up-actions
 run-name: ${{ github.actor }} is learning GitHub Actions
+define: &app-dir './heads-up'
 on: [push]
 defaults:
   run:
@@ -26,18 +27,21 @@ jobs:
             - name: List
               run: ls -R ./dist
 
-#    deploy:
-#        needs: build
-#        runs-on: ubuntu-latest
-#        if: github.ref == 'refs/heads/main'
-#        steps:
-#          - name: Download artifact
-#            uses: actions/download-artifact@v4
-#            with:
-#              name: dist-files
-#              path: ./heads-up/dist
-#          - name: Deploy to GitHub Pages
-#            uses: peaceiris/actions-gh-pages@v3
-#            with:
-#                github_token: ${{ secrets.GITHUB_TOKEN }}
-#                publish_dir: ./heads-up/dist
+    deploy:
+        needs: build
+        runs-on: ubuntu-latest
+        if: github.ref == 'refs/heads/main'
+        steps:
+          - name: Download artifact
+            uses: actions/download-artifact@v4
+            with:
+              name: dist-files
+              path: ./heads-up/dist
+          - name: List
+            run: ls -R ./dist
+          - name: Deploy to GitHub Pages
+            uses: peaceiris/actions-gh-pages@v4
+            with:
+                github_token: ${{ secrets.GITHUB_TOKEN }}
+                publish_branch: main
+                publish_dir: ./heads-up/pages
