@@ -3,7 +3,8 @@ run-name: ${{ github.actor }} is learning GitHub Actions
 on: [push]
 defaults:
   run:
-    working-directory: ./heads-up
+    #working-directory: ./heads-up
+    working-directory: .
 jobs:
     build:
         runs-on: ubuntu-latest
@@ -23,9 +24,10 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 name: dist-files
-                path: ./heads-up/dist
-            - name: List
-              run: ls -R ./dist
+                #path: ./heads-up/dist
+                path: ./dist
+            #- name: List
+            #  run: ls -R ./dist
 
     deploy:
         needs: build
@@ -40,13 +42,15 @@ jobs:
             uses: actions/download-artifact@v4
             with:
               name: dist-files
-              path: ./heads-up/dist
-          - name: List
-            run: ls -R ./dist
+              #path: ./heads-up/dist
+              path: ./dist
+          #- name: List
+          #  run: ls -R ./dist
           - name: Deploy to GitHub Pages
             # will CREATE the gh-pages branch if it does not exist!
             uses: peaceiris/actions-gh-pages@v4
             with:
                 github_token: ${{ secrets.GITHUB_TOKEN }}
                 publish_branch: gh-pages
-                publish_dir: ./heads-up/dist
+                #publish_dir: ./heads-up/dist
+                publish_dir: ./dist
