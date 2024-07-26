@@ -7,8 +7,10 @@ export default defineConfig({
     base: "/",
     build: {
         rollupOptions: {
-            main: resolve(__dirname, 'index.html'),
-            headsUp: resolve(__dirname, 'heads-up/index.html'),
+            input: {
+                main: resolve(__dirname, 'index.html'),
+                headsUp: resolve(__dirname, 'heads-up/index.html'),
+            },
         },
     },
     plugins: [react()],
