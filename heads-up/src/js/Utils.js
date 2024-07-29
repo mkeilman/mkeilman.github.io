@@ -13,3 +13,5 @@ class Utils {
             return arr;
 	    }
 }
+
+export {Utils}

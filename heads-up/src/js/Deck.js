@@ -6,8 +6,8 @@
 //  Copyright © 2024 Michael Keilman. All rights reserved.
 //
 
-import PlayingCard from './Card.js'
-import Utils from './Utils.js'
+import {PlayingCard} from './Card.js'
+import {Utils} from './Utils.js'
 
 class PokerDeck {
 

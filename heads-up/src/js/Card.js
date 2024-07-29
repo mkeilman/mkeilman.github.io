@@ -150,3 +150,5 @@ class PlayingCard {
 	}
 
 }
+
+export {PlayingCard};
