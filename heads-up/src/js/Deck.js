@@ -41,7 +41,7 @@ class PokerDeck {
         this.deckIndex = 0;
 		for (const s in PokerDeck.availableSuits) {
 			for (const r in PokerDeck.availableRanks) {
-				this.cards.append(new PlayingCard(s, r));
+				this.cards.push(new PlayingCard(s, r));
 			}
 		}
 	}
@@ -74,7 +74,7 @@ class PokerDeck {
 				for cj in cArr {
 					card = StandardCard(json: cj)
 					if card != nil {
-						self.cards.append(card!)
+						self.cards.push(card!)
 					}
 					else {
 						return nil
@@ -86,7 +86,7 @@ class PokerDeck {
 			return nil
 		}
 		for i in 0..<self.deckIndex {
-			self.discards.append(self.cards[i])
+			self.discards.push(self.cards[i])
 		}
 	}
 */
@@ -121,7 +121,7 @@ class PokerDeck {
             return null;
         }
         const card = this.cards[this.deckIndex];
-        this.dealtCards.append(card);
+        this.dealtCards.push(card);
         this.deckIndex += 1;
 		return card;
 	}
