@@ -12,6 +12,10 @@ class Utils {
             }
             return arr;
 	    }
+
+        static log(...items) {
+            console.log(items);
+        }
 }
 
 export {Utils}

@@ -11,36 +11,17 @@ import {Utils} from './Utils.js'
 
 class PokerDeck {
 
-	static availableSuits = [
-        PlayingCard.Suits.club,
-        PlayingCard.Suits.diamond,
-        PlayingCard.Suits.heart,
-        PlayingCard.Suits.spade,
-    ];
+	static availableSuits = Object.keys(PlayingCard.Suits);
 
-	static availableRanks = [
-        PlayingCard.Ranks.ace,
-        PlayingCard.Ranks.deuce,
-        PlayingCard.Ranks.trey,
-        PlayingCard.Ranks.four,
-        PlayingCard.Ranks.five,
-        PlayingCard.Ranks.six,
-        PlayingCard.Ranks.seven,
-        PlayingCard.Ranks.eight,
-        PlayingCard.Ranks.nine,
-        PlayingCard.Ranks.ten,
-        PlayingCard.Ranks.jack,
-        PlayingCard.Ranks.queen,
-        PlayingCard.Ranks.king,
-    ];
+	static availableRanks = Object.keys(PlayingCard.Ranks);
 
 	constructor() {
         this.cards = [];
         this.discards = [];
         this.dealtCards = [];
         this.deckIndex = 0;
-		for (const s in PokerDeck.availableSuits) {
-			for (const r in PokerDeck.availableRanks) {
+		for (const s of PokerDeck.availableSuits) {
+			for (const r of PokerDeck.availableRanks) {
 				this.cards.push(new PlayingCard(s, r));
 			}
 		}
@@ -56,8 +37,8 @@ class PokerDeck {
             return false;
         }
         // have enough, now see if we have one and only one of each
-        for (const s in PokerDeck.availableSuits) {
-            for (const r in PokerDeck.availableRanks) {
+        for (const s of PokerDeck.availableSuits) {
+            for (const r of PokerDeck.availableRanks) {
 					foundCard = foundCard && this.cards.contains(new PlayingCard(s, r));
 				}
 			}

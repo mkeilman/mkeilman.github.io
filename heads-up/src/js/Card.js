@@ -6,6 +6,8 @@
 //  Copyright © 2024 Michael Keilman. All rights reserved.
 //
 
+import {Utils} from './Utils.js';
+
 class PlayingCard {
 
     static Suits = {
@@ -139,7 +141,7 @@ class PlayingCard {
 	}
 
     toString() {
-        return this.suit + this.rank;
+        return `${this.suit}${this.rank}`;
     }
 
 	toJSON()  {
