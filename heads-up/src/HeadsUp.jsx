@@ -16,4 +16,4 @@ const HeadsUp = () => {
   )
 };
 
-export default HeadsUp
+export default HeadsUp;
