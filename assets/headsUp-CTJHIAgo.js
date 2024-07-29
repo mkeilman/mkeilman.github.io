@@ -1,1 +1,0 @@
-import{j as e,c as r,R as t}from"./client-CADlzgmn.js";const s=()=>e.jsxs(e.Fragment,{children:[e.jsx("h1",{children:"Heads Up!"}),e.jsx("div",{children:"bets"}),e.jsx("div",{children:"board"})]});r.createRoot(document.getElementById("root")).render(e.jsx(t.StrictMode,{children:e.jsx(s,{})}));
