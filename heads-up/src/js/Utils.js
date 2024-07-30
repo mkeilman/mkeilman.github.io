@@ -1,7 +1,19 @@
 class Utils {
-    	static randomIndicesForArrayOfSize(size) {
+        static indexArray(size) {
+            const arr = new Array(size);
+            for (let i = 0; i < size - 1; ++i) {
+                arr[i] = i;
+            }
+            return arr;
+        }
+
+        static log(...items) {
+            console.log(items);
+        }
+
+        static randomIndicesForArrayOfSize(size) {
             const arr= [];
-            const iArr = new Array(size).fill(0);
+            const iArr = Utils.indexArray(size);
             let temp = 0;
             for (let i = 0; i < size; ++i) {
                 const r =  Math.floor(Math.random() * (size - i));
@@ -12,10 +24,6 @@ class Utils {
             }
             return arr;
 	    }
-
-        static log(...items) {
-            console.log(items);
-        }
 }
 
 export {Utils}
