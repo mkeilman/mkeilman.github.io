@@ -72,7 +72,6 @@ class PokerDeck {
 	}
 */
 	shuffle() {
-		this.dealtCards = [];
 		const newCardIndices = Utils.randomIndicesForArrayOfSize(this.cards.length);
 		const newCards = [];
 		for (let i = 0; i < this.cards.length; ++i) {
