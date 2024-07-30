@@ -6,25 +6,24 @@
 //  Copyright © 2024 Michael Keilman. All rights reserved.
 //
 
+import {BoundMethodsObject} from './BoundMethodsObject.js';
 import {PlayingCard} from './Card.js'
 import {Utils} from './Utils.js'
 
-class PokerDeck {
+class PokerDeck extends BoundMethodsObject {
 
-	static availableSuits = Object.keys(PlayingCard.Suits);
-
-	static availableRanks = Object.keys(PlayingCard.Ranks);
+	static ranks = Object.keys(PlayingCard.Ranks);
+	static suits = Object.keys(PlayingCard.Suits);
 
 	constructor() {
+		super();
         this.cards = [];
-        this.discards = [];
-        this.dealtCards = [];
-        this.deckIndex = 0;
-		for (const s of PokerDeck.availableSuits) {
-			for (const r of PokerDeck.availableRanks) {
+		for (const s of PokerDeck.suits) {
+			for (const r of PokerDeck.ranks) {
 				this.cards.push(new PlayingCard(s, r));
 			}
 		}
+		this.reset();
 	}
 
     currentCard() {

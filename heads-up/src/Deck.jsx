@@ -8,7 +8,7 @@ const Deck = () => {
   return (
       <>
           <p>{d.toString()}</p>
-          <button onClick={() => {d.shuffle();}}>Shuffle</button>
+          <button onClick={d.shuffle}>Shuffle</button>
           <button onClick={d.dealCard}>Deal</button>
           <button onClick={d.reset}>Reset</button>
       </>
