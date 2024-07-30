@@ -1,14 +1,14 @@
 class Utils {
     static indexArray(size) {
         const arr = new Array(size);
-        for (let i = 0; i < size - 1; ++i) {
+        for (let i = 0; i < size; ++i) {
             arr[i] = i;
         }
         return arr;
     }
 
     static log(...items) {
-        console.log(items);
+        console.log(...items);
     }
 
     static randomIndicesForArrayOfSize(size) {

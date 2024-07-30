@@ -89,12 +89,15 @@ class PokerDeck extends BoundMethodsObject {
 	}
 
 	shuffle() {
+		Utils.log(this.cards.length);
 		const newCardIndices = Utils.randomIndicesForArrayOfSize(this.cards.length);
+		Utils.log(newCardIndices);
 		const newCards = [];
 		for (let i = 0; i < this.cards.length; ++i) {
 			newCards.push(this.cards[newCardIndices[i]]);
 		}
 		this.cards = newCards;
+		Utils.log(this.cards);
 		this.reset();
 	}
 
