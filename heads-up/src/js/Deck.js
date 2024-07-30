@@ -31,20 +31,6 @@ class PokerDeck {
 		return this.deckIndex < this.cards.length ? this.cards[this.deckIndex] : null;
     }
 
-    hasAllCards() {
-        let foundCard = this.cards.length === PokerDeck.availableSuits.length * PokerDeck.availableRanks.length;
-        if (! foundCard) {
-            return false;
-        }
-        // have enough, now see if we have one and only one of each
-        for (const s of PokerDeck.availableSuits) {
-            for (const r of PokerDeck.availableRanks) {
-					foundCard = foundCard && this.cards.contains(new PlayingCard(s, r));
-				}
-			}
-
-		return foundCard;
-    }
 /*
 	init?( json: [String:Any] ) {
 

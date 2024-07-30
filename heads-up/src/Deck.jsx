@@ -7,8 +7,9 @@ const Deck = () => {
   const d = new PokerDeck();
   return (
       <>
-        <p>{d.toString()}</p>
-        <button onClick={d.shuffle}>Shuffle</button>
+          <p>{d.toString()}</p>
+          <button onClick={d.shuffle}>Shuffle</button>
+          <button onClick={d.dealCard}>Deal</button>
       </>
   )
 };
