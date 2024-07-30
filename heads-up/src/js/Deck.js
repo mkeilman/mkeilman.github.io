@@ -26,10 +26,6 @@ class PokerDeck extends BoundMethodsObject {
 		this.reset();
 	}
 
-    currentCard() {
-		return this.deckIndex < this.cards.length ? this.cards[this.deckIndex] : null;
-    }
-
 /*
 	init?( json: [String:Any] ) {
 
@@ -56,15 +52,6 @@ class PokerDeck extends BoundMethodsObject {
 		}
 	}
 */
-	shuffle() {
-		const newCardIndices = Utils.randomIndicesForArrayOfSize(this.cards.length);
-		const newCards = [];
-		for (let i = 0; i < this.cards.length; ++i) {
-			newCards.push(this.cards[newCardIndices[i]]);
-		}
-		this.cards = newCards;
-		this.reset();
-	}
 
 	burn(numCards= 1)  {
         if (this.deckIndex + numCards > this.cards.length) {
@@ -81,6 +68,10 @@ class PokerDeck extends BoundMethodsObject {
 		return cards;
 	}
 
+	currentCard() {
+		return this.deckIndex < this.cards.length ? this.cards[this.deckIndex] : null;
+    }
+
 	dealCard()  {
         if (this.deckIndex + 1 > this.cards.count) {
             return null;
@@ -95,6 +86,16 @@ class PokerDeck extends BoundMethodsObject {
 		this.dealtCards = [];
 		this.deckIndex = 0;
         this.discards = [];
+	}
+
+	shuffle() {
+		const newCardIndices = Utils.randomIndicesForArrayOfSize(this.cards.length);
+		const newCards = [];
+		for (let i = 0; i < this.cards.length; ++i) {
+			newCards.push(this.cards[newCardIndices[i]]);
+		}
+		this.cards = newCards;
+		this.reset();
 	}
 
 	toString() {
