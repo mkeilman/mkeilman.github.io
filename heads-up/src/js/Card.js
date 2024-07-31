@@ -6,9 +6,10 @@
 //  Copyright © 2024 Michael Keilman. All rights reserved.
 //
 
+import {BoundMethodsObject} from './BoundMethodsObject.js';
 import {Utils} from './Utils.js';
 
-class PlayingCard {
+class PlayingCard extends BoundMethodsObject {
 
     static Suits = {
         'club': '♣️',
@@ -116,6 +117,7 @@ class PlayingCard {
      * @param rank
      */
     constructor(suit, rank) {
+        super();
         this.suit = PlayingCard.Suits[suit];
         this.rank = PlayingCard.Ranks[rank];
     }

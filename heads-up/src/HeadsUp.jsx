@@ -4,6 +4,7 @@ import {PokerDeck} from './js/Deck.js';
 import Deck from './Deck.jsx';
 
 const HeadsUp = () => {
+    const d = new PokerDeck();
     return (
         <>
             <h1>Heads Up!</h1>
@@ -14,7 +15,7 @@ const HeadsUp = () => {
                 board
             </div>
             <div>
-                <Deck></Deck>
+                <Deck deck={d}></Deck>
             </div>
     </>
   )
