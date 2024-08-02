@@ -92,6 +92,16 @@ class PlayingCard extends BoundMethodsObject {
         return new PlayingCard(json.suit, json.rank);
     }
 
+    static fromString(str) {
+        const _ranks = Utils.invertMap(PlayingCard.Ranks);
+        const _suits = Utils.invertMap(PlayingCard.Suits);
+        return new PlayingCard(_ranks[str[0]], _suits[str[1]]);
+    }
+
+    static includes(cards, card) {
+        return cards.map(x => x.toString()).includes(card.toString());
+    }
+
     static isHighCardLess (cards1, cards2)  {
 		let isLess = false;
         if (cards1.length === 0 || cards2.length === 0) {
@@ -133,6 +143,10 @@ class PlayingCard extends BoundMethodsObject {
     lowValue() {
 		return PlayingCard.LowValues[self.rank];
 	}
+
+    gt(otherCard) {
+        return this.value() > otherCard.value();
+    }
 
     lt(otherCard) {
         return this.value() < otherCard.value();
