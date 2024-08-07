@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './css/HeadsUp.css'
 import './css/Card.css'
-import {PokerDeck} from './js/Deck.js'
+import {PokerDeck} from './js/PokerDeck.js'
 import Card from './Card.jsx';
 import {Utils} from './js/Utils.js';
 

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import './css/HeadsUp.css'
 import './css/Card.css'
-import {PlayingCard} from './js/Card.js'
+import {PlayingCard} from './js/PlayingCard.js'
 import {Utils} from './js/Utils.js';
 
 const Card = ({card}) => {

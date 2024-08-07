@@ -1,5 +1,5 @@
 //
-//  Deck.js
+//  PokerDeck.js
 //  HeadsUp
 //
 //  Created by Michael Keilman on 2024-07-26.
@@ -7,7 +7,7 @@
 //
 
 import {BoundMethodsObject} from './BoundMethodsObject.js';
-import {PlayingCard} from './Card.js'
+import {PlayingCard} from './PlayingCard.js'
 import {Utils} from './Utils.js'
 
 class PokerDeck extends BoundMethodsObject {

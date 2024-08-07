@@ -1,5 +1,5 @@
 //
-//  Card.js
+//  PlayingCard.js
 //  HeadsUp
 //
 //  Created by Michael Keilman on 2024-07-26.

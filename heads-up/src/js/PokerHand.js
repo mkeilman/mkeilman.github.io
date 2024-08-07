@@ -1,5 +1,5 @@
 //
-//  Hand.js
+//  PokerHand.js
 //  HeadsUp
 //
 //  Created by Michael Keilman on 2024-07-31.
@@ -9,7 +9,7 @@
 'use strict';
 
 import {BoundMethodsObject} from './BoundMethodsObject.js';
-import {PlayingCard} from './Card.js'
+import {PlayingCard} from './PlayingCard.js'
 import {Utils} from './Utils.js'
 
 class PokerHand extends BoundMethodsObject {

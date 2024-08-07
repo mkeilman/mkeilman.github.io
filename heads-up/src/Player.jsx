@@ -1,5 +1,5 @@
 import {PokerPlayer} from './js/PokerPlayer.js';
-import {PokerDeck} from './js/Deck.js';
+import {PokerDeck} from './js/PokerDeck.js';
 import Card from './Card.jsx';
 
 const Player = () => {
@@ -15,3 +15,5 @@ const Player = () => {
       </>
   )
 };
+
+export {Player}
