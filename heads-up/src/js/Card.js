@@ -5,6 +5,7 @@
 //  Created by Michael Keilman on 2024-07-26.
 //  Copyright © 2024 Michael Keilman. All rights reserved.
 //
+'use strict';
 
 import {BoundMethodsObject} from './BoundMethodsObject.js';
 import {Utils} from './Utils.js';

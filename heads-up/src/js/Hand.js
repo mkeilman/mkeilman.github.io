@@ -6,6 +6,8 @@
 //  Copyright © 2024 Michael Keilman. All rights reserved.
 //
 
+'use strict';
+
 import {BoundMethodsObject} from './BoundMethodsObject.js';
 import {PlayingCard} from './Card.js'
 import {Utils} from './Utils.js'
@@ -523,3 +525,4 @@ class PokerHand extends BoundMethodsObject {
 	}
 */
 
+export {PokerHand}
