@@ -1,19 +1,20 @@
 import {PokerPlayer} from './js/PokerPlayer.js';
-import {PokerDeck} from './js/PokerDeck.js';
 import Card from './Card.jsx';
 
-const Player = () => {
-  const p = new PokerPlayer();
+const Player = ({player, isBot=false}) => {
+  const p = player || new PokerPlayer();
   return (
       <>
+          <span>{p.pokerFace}</span>
+          <span>Stake ${p.stake}</span>
           <p>
-              {p.cards.map((x, i) => (
+              {p.currentCards.map((x, i) => (
                   <Card card={x} key={i} ></Card>
               ))}
           </p>
-          <button>Bet</button>
+          {!isBot && <button>Bet</button>}
       </>
   )
 };
 
-export {Player}
+export default Player

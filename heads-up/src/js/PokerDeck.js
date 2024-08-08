@@ -15,15 +15,25 @@ class PokerDeck extends BoundMethodsObject {
 	static ranks = Object.keys(PlayingCard.Ranks);
 	static suits = Object.keys(PlayingCard.Suits);
 
-	constructor() {
-		super();
-        this.cards = [];
+	static newCards() {
+		const c = [];
 		for (const s of PokerDeck.suits) {
 			for (const r of PokerDeck.ranks) {
-				this.cards.push(new PlayingCard(s, r));
+				c.push(new PlayingCard(s, r));
 			}
 		}
-		this.reset();
+		return c;
+	}
+
+	constructor(doShuffle=false) {
+		super();
+        this.cards = PokerDeck.newCards();
+		if (doShuffle) {
+			this.shuffle();
+		}
+		else {
+			this.reset();
+		}
 	}
 
 /*
