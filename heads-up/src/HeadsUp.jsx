@@ -26,8 +26,7 @@ const HeadsUp = () => {
     };
 
     const shuffle = () => {
-        deck = new PokerDeck(true);
-        setDeck(deck);
+        setDeck(new PokerDeck(true));
     };
 
     return (
