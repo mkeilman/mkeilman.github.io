@@ -1,0 +1,1 @@
+import{j as e,c as r,R as t}from"./client-DD4c7S6m.js";const s=()=>e.jsxs(e.Fragment,{children:[e.jsx("h1",{children:"React Fun"}),e.jsx("div",{children:e.jsx("a",{href:"heads-up/",children:"Heads up Texas Hold-em"})})]});r.createRoot(document.getElementById("root")).render(e.jsx(t.StrictMode,{children:e.jsx(s,{})}));
