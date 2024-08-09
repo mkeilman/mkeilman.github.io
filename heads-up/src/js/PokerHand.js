@@ -306,6 +306,10 @@ class PokerHand extends BoundMethodsObject {
         return false;
 	}
 
+    gt(otherHand) {
+        return ! this.equals(otherHand) && ! this.lt(otherHand);
+    }
+
     isFlush() {
 		return this.cards.every(x => x.suit === this.cards[0].suit);
 	}

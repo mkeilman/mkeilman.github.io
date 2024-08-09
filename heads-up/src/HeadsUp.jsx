@@ -8,8 +8,7 @@ import {Utils} from './js/Utils.js';
 
 const HeadsUp = () => {
     let [deck, setDeck] = useState(() => new PokerDeck());
-    //const d = new PokerDeck();
-    const players = [new PokerPlayer(), new PokerPlayer()];
+    let [players, setPlayers] = useState(() => [new PokerPlayer(), new PokerPlayer()]) ;
     let playerIndex = 0;
     const numPlayers = players.length;
 
@@ -42,7 +41,6 @@ const HeadsUp = () => {
                 <Deck deck={deck}></Deck>
                 <button onClick={shuffle}>Shuffle</button>
                 <button onClick={deal}>Deal</button>
-                <button onClick={reset}>Reset</button>
             </div>
             <div>
                 <Player player={players[0]} isBot="true"></Player>

@@ -15,7 +15,7 @@ class PokerDeck extends BoundMethodsObject {
 	static ranks = Object.keys(PlayingCard.Ranks);
 	static suits = Object.keys(PlayingCard.Suits);
 
-	static newCards() {
+	static freshCards() {
 		const c = [];
 		for (const s of PokerDeck.suits) {
 			for (const r of PokerDeck.ranks) {
@@ -25,14 +25,15 @@ class PokerDeck extends BoundMethodsObject {
 		return c;
 	}
 
-	constructor(doShuffle=false) {
+	constructor(doShuffle=false, dealtCards=[], discards=[]) {
 		super();
-        this.cards = PokerDeck.newCards();
+        this.cards = PokerDeck.freshCards();
+		// ignore dealt and discarded cards
 		if (doShuffle) {
 			this.shuffle();
 		}
 		else {
-			this.reset();
+			this.setup(dealtCards, discards);
 		}
 	}
 
@@ -92,10 +93,10 @@ class PokerDeck extends BoundMethodsObject {
 		return card;
 	}
 
-	reset() {
-		this.dealtCards = [];
-		this.deckIndex = 0;
-        this.discards = [];
+	setup(dealtCards=[], discards=[]) {
+		this.dealtCards = dealtCards;
+        this.discards = discards;
+		this.deckIndex = this.dealtCards.length + this.discards.length;
 	}
 
 	shuffle() {
@@ -105,7 +106,7 @@ class PokerDeck extends BoundMethodsObject {
 			newCards.push(this.cards[newCardIndices[i]]);
 		}
 		this.cards = newCards;
-		this.reset();
+		this.setup();
 	}
 
 	toString() {

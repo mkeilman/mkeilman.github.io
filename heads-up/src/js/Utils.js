@@ -3,6 +3,16 @@ class Utils {
         return str[0].toUpperCase() + str.slice(1);
     }
 
+    static distinctElementsAtPositions(arr, posArr) {
+		const elements = [];
+		for (const pos of posArr) {
+			if (pos >= 0 && pos < arr.length) {
+				elements.push(arr[pos]);
+			}
+		}
+		return elements;
+	}
+
     static indexArray(size) {
         const arr = new Array(size);
         for (let i = 0; i < size; ++i) {
