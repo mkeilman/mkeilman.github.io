@@ -13,6 +13,10 @@ class Utils {
 		return elements;
 	}
 
+    static elementsAtPositions(arr, posArr)  {
+		return arr.filter(x => posArr.includes(arr.indexOf(x)));
+	}
+
     static indexArray(size) {
         const arr = new Array(size);
         for (let i = 0; i < size; ++i) {
