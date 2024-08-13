@@ -109,7 +109,7 @@ class PlayingCard extends BoundMethodsObject {
 			PlayingCard.highestCardInSubsets(
                 PlayingCard.exclude(card1, cards1), PlayingCard.exclude(card2, cards2)
             ) :
-            Math.max(card1.value(), card2.value());
+            PlayingCard.max(card1, card2);
 	}
 
     static fromJSON(json) {
@@ -144,6 +144,14 @@ class PlayingCard extends BoundMethodsObject {
             PlayingCard.exclude(card1, cards1), PlayingCard.exclude(card2, cards2)
         );
 	}
+
+    static max(card1, card2) {
+		return card1.lt(card2) ? card2 : card1;
+	}
+
+	static min(card1, card2) {
+		return card1.lt(card2) ? card1 : card2;
+    }
 
     /**
      *

@@ -266,7 +266,6 @@ class PokerHand extends BoundMethodsObject {
 		}
 		cardGroups.push(cardGroup);
 		cardGroups.sort((a, b) => b.length - a.length);
-        debugLog('BG', cardGroups.map(x => x.map(y => y.toString())));
 		return cardGroups;
     }
 

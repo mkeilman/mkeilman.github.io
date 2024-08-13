@@ -178,3 +178,24 @@ test('pair', () => {
     expect(hand.handRank).toBe(PokerHand.Ranks.pair);
 });
 
+test('kicker', () => {
+    const hand1 = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.ten),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.five),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.eight),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.ten),
+        new PlayingCard(PlayingCard.Suits.diamond, PlayingCard.Ranks.jack)
+    ]);
+
+    const hand2 = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.ten),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.eight),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.ten),
+        new PlayingCard(PlayingCard.Suits.diamond, PlayingCard.Ranks.six),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.nine)
+    ]);
+    expect(hand1.handRank).toBe(PokerHand.Ranks.pair);
+    expect(hand2.handRank).toBe(PokerHand.Ranks.pair);
+    expect(hand2.lt(hand1)).toBeTruthy();
+    expect(PokerHand.kicker(hand1, hand2).toString()).toBe('♦️J')
+});
