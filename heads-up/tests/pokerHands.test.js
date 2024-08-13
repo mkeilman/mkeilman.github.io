@@ -119,3 +119,15 @@ test('royal flush', () => {
     ]);
     expect(hand.handRank).toBe(PokerHand.Ranks.royalFlush);
 });
+
+test('four of a kind', () => {
+    const hand = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.deuce),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.deuce),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.deuce),
+        new PlayingCard(PlayingCard.Suits.diamond, PlayingCard.Ranks.deuce),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.king)
+    ]);
+    expect(hand.handRank).toBe(PokerHand.Ranks.fourOfAKind);
+});
+

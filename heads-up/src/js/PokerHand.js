@@ -16,21 +16,21 @@ class PokerHand extends BoundMethodsObject {
 
     static lowestHand = new PokerHand(
         [
-            new PlayingCard('club', 'seven'),
-            new PlayingCard('diamond', 'five'),
-            new PlayingCard('heart', 'four'),
-            new PlayingCard('spade', 'trey'),
-            new PlayingCard('club', 'deuce'),
+            new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.seven),
+            new PlayingCard(PlayingCard.Suits.diamond, PlayingCard.Ranks.five),
+            new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.four),
+            new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.trey),
+            new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.deuce),
         ]
     );
 
 	static highestHand = new PokerHand(
         [
-            new PlayingCard('spade', 'ten'),
-            new PlayingCard('spade', 'jack'),
-            new PlayingCard('spade', 'queen'),
-            new PlayingCard('spade', 'king'),
-            new PlayingCard('spade', 'ace'),
+            new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.ten),
+            new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.jack),
+            new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.queen),
+            new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.king),
+            new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.ace),
         ]
     );
 
@@ -265,7 +265,8 @@ class PokerHand extends BoundMethodsObject {
 			lastCard = card;
 		}
 		cardGroups.push(cardGroup);
-		cardGroups.sort((a, b) => a.length - b.length);
+		cardGroups.sort((a, b) => b.length - a.length);
+        debugLog('BG', cardGroups.map(x => x.map(y => y.toString())));
 		return cardGroups;
     }
 
@@ -334,7 +335,7 @@ class PokerHand extends BoundMethodsObject {
 	}
 
     isFourOfAKind() {
-		return this.cardsGroupedByRank[0].count === 4;
+		return this.cardsGroupedByRank[0].length === 4;
 	}
 
     isFullHouse() {
