@@ -115,7 +115,7 @@ class PokerGame {
 		let newCards;
 		let pCards;
 		let cCards;
-		
+
 		for (const hArr of PokerHand.COMBO_INDICES[hArrIndex]) {
 			cCards = Utils.distinctElementsAtPositions(commonCards, hArr);
 			newCards = cCards;

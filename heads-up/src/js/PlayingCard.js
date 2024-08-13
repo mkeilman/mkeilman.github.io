@@ -8,63 +8,86 @@
 'use strict';
 
 import {BoundMethodsObject} from './BoundMethodsObject.js';
-import {Utils} from './Utils.js';
+import {Utils, debugLog} from './Utils.js';
 
 class PlayingCard extends BoundMethodsObject {
 
     static Suits = {
-        'club': '♣️',
-        'diamond': '♦️',
-        'heart': '♥️',
-        'spade': '♠️',
+        club: 'club',
+        diamond: 'diamond',
+        heart: 'heart',
+        spade: 'spade',
+    };
+
+    static SuitStrings = {
+        club: '♣️',
+        diamond: '♦️',
+        heart: '♥️',
+        spade: '♠️',
     };
 
 	static Ranks = {
-        'deuce': '2',
-        'trey': '3',
-        'four': '4',
-        'five': '5',
-        'six': '6',
-        'seven': '7',
-        'eight': '8',
-        'nine': '9',
-        'ten': '10',
-        'jack': 'J',
-        'queen': 'Q',
-        'king': 'K',
-        'ace': 'A',
+        deuce: 'deuce',
+        trey: 'trey',
+        four: 'four',
+        five: 'five',
+        six: 'six',
+        seven: 'seven',
+        eight: 'eight',
+        nine: 'nine',
+        ten: 'ten',
+        jack: 'jack',
+        queen: 'queen',
+        king: 'king',
+        ace: 'ace',
+    };
+
+    static RankStrings = {
+        deuce: '2',
+        trey: '3',
+        four: '4',
+        five: '5',
+        six: '6',
+        seven: '7',
+        eight: '8',
+        nine: '9',
+        ten: '10',
+        jack: 'J',
+        queen: 'Q',
+        king: 'K',
+        ace: 'A',
     };
 
     static Values = {
-        'deuce' : 2,
-        'trey' : 3,
-        'four' : 4,
-        'five' : 5,
-        'six' : 6,
-        'seven' : 7,
-        'eight' : 8,
-        'nine' : 9,
-        'ten' : 10,
-        'jack' : 11,
-        'queen' : 12,
-        'king' : 13,
-	    'ace' : 14,
+        deuce : 2,
+        trey : 3,
+        four : 4,
+        five : 5,
+        six : 6,
+        seven : 7,
+        eight : 8,
+        nine : 9,
+        ten : 10,
+        jack : 11,
+        queen : 12,
+        king : 13,
+	    ace : 14,
     };
 
     static LowValues = {
-        'deuce' : 2,
-        'trey' : 3,
-        'four' : 4,
-        'five' : 5,
-        'six' : 6,
-        'seven' : 7,
-        'eight' : 8,
-        'nine' : 9,
-        'ten' : 10,
-        'jack' : 11,
-        'queen' : 12,
-        'king' : 13,
-	    'ace' : 1,
+        deuce : 2,
+        trey : 3,
+        four : 4,
+        five : 5,
+        six : 6,
+        seven : 7,
+        eight : 8,
+        nine : 9,
+        ten : 10,
+        jack : 11,
+        queen : 12,
+        king : 13,
+	    ace : 1,
     };
 
     static exclude(card, cards) {
@@ -129,8 +152,8 @@ class PlayingCard extends BoundMethodsObject {
      */
     constructor(suit, rank) {
         super();
-        this.suit = suit;  //PlayingCard.Suits[suit];
-        this.rank = rank;  //PlayingCard.Ranks[rank];
+        this.suit = suit;
+        this.rank = rank;
     }
 
     equals(otherCard) {
@@ -158,7 +181,8 @@ class PlayingCard extends BoundMethodsObject {
 	}
 
     toString() {
-        return `${PlayingCard.Suits[this.suit]}${PlayingCard.Ranks[this.rank]}`;
+        debugLog('S', this.suit);
+        return `${PlayingCard.SuitStrings[this.suit]}${PlayingCard.RankStrings[this.rank]}`;
     }
 
 	toJSON()  {
