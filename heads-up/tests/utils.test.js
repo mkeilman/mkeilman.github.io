@@ -12,15 +12,3 @@ test('pick elements', () => {
     const pickedArr = Utils.elementsAtPositions(arrToPick, posArr);
     expect(pickedArr).toStrictEqual([2, 4, 10]);
 });
-
-
-/*
-
-
-	func testJSON() {
-		let gm = GameModel(numPlayers: 2)
-		let json = gm.toJSON()
-
-		XCTAssertTrue(JSONSerialization.isValidJSONObject(json))
-
- */

@@ -129,8 +129,8 @@ class PlayingCard extends BoundMethodsObject {
      */
     constructor(suit, rank) {
         super();
-        this.suit = PlayingCard.Suits[suit];
-        this.rank = PlayingCard.Ranks[rank];
+        this.suit = suit;  //PlayingCard.Suits[suit];
+        this.rank = rank;  //PlayingCard.Ranks[rank];
     }
 
     equals(otherCard) {
@@ -138,11 +138,11 @@ class PlayingCard extends BoundMethodsObject {
     }
 
     isSameAsCard(otherCard) {
-        return self.equals(otherCard) && self.suit === otherCard.suit;
+        return this.equals(otherCard) && this.suit === otherCard.suit;
     }
 
     lowValue() {
-		return PlayingCard.LowValues[self.rank];
+		return PlayingCard.LowValues[this.rank];
 	}
 
     gt(otherCard) {
@@ -154,11 +154,11 @@ class PlayingCard extends BoundMethodsObject {
     }
 
     value()  {
-		return PlayingCard.Values[self.rank];
+		return PlayingCard.Values[this.rank];
 	}
 
     toString() {
-        return `${this.suit}${this.rank}`;
+        return `${PlayingCard.Suits[this.suit]}${PlayingCard.Ranks[this.rank]}`;
     }
 
 	toJSON()  {

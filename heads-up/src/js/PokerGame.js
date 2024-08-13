@@ -100,8 +100,8 @@ class PokerGame {
 		return PokerGame.GAME_TOKENS[0];
 	}
 
-	static bestHandFromHandAndCards(commonCards, playerCards) {
-		return PokerGame.bestHandFromCards(commonCards, playerCards);
+	static bestHandFromHandAndCards(commonHand, playerCards) {
+		return PokerGame.bestHandFromCards(commonHand.cards, playerCards);
 	}
 
 	static bestHandFromCards(commonCards, playerCards) {
@@ -115,7 +115,7 @@ class PokerGame {
 		let newCards;
 		let pCards;
 		let cCards;
-
+		
 		for (const hArr of PokerHand.COMBO_INDICES[hArrIndex]) {
 			cCards = Utils.distinctElementsAtPositions(commonCards, hArr);
 			newCards = cCards;
@@ -130,10 +130,6 @@ class PokerGame {
 				}
 				newCards = newCards.concat(pCards);
 				const newHand = new PokerHand(newCards);
-				if (! newHand) {
-					Utils.log(`BAD HAND ${newCards}`);
-					return null;
-				}
 				if (! hand || newHand.gt(hand)) {
 					hand = newHand;
 				}
@@ -773,3 +769,5 @@ class PokerGame {
 */
 	
 }
+
+export {PokerGame}

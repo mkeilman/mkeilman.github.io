@@ -1,3 +1,5 @@
+const debugLog = console.log.bind(console);
+
 class Utils {
     static capitalize(str) {
         return str[0].toUpperCase() + str.slice(1);
@@ -56,4 +58,4 @@ class Utils {
     }
 }
 
-export {Utils}
+export {Utils, debugLog}

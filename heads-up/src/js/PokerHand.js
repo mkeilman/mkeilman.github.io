@@ -10,7 +10,7 @@
 
 import {BoundMethodsObject} from './BoundMethodsObject.js';
 import {PlayingCard} from './PlayingCard.js'
-import {Utils} from './Utils.js'
+import {Utils, debugLog} from './Utils.js'
 
 class PokerHand extends BoundMethodsObject {
 
@@ -74,9 +74,9 @@ class PokerHand extends BoundMethodsObject {
         ]
     ];
 
-    static cardsInRankOrderAceLow(cards, isAceLow= false)  {
-		const cro = cards.toSorted((a, b) => a.lt(b));
-        if (! isAceLow || cro[cro.length - 1].rank === PlayingCard.Ranks.ace) {
+    static cardsInRankOrder(cards, isAceLow= false)  {
+		const cro = cards.toSorted((a, b) => a.value() - b.value());
+        if (! isAceLow || PlayingCard.Ranks[cro[cro.length - 1].rank] === PlayingCard.Ranks.ace) {
             return cro;
         }
         cro.reverse();
@@ -149,15 +149,6 @@ class PokerHand extends BoundMethodsObject {
 	}
 
     constructor(cards) {
-        const _getHandRank = () =>  {
-            for (const r of Object.keys(PokerHand.Ranks)) {
-                if (this[`is${Utils.capitalize(r)}`]()) {
-                    return PokerHand.Ranks[r];
-                }
-            }
-            return null;
-	    }
-
         super();
         if (cards.length !== 5) {
             throw new Error(`Must supply 5 cards (num cards = ${cards.length})`);
@@ -165,13 +156,15 @@ class PokerHand extends BoundMethodsObject {
 
         this.cards = cards;
         this.highestCard = PlayingCard.highestCardInSubset(cards);
-        this.cardsGroupedByRank = this.groupByRank();
-        this.handRank = _getHandRank();
-		this.descriptions = this.buildDescriptions();
-		this.descriptionsNoSuits = this.buildDescriptions(false);
+        this.cardsGroupedByRank = this.groupByRank(cards);
+        this.handRank = this.getHandRank();
     }
 
-	buildDescriptions(includeSuits = true, shorten = false) {
+    cardsString() {
+        return this.cards.map(x => x.toString());
+    }
+
+    description(includeSuits = true, shorten = false) {
 		const self = this;
 		const desc = {};
         function _straight(shorten) {
@@ -181,8 +174,8 @@ class PokerHand extends BoundMethodsObject {
             return `
 				Straight to the ${
 					self.isStraightAceLow(true) ?
-						self.cardsInRankOrderAceLow(true)[this.cards.length - 1] :
-						this.highestCard
+						PokerHand.cardsInRankOrder(self.cards, true)[this.cards.length - 1] :
+						self.highestCard
 				}
 			`;
         }
@@ -205,29 +198,63 @@ class PokerHand extends BoundMethodsObject {
             return `${c21.rank.rawValue}s and ${c11.rank.rawValue}s`;
         }
 
-        desc[`${PokerHand.Ranks.royalFlush}`] = 'Royal Flush!';
-		desc[`${PokerHand.Ranks.straightFlush}`] = 'Straight Flush' + shorten ? '' : ` to the ${this.highestCard}`;
-		desc[`${PokerHand.Ranks.fourOfAKind}`] = `Four ${this.cardsGroupedByRank[0][0].rank}s`;
-		desc[`${PokerHand.Ranks.fullHouse}`] = 'Full House' + shorten ? '' : ` ${this.cardsGroupedByRank[0][0].rank}s over ${this.cardsGroupedByRank[1][0].rank}s`;
-		desc[`${PokerHand.Ranks.flush}`] = `${includeSuits && ! shorten ? self.cards[0].suit + ' ' : ''}Flush`;
-		desc[`${PokerHand.Ranks.straight}`] = _straight(shorten);
-        desc[`${PokerHand.Ranks.threeOfAKind}`] = `Trip ${self.cardsGroupedByRank[0][0].rank}s`;
-        desc[`${PokerHand.Ranks.twoPair}`] = _twoPair(shorten);
-        desc[`${PokerHand.Ranks.pair}`] = `Pair of ${self.cardsGroupedByRank[0][0].rank}s`;
-        desc[`${PokerHand.Ranks.highCard}`] = `${self.highestCard} High`;
-
-		return desc;
+        if (this.handRank === PokerHand.Ranks.royalFlush) {
+            return 'Royal Flush!';
+        }
+        if (this.handRank === PokerHand.Ranks.straightFlush) {
+            return 'Straight Flush' + shorten ? '' : ` to the ${this.highestCard}`;
+        }
+        if (this.handRank === PokerHand.Ranks.fourOfAKind) {
+            return `Four ${this.cardsGroupedByRank[0][0].rank}s`;
+        }
+        if (this.handRank === PokerHand.Ranks.fullHouse) {
+            return 'Full House' + shorten ? '' : ` ${this.cardsGroupedByRank[0][0].rank}s over ${this.cardsGroupedByRank[1][0].rank}s`;
+        }
+        if (this.handRank === PokerHand.Ranks.flush) {
+            return `${includeSuits && ! shorten ? this.cards[0].suit + ' ' : ''}Flush`;
+        }
+        if (this.handRank === PokerHand.Ranks.straight) {
+            return _straight(shorten);
+        }
+        if (this.handRank === PokerHand.Ranks.threeOfAKind) {
+            return `Trip ${this.cardsGroupedByRank[0][0].rank}s`;
+        }
+        if (this.handRank === PokerHand.Ranks.twoPair) {
+            return _twoPair(shorten);
+        }
+        if (this.handRank === PokerHand.Ranks.pair) {
+            return `Pair of ${this.cardsGroupedByRank[0][0].rank}s`;
+        }
+        return `${this.highestCard} High`;
     }
 
-	description(rank) {
-		return rank ? this.descriptions[rank] : 'Nothing';
-	}
+     getHandRank() {
+        const rr = {
+            highCard: 0,
+            pair: 1,
+            twoPair: 2,
+            threeOfAKind: 3,
+            straight:4,
+            flush: 5,
+            fullHouse: 6,
+            fourOfAKind: 7,
+            straightFlush: 8,
+            royalFlush: 9,
+        };
+        for (const r of Object.keys(rr)) {
+            const f = `is${Utils.capitalize(r)}`;
+            if (this[f] && this[f]()) {
+                return rr[r];
+            }
+        }
+        return rr.highCard;
+    }
 
     groupByRank(cards) {
 		const cardGroups = [];
 		let lastCard;
         let cardGroup= [];
-		for (const card of PokerHand.cardsInRankOrderAceLow(cards)) {
+		for (const card of PokerHand.cardsInRankOrder(cards)) {
             // first card in hand
 			if (! lastCard) {
 				cardGroup.push(card);
@@ -336,15 +363,15 @@ class PokerHand extends BoundMethodsObject {
 
     isStraightAceLow(isLow = false)  {
 		let s = true;
-		let cro = PokerHand.cardsInRankOrderAceLow(this.cards, isLow);
+		let cro = PokerHand.cardsInRankOrder(this.cards, isLow);
 		let thisCard = cro[0];
         let nextCard;
 		let thisVal = 0;
         let nextVal = 0;
 		for (let i = 1; i < cro.length; ++i) {
 			nextCard = cro[i];
-			thisVal = isLow ? thisCard.lowValue : thisCard.value;
-			nextVal = isLow ? nextCard.lowValue : nextCard.value;
+			thisVal = isLow ? thisCard.lowValue : thisCard.value();
+			nextVal = isLow ? nextCard.lowValue : nextCard.value();
 			s = s && nextVal === thisVal + 1;
 			thisCard = nextCard;
 		}
@@ -505,7 +532,7 @@ class PokerHand extends BoundMethodsObject {
 	}
 
 	toString() {
-		return `${self.cards}`;
+		return `${this.cards}`;
 	}
 }
 
@@ -517,7 +544,7 @@ class PokerHand extends BoundMethodsObject {
 			for (cjIndex, cj) in handArr.enumerated() {
 				card = StandardCard(json: cj);
 				if card != nil {
-					self.cards[cjIndex] = card!
+					this.cards[cjIndex] = card!
 				}
 			}
 			setCardsGroupedByRank()
