@@ -181,7 +181,6 @@ class PlayingCard extends BoundMethodsObject {
 	}
 
     toString() {
-        debugLog('S', this.suit);
         return `${PlayingCard.SuitStrings[this.suit]}${PlayingCard.RankStrings[this.rank]}`;
     }
 

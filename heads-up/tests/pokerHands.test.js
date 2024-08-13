@@ -34,13 +34,66 @@ test('high card', () => {
 });
 
 test('flush', () => {
-    const flushHand1 = new PokerHand([
-			new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.deuce),
-			new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.four),
-			new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.ten),
-			new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.king),
-			new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.seven)
-		]);
-		expect(flushHand1.handRank).toBe(PokerHand.Ranks.flush);
+    const hand = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.deuce),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.four),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.ten),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.king),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.seven)
+    ]);
+    expect(hand.handRank).toBe(PokerHand.Ranks.flush);
 });
 
+test('flush comparison', () => {
+    const hand1 = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.deuce),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.four),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.ten),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.king),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.seven)
+    ]);
+    expect(hand1.handRank).toBe(PokerHand.Ranks.flush);
+
+    const hand2 = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.deuce),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.four),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.ten),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.king),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.ace)
+    ]);
+    expect(hand2.handRank).toBe(PokerHand.Ranks.flush);
+    expect(PlayingCard.isHighCardLess(hand1.cards, hand2.cards)).toBeTruthy();
+});
+
+test('straight', () => {
+    const hand = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.seven),
+        new PlayingCard(PlayingCard.Suits.diamond, PlayingCard.Ranks.jack),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.nine),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.ten),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.eight)
+    ]);
+    expect(hand.handRank).toBe(PokerHand.Ranks.straight);
+});
+
+test('straight ace low', () => {
+    const hand = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.deuce),
+        new PlayingCard(PlayingCard.Suits.diamond, PlayingCard.Ranks.ace),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.trey),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.four),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.five)
+    ]);
+    expect(hand.handRank).toBe(PokerHand.Ranks.straight);
+});
+
+test('straight ace high', () => {
+    const hand = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.ten),
+        new PlayingCard(PlayingCard.Suits.diamond, PlayingCard.Ranks.ace),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.king),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.jack),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.queen)
+    ]);
+    expect(hand.handRank).toBe(PokerHand.Ranks.straight);
+});

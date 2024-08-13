@@ -75,7 +75,9 @@ class PokerHand extends BoundMethodsObject {
     ];
 
     static cardsInRankOrder(cards, isAceLow= false)  {
-		const cro = cards.toSorted((a, b) => a.value() - b.value());
+        const f = isAceLow ? 'lowValue' : 'value';
+		return cards.toSorted((a, b) => a[f]() - b[f]());
+        /*
         if (! isAceLow || PlayingCard.Ranks[cro[cro.length - 1].rank] === PlayingCard.Ranks.ace) {
             return cro;
         }
@@ -86,6 +88,8 @@ class PokerHand extends BoundMethodsObject {
             cro[i - 1] = t;
         }
 		return cro;
+
+         */
 	}
 
 	static kicker(hand1, hand2) {
@@ -362,20 +366,17 @@ class PokerHand extends BoundMethodsObject {
 	}
 
     isStraightAceLow(isLow = false)  {
-		let s = true;
+        const f = isLow ? 'lowValue' : 'value';
 		let cro = PokerHand.cardsInRankOrder(this.cards, isLow);
 		let thisCard = cro[0];
-        let nextCard;
-		let thisVal = 0;
-        let nextVal = 0;
 		for (let i = 1; i < cro.length; ++i) {
-			nextCard = cro[i];
-			thisVal = isLow ? thisCard.lowValue : thisCard.value();
-			nextVal = isLow ? nextCard.lowValue : nextCard.value();
-			s = s && nextVal === thisVal + 1;
+			const nextCard = cro[i];
+            if (nextCard[f]() !== thisCard[f]() + 1) {
+                return false;
+            }
 			thisCard = nextCard;
 		}
-		return s;
+        return true;
 	}
 
     isStraightFlush() {
