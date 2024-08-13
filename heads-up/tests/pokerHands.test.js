@@ -131,3 +131,26 @@ test('four of a kind', () => {
     expect(hand.handRank).toBe(PokerHand.Ranks.fourOfAKind);
 });
 
+test('full house', () => {
+    const hand = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.trey),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.trey),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.eight),
+        new PlayingCard(PlayingCard.Suits.diamond, PlayingCard.Ranks.trey),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.eight)
+    ]);
+    expect(hand.handRank).toBe(PokerHand.Ranks.fullHouse);
+    expect(hand.handRank).not.toBe(PokerHand.Ranks.threeOfAKind);
+});
+
+test('three of a kind', () => {
+    const hand = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.trey),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.trey),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.eight),
+        new PlayingCard(PlayingCard.Suits.diamond, PlayingCard.Ranks.queen),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.trey)
+    ]);
+    expect(hand.handRank).toBe(PokerHand.Ranks.threeOfAKind);
+});
+
