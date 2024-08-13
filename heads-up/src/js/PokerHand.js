@@ -233,17 +233,18 @@ class PokerHand extends BoundMethodsObject {
     }
 
      getHandRank() {
+        // note the order of the keys here (royalFlush -> straightFlush -> straight, ...)
         const rr = {
             highCard: 0,
             pair: 1,
             twoPair: 2,
             threeOfAKind: 3,
+            royalFlush: 9,
+            straightFlush: 8,
             straight:4,
             flush: 5,
             fullHouse: 6,
             fourOfAKind: 7,
-            straightFlush: 8,
-            royalFlush: 9,
         };
         for (const r of Object.keys(rr)) {
             const f = `is${Utils.capitalize(r)}`;

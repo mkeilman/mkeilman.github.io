@@ -97,3 +97,14 @@ test('straight ace high', () => {
     ]);
     expect(hand.handRank).toBe(PokerHand.Ranks.straight);
 });
+
+test('straight flush', () => {
+    const hand = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.seven),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.jack),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.nine),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.ten),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.eight)
+    ]);
+    expect(hand.handRank).toBe(PokerHand.Ranks.straightFlush);
+});
