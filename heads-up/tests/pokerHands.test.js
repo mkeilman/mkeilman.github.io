@@ -35,11 +35,11 @@ test('high card', () => {
 
 test('flush', () => {
     const flushHand1 = new PokerHand([
-			new PlayingCard('club', 'deuce'),
-			new PlayingCard('club', 'four'),
-			new PlayingCard('club', 'ten'),
-			new PlayingCard('club', 'king'),
-			new PlayingCard('club', 'seven')
+			new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.deuce),
+			new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.four),
+			new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.ten),
+			new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.king),
+			new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.seven)
 		]);
 		expect(flushHand1.handRank).toBe(PokerHand.Ranks.flush);
 });
