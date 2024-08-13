@@ -77,19 +77,6 @@ class PokerHand extends BoundMethodsObject {
     static cardsInRankOrder(cards, isAceLow= false)  {
         const f = isAceLow ? 'lowValue' : 'value';
 		return cards.toSorted((a, b) => a[f]() - b[f]());
-        /*
-        if (! isAceLow || PlayingCard.Ranks[cro[cro.length - 1].rank] === PlayingCard.Ranks.ace) {
-            return cro;
-        }
-        cro.reverse();
-        for (let i = 1; i <= cro.length - 1; ++i) {
-            const t = cro[i];
-            cro[i] = cro[i - 1];
-            cro[i - 1] = t;
-        }
-		return cro;
-
-         */
 	}
 
 	static kicker(hand1, hand2) {
@@ -400,6 +387,9 @@ class PokerHand extends BoundMethodsObject {
 
         if (this.handRank < otherHand.handRank) {
             return true;
+        }
+        if (this.handRank > otherHand.handRank) {
+            return false;
         }
 
         // same hand, check details

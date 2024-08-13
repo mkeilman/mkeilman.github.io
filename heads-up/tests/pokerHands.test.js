@@ -108,3 +108,14 @@ test('straight flush', () => {
     ]);
     expect(hand.handRank).toBe(PokerHand.Ranks.straightFlush);
 });
+
+test('royal flush', () => {
+    const hand = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.ten),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.ace),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.queen),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.jack),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.king)
+    ]);
+    expect(hand.handRank).toBe(PokerHand.Ranks.royalFlush);
+});

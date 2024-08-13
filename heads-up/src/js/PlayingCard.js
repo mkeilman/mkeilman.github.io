@@ -95,7 +95,7 @@ class PlayingCard extends BoundMethodsObject {
     }
 
     static highestCardInSubset(subCards)  {
-		return subCards.toSorted((a, b) => b.lt(a))[0];
+		return subCards.toSorted((a, b) => b.value() - a.value())[0];
 	}
 
     static highestCardInSubsets(cards1, cards2)  {

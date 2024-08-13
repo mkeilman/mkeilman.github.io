@@ -12,7 +12,7 @@ import {PokerDeck} from './PokerDeck.js';
 import {PokerHand} from './PokerHand.js';
 import {PokerPlayer} from './PokerPlayer.js';
 import {PokerPot} from './PokerPot.js';
-import {Utils} from './Utils.js'
+import {debugLog, Utils} from './Utils.js'
 
 class PokerGame {
 
