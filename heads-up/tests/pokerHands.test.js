@@ -165,3 +165,16 @@ test('two pair', () => {
     expect(hand.handRank).toBe(PokerHand.Ranks.twoPair);
     expect(hand.handRank).not.toBe(PokerHand.Ranks.pair);
 });
+
+test('pair', () => {
+    const hand = new PokerHand([
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.trey),
+        new PlayingCard(PlayingCard.Suits.club, PlayingCard.Ranks.trey),
+        new PlayingCard(PlayingCard.Suits.heart, PlayingCard.Ranks.eight),
+        new PlayingCard(PlayingCard.Suits.diamond, PlayingCard.Ranks.queen),
+        new PlayingCard(PlayingCard.Suits.spade, PlayingCard.Ranks.five)
+    ]);
+    expect(hand.handRank).not.toBe(PokerHand.Ranks.twoPair);
+    expect(hand.handRank).toBe(PokerHand.Ranks.pair);
+});
+
