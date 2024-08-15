@@ -17,6 +17,8 @@ class PokerDeck extends BoundMethodsObject {
 
 	static KEY_POKER_DECK = 'deck';
 	static KEY_POKER_DECK_CARDS = `${PokerDeck.KEY_POKER_DECK}.cards`;
+	static KEY_POKER_DECK_DEALT_CARDS = `${PokerDeck.KEY_POKER_DECK}.dealtCards`;
+	static KEY_POKER_DECK_DISCARDS = `${PokerDeck.KEY_POKER_DECK}.discards`;
 	static KEY_POKER_DECK_INDEX = `${PokerDeck.KEY_POKER_DECK}.deckIndex`;
 
 	static freshCards() {
@@ -27,6 +29,18 @@ class PokerDeck extends BoundMethodsObject {
 			}
 		}
 		return c;
+	}
+
+	static fromJSON(json) {
+		const d = json[PokerDeck.KEY_POKER_DECK];
+		const deck = new PokerDeck(
+			false,
+			d[PokerDeck.KEY_POKER_DECK_DEALT_CARDS].map(x => PlayingCard.fromJSON(x)),
+			d[PokerDeck.KEY_POKER_DECK_DISCARDS].map(x => PlayingCard.fromJSON(x))
+		);
+		deck.cards = d[PokerDeck.KEY_POKER_DECK_CARDS].map(x => PlayingCard.fromJSON(x));
+		deck.deckIndex = d[PokerDeck.KEY_POKER_DECK_INDEX];
+		return deck;
 	}
 
 	constructor(doShuffle=false, dealtCards=[], discards=[]) {
@@ -115,10 +129,12 @@ class PokerDeck extends BoundMethodsObject {
 
 	toJSON() {
 		const json = {};
-		json[`${PokerDeck.KEY_POKER_DECK}`] = {};
-		const j = json[`${PokerDeck.KEY_POKER_DECK}`];
-		j[`${PokerDeck.KEY_POKER_DECK_CARDS}`] = this.cards.map(x => x.toJSON());
-		j[`${PokerDeck.KEY_POKER_DECK_INDEX}`] = this.deckIndex;
+		json[PokerDeck.KEY_POKER_DECK] = {};
+		const d = json[PokerDeck.KEY_POKER_DECK];
+		d[PokerDeck.KEY_POKER_DECK_CARDS] = this.cards.map(x => x.toJSON());
+		d[PokerDeck.KEY_POKER_DECK_DEALT_CARDS] = this.dealtCards.map(x => x.toJSON());
+		d[PokerDeck.KEY_POKER_DECK_DISCARDS] = this.discards.map(x => x.toJSON());
+		d[PokerDeck.KEY_POKER_DECK_INDEX] = this.deckIndex;
 
 		return json;
 	}
