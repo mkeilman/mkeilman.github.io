@@ -14,7 +14,7 @@ import {PokerPlayer} from './PokerPlayer.js';
 import {PokerPot} from './PokerPot.js';
 import {debugLog, Utils} from './Utils.js'
 
-class PokerGame {
+class PokerGame extends BoundMethodsObject {
 
     static States = {
         none: 'none',
@@ -139,7 +139,22 @@ class PokerGame {
 	}
 
 	static fromJSON(json) {
-        return;  // new PlayingCard(json.suit, json.rank);
+		const d = json[PokerGame.KEY_GAME_MODEL];
+		const p = d[PokerGame.KEY_GAME_PLAYERS].map(x => PokerPlayer.fromJSON(x));
+		const g = new PokerGame(p.length);
+		g.gameID = d[PokerGame.KEY_GAME_ID];
+		g.stateID = d[PokerGame.KEY_GAME_STATE_ID];
+		g.authToken = d[PokerGame.KEY_GAME_SERVER_AUTH_TOKEN];
+		g.gameToken = d[PokerGame.KEY_GAME_TOKEN];
+		g.state = d[PokerGame.KEY_GAME_STATE];
+		g.deck = PokerDeck.fromJSON(d[PokerGame.KEY_GAME_DECK]);
+		g.communityCards = d[PokerGame.KEY_GAME_COMMUNITY_CARDS].map(x => PlayingCard.fromJSON(x));
+		g.currentPosition = d[PokerGame.KEY_GAME_CURRENT_POSITION];
+		g.buttonPosition = d[PokerGame.KEY_GAME_BUTTON_POSITION];
+		g.handNumber = d[PokerGame.KEY_GAME_ROUND];
+		g.pots = d[PokerGame.KEY_GAME_POTS].map(x => PokerPot.fromJSON(x));
+
+        return g;
     }
 
 	static initWithPlayers(players) {
@@ -149,6 +164,7 @@ class PokerGame {
 	}
 
     constructor(numPlayers=2) {
+		super();
 		//let gameID: UUID
 		//var authToken: String?
 		//var gameToken: String = ""  // used to identify a game
@@ -171,8 +187,7 @@ class PokerGame {
 		for (let i = 1; i <= numPlayers; ++i) {
 			this.players.push(new PokerPlayer());
 		}
-
-		debugLog(this.toJSON());
+		this.state = PokerGame.States.ready;
     }
 	
 	isInProgress() {
@@ -254,7 +269,7 @@ class PokerGame {
 	}
 
 	playersOutOfGame() {
-		return this.currentPlayers.filter(x => x.gameState === PokerPlayer.PlayerHandStates.busted);
+		return this.currentPlayers().filter(x => x.gameState === PokerPlayer.PlayerHandStates.busted);
 	}
 
 	lastPosition() { // really last position, not modulo folded players etc
@@ -541,7 +556,7 @@ class PokerGame {
 	}
 	
 	haveAnyBetsBeenMadeThisRound() {
-		return this.currentPlayers.reduce((p, c) => p + c.totalBetsInRound(), 0)  > 0;
+		return this.currentPlayers().reduce((p, c) => p + c.totalBetsInRound(), 0)  > 0;
 	}
 
 	toJSON()  {
@@ -553,7 +568,7 @@ class PokerGame {
 		j[`${PokerGame.KEY_GAME_STATE_ID}`] = this.stateID;
 		//j[`${PokerGame.KEY_GAME_SERVER_AUTH_TOKEN}`] = this.authToken || "";
 		//j[`${PokerGame.KEY_GAME_TOKEN}`] = this.gameToken;
-		j[`${PokerGame.KEY_GAME_STATE}`] = this.state.rawValue;
+		j[`${PokerGame.KEY_GAME_STATE}`] = this.state;
 		j[`${PokerGame.KEY_GAME_DECK}`] = this.deck.toJSON();
 		j[`${PokerGame.KEY_GAME_POTS}`] = pj;
 		j[`${PokerGame.KEY_GAME_COMMUNITY_CARDS}`] = this.communityCards.map(x => x.toJSON());

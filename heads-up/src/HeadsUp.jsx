@@ -1,20 +1,23 @@
 import { useState } from 'react'
 import './css/HeadsUp.css'
 import {PokerDeck} from './js/PokerDeck.js';
+import {PokerGame} from './js/PokerGame.js';
 import {PokerPlayer} from './js/PokerPlayer.js';
 import Deck from './Deck.jsx';
 import Player from './Player.jsx';
-import {Utils} from './js/Utils.js';
+import {Utils, debugLog} from './js/Utils.js';
 
 const HeadsUp = () => {
     let [deck, setDeck] = useState(() => new PokerDeck());
-    let [players, setPlayers] = useState(() => [new PokerPlayer(), new PokerPlayer()]) ;
+    let [players, setPlayers] = useState(() => [new PokerPlayer(), new PokerPlayer()]);
+    let [game, setGame] = useState(() => new PokerGame(players.length));
+
     let playerIndex = 0;
     const numPlayers = players.length;
+    game.players = players;
 
     const deal = () => {
         const c = deck.dealCard();
-        //Utils.log('DEALT', c);
         players[playerIndex].currentCards.push(c);
         playerIndex = (playerIndex + 1) % numPlayers;
     };
@@ -38,7 +41,7 @@ const HeadsUp = () => {
                 board
             </div>
             <div>
-                <Deck deck={deck}></Deck>
+                <Deck deck={game.deck}></Deck>
                 <button onClick={shuffle}>Shuffle</button>
                 <button onClick={deal}>Deal</button>
             </div>
