@@ -15,6 +15,10 @@ class PokerDeck extends BoundMethodsObject {
 	static ranks = Object.keys(PlayingCard.Ranks);
 	static suits = Object.keys(PlayingCard.Suits);
 
+	static KEY_POKER_DECK = 'deck';
+	static KEY_POKER_DECK_CARDS = `${PokerDeck.KEY_POKER_DECK}.cards`;
+	static KEY_POKER_DECK_INDEX = `${PokerDeck.KEY_POKER_DECK}.deckIndex`;
+
 	static freshCards() {
 		const c = [];
 		for (const s of PokerDeck.suits) {
@@ -109,32 +113,19 @@ class PokerDeck extends BoundMethodsObject {
 		this.setup();
 	}
 
+	toJSON() {
+		const json = {};
+		json[`${PokerDeck.KEY_POKER_DECK}`] = {};
+		const j = json[`${PokerDeck.KEY_POKER_DECK}`];
+		j[`${PokerDeck.KEY_POKER_DECK_CARDS}`] = this.cards.map(x => x.toJSON());
+		j[`${PokerDeck.KEY_POKER_DECK_INDEX}`] = this.deckIndex;
+
+		return json;
+	}
+
 	toString() {
 		return `${this.cards}`;
 	}
-
-    /*
-	func toJSON() -> [String : Any] {
-
-		var jCards : [[String : Any]] = []
-		for card in self.cards {
-			jCards.append(card.toJSON())
-		}
-		let json = [KEY_POKER_DECK:[
-			KEY_POKER_DECK_CARDS : jCards,
-			KEY_POKER_DECK_INDEX : self.deckIndex
-		]]
-
-		//if JSONSerialization.isValidJSONObject(json) {
-		//	debugPrint("deck JSON OK")
-		//}
-		//else {
-		//	debugPrint("deck JSON BAD")
-		//}
-		return json
-
-	}
-     */
 }
 
 export {PokerDeck}

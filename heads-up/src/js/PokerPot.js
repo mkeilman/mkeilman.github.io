@@ -6,6 +6,7 @@
 //  Copyright © 2024 Michael Keilman. All rights reserved.
 //
 import {BoundMethodsObject} from './BoundMethodsObject.js';
+import {PokerPlayer} from './PokerPlayer.js';
 
 
 class PokerPot extends BoundMethodsObject {
@@ -13,6 +14,15 @@ class PokerPot extends BoundMethodsObject {
     static KEY_POT = 'pot'
     static KEY_POT_AMOUNT = `${PokerPot.KEY_POT}.amount`;
     static KEY_POT_PLAYERS = `${PokerPot.KEY_POT}.players`;
+
+	static fromJSON(json) {
+		const d = json[`${PokerPot.KEY_POT}`];
+
+		return new PokerPot(
+			d[PokerPot.KEY_POT_AMOUNT],
+			d[PokerPot.KEY_POT_PLAYERS]
+		);
+	}
 
 	constructor(amt= 0, players=[]) {
         super();
@@ -23,28 +33,6 @@ class PokerPot extends BoundMethodsObject {
     description() {
 		return `Amount: ${this.amount}; players: ${this.playersInPot}`;
 	}
-
-    /*
-	init?( json: [String:Any] ) {
-		guard let potDict: [String: AnyObject] = json[KEY_POT] as? [String: AnyObject] else {
-			return nil
-		}
-		this.amount = potDict[KEY_POT_AMOUNT] as? Int ?? 0
-		this.playersInPot = potDict[KEY_POT_PLAYERS] as? [String] ?? []
-	}
-	
-	func refresh( json: [String:Any] ) {
-		guard let potDict: [String: AnyObject] = json[KEY_POT] as? [String: AnyObject] else {
-			return
-		}
-		if let amt = potDict[KEY_POT_AMOUNT] as? Int {
-			this.amount = amt
-		}
-		if let pArr = potDict[KEY_POT_PLAYERS] as? [String] {
-			this.playersInPot = pArr
-		}
-	}
-	*/
 
 	hasPlayer(player)  {
 		return this.playersInPot.includes(player.playerID);
@@ -68,7 +56,7 @@ class PokerPot extends BoundMethodsObject {
         json[PokerPot.KEY_POT] = {};
         json[PokerPot.KEY_POT][PokerPot.KEY_POT_AMOUNT] = this.amount;
         json[PokerPot.KEY_POT][PokerPot.KEY_POT_PLAYERS] = this.playersInPot;
-		return json
+		return json;
 	}
 
 }

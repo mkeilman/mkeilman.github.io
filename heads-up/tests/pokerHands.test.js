@@ -4,6 +4,12 @@ import {PokerHand} from '../src/js/PokerHand.js';
 import {PlayingCard} from '../src/js/PlayingCard.js';
 import {Utils, debugLog} from '../src/js/Utils.js';
 
+test('json', () => {
+    const g = new PokerGame();
+    debugLog(g.toJSON());
+});
+
+
 test('best hand', () => {
     const highCardTen = new PokerHand([
         new PlayingCard('club', 'ten'),

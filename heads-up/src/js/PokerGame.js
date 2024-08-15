@@ -79,18 +79,18 @@ class PokerGame {
 
     static KEY_GAME_MODEL = 'game';
     static KEY_GAME_ID = `${PokerGame.KEY_GAME_MODEL}.gameID`;
-    static KEY_GAME_STATE_ID = PokerGame.KEY_GAME_MODEL + '.stateID';
-    static KEY_GAME_SERVER_AUTH_TOKEN = PokerGame.KEY_GAME_MODEL + '.authToken';
-    static KEY_GAME_STATE = PokerGame.KEY_GAME_MODEL + '.gameState';
-    static KEY_GAME_DECK = PokerGame.KEY_GAME_MODEL + '.deck';
-    static KEY_GAME_POTS = PokerGame.KEY_GAME_MODEL + '.pots';
-    static KEY_GAME_POT = PokerGame.KEY_GAME_MODEL + '.pot';
-    static KEY_GAME_COMMUNITY_CARDS = PokerGame.KEY_GAME_MODEL + '.communityCards';
-    static KEY_GAME_PLAYERS = PokerGame.KEY_GAME_MODEL + '.players';
-    static KEY_GAME_CURRENT_POSITION = PokerGame.KEY_GAME_MODEL + '.currentPosition';
-    static KEY_GAME_BUTTON_POSITION = PokerGame.KEY_GAME_MODEL + '.buttonPosition';
-    static KEY_GAME_ROUND = PokerGame.KEY_GAME_MODEL + '.round';
-    static KEY_GAME_TOKEN = PokerGame.KEY_GAME_MODEL + '.token';
+    static KEY_GAME_STATE_ID = `${PokerGame.KEY_GAME_MODEL}.stateID`;
+    static KEY_GAME_SERVER_AUTH_TOKEN = `${PokerGame.KEY_GAME_MODEL}.authToken`;
+    static KEY_GAME_STATE = `${PokerGame.KEY_GAME_MODEL}.gameState`;
+    static KEY_GAME_DECK = `${PokerGame.KEY_GAME_MODEL}.deck`;
+    static KEY_GAME_POTS = `${PokerGame.KEY_GAME_MODEL}.pots`;
+    static KEY_GAME_POT = `${PokerGame.KEY_GAME_MODEL}.pot`;
+    static KEY_GAME_COMMUNITY_CARDS = `${PokerGame.KEY_GAME_MODEL}.communityCards`;
+    static KEY_GAME_PLAYERS = `${PokerGame.KEY_GAME_MODEL}.players`;
+    static KEY_GAME_CURRENT_POSITION = `${PokerGame.KEY_GAME_MODEL}.currentPosition`;
+    static KEY_GAME_BUTTON_POSITION = `${PokerGame.KEY_GAME_MODEL }.buttonPosition`;
+    static KEY_GAME_ROUND = `${PokerGame.KEY_GAME_MODEL}.round`;
+    static KEY_GAME_TOKEN = `${PokerGame.KEY_GAME_MODEL}.token`;
 
 	static nextToken(currentToken) {
 		const tokenIndex = PokerGame.GAME_TOKENS.indexOf(currentToken || "");
@@ -138,20 +138,24 @@ class PokerGame {
 		return hand;
 	}
 
+	static fromJSON(json) {
+        return;  // new PlayingCard(json.suit, json.rank);
+    }
+
 	static initWithPlayers(players) {
 		const g = new PokerGame(null, 0);
 		g.players = players;
 		return g;
 	}
 
-    constructor(gameId=null, pot=0) {
+    constructor(numPlayers=2) {
 		//let gameID: UUID
 		//var authToken: String?
 		//var gameToken: String = ""  // used to identify a game
 		//var stateID: UUID  // changed every time a player changes something
 		//var inviteTime: Date?
 
-		this.gameID = gameId || crypto.randomUUID();
+		this.gameID = crypto.randomUUID();
 		this.stateID = crypto.randomUUID();
 		this.state = PokerGame.States.new;
 		this.deck = new PokerDeck(true);
@@ -163,9 +167,13 @@ class PokerGame {
 		this.buttonPosition = 0;
 		this.currentPosition = 0;
 		this.handNumber = 0;
-    }
-    
 
+		for (let i = 1; i <= numPlayers; ++i) {
+			this.players.push(new PokerPlayer());
+		}
+
+		debugLog(this.toJSON());
+    }
 	
 	isInProgress() {
 		return PokerGame.IN_PROGRESS_STATES.includes(this.state);
@@ -345,12 +353,12 @@ class PokerGame {
 	
 	// "simplified button"  - will move to next available seat.  Blinds may be missed
 	nextButtonPosition() {
-		const cp = this.buttonPosition
+		const cp = this.buttonPosition;
 		let np = cp;
 		let done = false;
 
 		do {
-			np  = (np + 1) % this.currentPlayers().length
+			np  = (np + 1) % this.currentPlayers().length;
 			if (np !== cp) {
 				const player = this.currentPlayers()[np];
 				done = player.gameState === PokerPlayer.PlayerGameStates.alive;
@@ -534,6 +542,26 @@ class PokerGame {
 	
 	haveAnyBetsBeenMadeThisRound() {
 		return this.currentPlayers.reduce((p, c) => p + c.totalBetsInRound(), 0)  > 0;
+	}
+
+	toJSON()  {
+		const pj = this.pots.map(x => x.toJSON());
+		const json = {};
+		json[`${PokerGame.KEY_GAME_MODEL}`] = {};
+		const j = json[`${PokerGame.KEY_GAME_MODEL}`];
+		j[`${PokerGame.KEY_GAME_ID}`] = this.gameID;
+		j[`${PokerGame.KEY_GAME_STATE_ID}`] = this.stateID;
+		//j[`${PokerGame.KEY_GAME_SERVER_AUTH_TOKEN}`] = this.authToken || "";
+		//j[`${PokerGame.KEY_GAME_TOKEN}`] = this.gameToken;
+		j[`${PokerGame.KEY_GAME_STATE}`] = this.state.rawValue;
+		j[`${PokerGame.KEY_GAME_DECK}`] = this.deck.toJSON();
+		j[`${PokerGame.KEY_GAME_POTS}`] = pj;
+		j[`${PokerGame.KEY_GAME_COMMUNITY_CARDS}`] = this.communityCards.map(x => x.toJSON());
+		j[`${PokerGame.KEY_GAME_PLAYERS}`] = this.players.map(x => x.toJSON());
+		j[`${PokerGame.KEY_GAME_CURRENT_POSITION}`] = this.currentPosition;
+		j[`${PokerGame.KEY_GAME_BUTTON_POSITION }`] = this.buttonPosition;
+		j[`${PokerGame.KEY_GAME_ROUND}`] = this.handNumber;
+		return json;
 	}
 
 	totalOfallStakesButCurrent() {

@@ -1,6 +1,7 @@
 'use strict';
 
 import {BoundMethodsObject} from './BoundMethodsObject.js';
+import {PlayingCard} from './PlayingCard.js';
 
 class PokerPlayer extends BoundMethodsObject {
 
@@ -75,27 +76,50 @@ class PokerPlayer extends BoundMethodsObject {
     static STARTING_STAKE = 1000;
 
     static KEY_PLAYER = 'player';
-    static KEY_PLAYER_IS_ASSIGNED = PokerPlayer.KEY_PLAYER + '.isAssigned';
-    static KEY_PLAYER_STAKE = PokerPlayer.KEY_PLAYER + '.stake';
-    static KEY_PLAYER_ALREADY_ALL_IN = PokerPlayer.KEY_PLAYER + '.alreadyAllIn';
-    static KEY_PLAYER_GAME_STATE = PokerPlayer.KEY_PLAYER + '.gameState';
-    static KEY_PLAYER_HAND_STATE = PokerPlayer.KEY_PLAYER + '.handState';
-    static KEY_PLAYER_HAS_BUTTON = PokerPlayer.KEY_PLAYER + '.hasButton';
-    static KEY_PLAYER_IS_SMALL_BLIND = PokerPlayer.KEY_PLAYER + '.isSmallBlind';
-    static KEY_PLAYER_IS_BIG_BLIND = PokerPlayer.KEY_PLAYER + '.isBigBlind';
-    static KEY_PLAYER_POSITION = PokerPlayer.KEY_PLAYER + '.position';
-    static KEY_PLAYER_POKER_FACE = PokerPlayer.KEY_PLAYER + '.pokerFace';
-    static KEY_PLAYER_CARDS = PokerPlayer.KEY_PLAYER + '.cards';
-    static KEY_PLAYER_LAST_ACTION = PokerPlayer.KEY_PLAYER + '.lastAction';
-    static KEY_PLAYER_CURRENT_BET = PokerPlayer.KEY_PLAYER + '.currentBet';
-    static KEY_PLAYER_CURRENT_BETS = PokerPlayer.KEY_PLAYER + '.currentBets';
-    static KEY_PLAYER_LAST_BET = PokerPlayer.KEY_PLAYER + '.lastBet';
-    static KEY_PLAYER_TOTAL_BET = PokerPlayer.KEY_PLAYER + '.totalBet';
-    static KEY_PLAYER_TOTAL_BETS = PokerPlayer.KEY_PLAYER + '.totalBets';
-    static KEY_PLAYER_TOTAL_BET_HAND = PokerPlayer.KEY_PLAYER + '.totalBetInHand';
-    static KEY_PLAYER_TOTAL_BETS_HAND = PokerPlayer.KEY_PLAYER + '.totalBetsInHand';
+    static KEY_PLAYER_IS_ASSIGNED = `${PokerPlayer.KEY_PLAYER}.isAssigned`;
+    static KEY_PLAYER_STAKE = `${PokerPlayer.KEY_PLAYER}.stake`;
+    static KEY_PLAYER_ALREADY_ALL_IN = `${PokerPlayer.KEY_PLAYER}.alreadyAllIn`;
+    static KEY_PLAYER_GAME_STATE = `${PokerPlayer.KEY_PLAYER}.gameState`;
+    static KEY_PLAYER_HAND_STATE = `${PokerPlayer.KEY_PLAYER}.handState`;
+    static KEY_PLAYER_HAS_BUTTON = `${PokerPlayer.KEY_PLAYER}.hasButton`;
+    static KEY_PLAYER_IS_SMALL_BLIND = `${PokerPlayer.KEY_PLAYER}.isSmallBlind`;
+    static KEY_PLAYER_IS_BIG_BLIND = `${PokerPlayer.KEY_PLAYER}.isBigBlind`;
+    static KEY_PLAYER_POSITION = `${PokerPlayer.KEY_PLAYER}.position`;
+    static KEY_PLAYER_POKER_FACE = `${PokerPlayer.KEY_PLAYER}.pokerFace`;
+    static KEY_PLAYER_CARDS = `${PokerPlayer.KEY_PLAYER}.cards`;
+    static KEY_PLAYER_LAST_ACTION = `${PokerPlayer.KEY_PLAYER}.lastAction`;
+    static KEY_PLAYER_CURRENT_BET = `${PokerPlayer.KEY_PLAYER}.currentBet`;
+    static KEY_PLAYER_CURRENT_BETS = `${PokerPlayer.KEY_PLAYER}.currentBets`;
+    static KEY_PLAYER_LAST_BET = `${PokerPlayer.KEY_PLAYER}.lastBet`;
+    static KEY_PLAYER_TOTAL_BET = `${PokerPlayer.KEY_PLAYER}.totalBet`;
+    static KEY_PLAYER_TOTAL_BETS = `${PokerPlayer.KEY_PLAYER}.totalBets`;
+    static KEY_PLAYER_TOTAL_BET_HAND = `${PokerPlayer.KEY_PLAYER}.totalBetInHand`;
+    static KEY_PLAYER_TOTAL_BETS_HAND = `${PokerPlayer.KEY_PLAYER}.totalBetsInHand`;
+    static KEY_PLAYER_ID = `${PokerPlayer.KEY_PLAYER}.playerID`;
 
-    static KEY_PLAYER_ID = PokerPlayer.KEY_PLAYER + '.playerID';
+    static fromJSON(json) {
+        const d = json[PokerPlayer.KEY_PLAYER];
+        const p = new PokerPlayer(d[PokerPlayer.KEY_PLAYER_ID]);
+        p.isAssigned = d[PokerPlayer.KEY_PLAYER_IS_ASSIGNED];
+        p.stake = d[PokerPlayer.KEY_PLAYER_STAKE];
+        p.wentAllInPreviousRound = d[PokerPlayer.KEY_PLAYER_ALREADY_ALL_IN];
+		p.gameState = d[PokerPlayer.KEY_PLAYER_GAME_STATE];
+        p.handState = d[PokerPlayer.KEY_PLAYER_HAND_STATE];
+		p.hasButton = d[PokerPlayer.KEY_PLAYER_HAS_BUTTON];
+        p.isSmallBlind = d[PokerPlayer.KEY_PLAYER_IS_SMALL_BLIND];
+		p.isBigBlind = d[PokerPlayer.KEY_PLAYER_IS_BIG_BLIND];
+		p.position = d[PokerPlayer.KEY_PLAYER_POSITION];
+		p.pokerFace = d[PokerPlayer.KEY_PLAYER_POKER_FACE];
+		p.currentCards = d[PokerPlayer.KEY_PLAYER_CARDS].map(x => PlayingCard.fromJSON(x));
+		p.lastAction = d[PokerPlayer.KEY_PLAYER_LAST_ACTION];
+		p.currentBets = d[PokerPlayer.KEY_PLAYER_CURRENT_BETS];
+		p.currentBet = d[PokerPlayer.KEY_PLAYER_CURRENT_BET];
+		p.lastBetInRound = d[PokerPlayer.KEY_PLAYER_LAST_BET];
+		p.totalBetsInPotsInRound = d[PokerPlayer.KEY_PLAYER_TOTAL_BETS];
+		p.totalBetsInHand = d[PokerPlayer.KEY_PLAYER_TOTAL_BET_HAND];
+		p.totalBetsInPotsInHand = d[PokerPlayer.KEY_PLAYER_TOTAL_BETS_HAND];
+        return p;
+    }
 
     static getPokerFace(index = null) {
         return index === null ?
@@ -365,26 +389,26 @@ class PokerPlayer extends BoundMethodsObject {
 		const k = `${PokerPlayer.KEY_PLAYER}`;
 		json[k] = {};
 		const j = json[k];
-		j[`${PokerPlayer.KEY_PLAYER_ID}`] = this.playerID;
-		j[`${PokerPlayer.KEY_PLAYER_IS_ASSIGNED}`] = this.isAssigned;
-		j[`${PokerPlayer.KEY_PLAYER_STAKE}`] = this.stake;
-		j[`${PokerPlayer.KEY_PLAYER_ALREADY_ALL_IN}`] = this.wentAllInPreviousRound;
-		j[`${PokerPlayer.KEY_PLAYER_GAME_STATE}`] = this.gameState;
-		j[`${PokerPlayer.KEY_PLAYER_HAND_STATE}`] = this.handState;
-		j[`${PokerPlayer.KEY_PLAYER_HAS_BUTTON}`] = this.hasButton;
-		j[`${PokerPlayer.KEY_PLAYER_IS_SMALL_BLIND}`] = this.isSmallBlind;
-		j[`${PokerPlayer.KEY_PLAYER_IS_BIG_BLIND}`] = this.isBigBlind;
-		j[`${PokerPlayer.KEY_PLAYER_POSITION}`] = this.position;
-		j[`${PokerPlayer.KEY_PLAYER_POKER_FACE}`] = this.pokerFace;
-		j[`${PokerPlayer.KEY_PLAYER_CARDS}`] = this.currentCards.map(x =>  x.toJSON());
-		j[`${PokerPlayer.KEY_PLAYER_LAST_ACTION}`] = this.lastAction;
-		j[`${PokerPlayer.KEY_PLAYER_CURRENT_BETS}`] = this.currentBets;
-		j[`${PokerPlayer.KEY_PLAYER_CURRENT_BET}`] = this.currentBet;
-		j[`${PokerPlayer.KEY_PLAYER_LAST_BET}`] = this.lastBetInRound;
-		j[`${PokerPlayer.KEY_PLAYER_TOTAL_BET}`] = this.totalBetsInRound();
-		j[`${PokerPlayer.KEY_PLAYER_TOTAL_BETS}`] = this.totalBetsInPotsInRound;
-		j[`${PokerPlayer.KEY_PLAYER_TOTAL_BET_HAND}`] = this.totalBetsInHand;
-		j[`${PokerPlayer.KEY_PLAYER_TOTAL_BETS_HAND}`] = this.totalBetsInPotsInHand;
+		j[PokerPlayer.KEY_PLAYER_ID] = this.playerID;
+		j[PokerPlayer.KEY_PLAYER_IS_ASSIGNED] = this.isAssigned;
+		j[PokerPlayer.KEY_PLAYER_STAKE] = this.stake;
+		j[PokerPlayer.KEY_PLAYER_ALREADY_ALL_IN] = this.wentAllInPreviousRound;
+		j[PokerPlayer.KEY_PLAYER_GAME_STATE] = this.gameState;
+		j[PokerPlayer.KEY_PLAYER_HAND_STATE] = this.handState;
+		j[PokerPlayer.KEY_PLAYER_HAS_BUTTON] = this.hasButton;
+		j[PokerPlayer.KEY_PLAYER_IS_SMALL_BLIND] = this.isSmallBlind;
+		j[PokerPlayer.KEY_PLAYER_IS_BIG_BLIND] = this.isBigBlind;
+		j[PokerPlayer.KEY_PLAYER_POSITION] = this.position;
+		j[PokerPlayer.KEY_PLAYER_POKER_FACE] = this.pokerFace;
+		j[PokerPlayer.KEY_PLAYER_CARDS] = this.currentCards.map(x =>  x.toJSON());
+		j[PokerPlayer.KEY_PLAYER_LAST_ACTION] = this.lastAction;
+		j[PokerPlayer.KEY_PLAYER_CURRENT_BETS] = this.currentBets;
+		j[PokerPlayer.KEY_PLAYER_CURRENT_BET] = this.currentBet;
+		j[PokerPlayer.KEY_PLAYER_LAST_BET] = this.lastBetInRound;
+		j[PokerPlayer.KEY_PLAYER_TOTAL_BET] = this.totalBetsInRound();
+		j[PokerPlayer.KEY_PLAYER_TOTAL_BETS] = this.totalBetsInPotsInRound;
+		j[PokerPlayer.KEY_PLAYER_TOTAL_BET_HAND] = this.totalBetsInHand;
+		j[PokerPlayer.KEY_PLAYER_TOTAL_BETS_HAND] = this.totalBetsInPotsInHand;
 
 		return json;
 	}
