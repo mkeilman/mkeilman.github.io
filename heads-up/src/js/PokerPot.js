@@ -30,18 +30,18 @@ class PokerPot extends BoundMethodsObject {
 		this.playersInPot = players;
 	}
 
+	addPlayer(player) {
+		if (! this.hasPlayer(player)) {
+			this.playersInPot.push(player.playerID);
+		}
+	}
+
     description() {
 		return `Amount: ${this.amount}; players: ${this.playersInPot}`;
 	}
 
 	hasPlayer(player)  {
 		return this.playersInPot.includes(player.playerID);
-	}
-	
-	addPlayer(player) {
-		if (! this.hasPlayer(player)) {
-			this.playersInPot.push(player.playerID);
-		}
 	}
 	
 	removePlayer(player) {
