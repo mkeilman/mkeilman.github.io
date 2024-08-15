@@ -12,21 +12,23 @@ import {Utils, debugLog} from './Utils.js';
 
 class PlayingCard extends BoundMethodsObject {
 
-    static Suits = {
-        club: 'club',
-        diamond: 'diamond',
-        heart: 'heart',
-        spade: 'spade',
+    static LowValues = {
+        deuce : 2,
+        trey : 3,
+        four : 4,
+        five : 5,
+        six : 6,
+        seven : 7,
+        eight : 8,
+        nine : 9,
+        ten : 10,
+        jack : 11,
+        queen : 12,
+        king : 13,
+	    ace : 1,
     };
 
-    static SuitStrings = {
-        club: '♣️',
-        diamond: '♦️',
-        heart: '♥️',
-        spade: '♠️',
-    };
-
-	static Ranks = {
+ 	static Ranks = {
         deuce: 'deuce',
         trey: 'trey',
         four: 'four',
@@ -58,6 +60,20 @@ class PlayingCard extends BoundMethodsObject {
         ace: 'A',
     };
 
+    static Suits = {
+        club: 'club',
+        diamond: 'diamond',
+        heart: 'heart',
+        spade: 'spade',
+    };
+
+    static SuitStrings = {
+        club: '♣️',
+        diamond: '♦️',
+        heart: '♥️',
+        spade: '♠️',
+    };
+
     static Values = {
         deuce : 2,
         trey : 3,
@@ -72,22 +88,6 @@ class PlayingCard extends BoundMethodsObject {
         queen : 12,
         king : 13,
 	    ace : 14,
-    };
-
-    static LowValues = {
-        deuce : 2,
-        trey : 3,
-        four : 4,
-        five : 5,
-        six : 6,
-        seven : 7,
-        eight : 8,
-        nine : 9,
-        ten : 10,
-        jack : 11,
-        queen : 12,
-        king : 13,
-	    ace : 1,
     };
 
     static exclude(card, cards) {
@@ -168,6 +168,10 @@ class PlayingCard extends BoundMethodsObject {
         return this.value() === otherCard.value();
     }
 
+    gt(otherCard) {
+        return this.value() > otherCard.value();
+    }
+
     isSameAsCard(otherCard) {
         return this.equals(otherCard) && this.suit === otherCard.suit;
     }
@@ -176,29 +180,24 @@ class PlayingCard extends BoundMethodsObject {
 		return PlayingCard.LowValues[this.rank];
 	}
 
-    gt(otherCard) {
-        return this.value() > otherCard.value();
-    }
-
     lt(otherCard) {
         return this.value() < otherCard.value();
     }
 
-    value()  {
-		return PlayingCard.Values[this.rank];
-	}
-
-    toString() {
-        return `${PlayingCard.SuitStrings[this.suit]}${PlayingCard.RankStrings[this.rank]}`;
-    }
-
-	toJSON()  {
+    toJSON()  {
 		return {
             suit: this.suit,
             rank: this.rank,
         };
 	}
 
+    toString() {
+        return `${PlayingCard.SuitStrings[this.suit]}${PlayingCard.RankStrings[this.rank]}`;
+    }
+
+    value()  {
+		return PlayingCard.Values[this.rank];
+	}
 }
 
 export {PlayingCard};
