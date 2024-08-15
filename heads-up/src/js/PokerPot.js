@@ -43,7 +43,7 @@ class PokerPot extends BoundMethodsObject {
 	hasPlayer(player)  {
 		return this.playersInPot.includes(player.playerID);
 	}
-	
+
 	removePlayer(player) {
 		if (! this.hasPlayer(player)) {
 			return;

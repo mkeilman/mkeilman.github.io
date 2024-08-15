@@ -55,33 +55,6 @@ class PokerDeck extends BoundMethodsObject {
 		}
 	}
 
-/*
-	init?( json: [String:Any] ) {
-
-		if let deckDict = json[KEY_POKER_DECK] as? [String:Any]  {
-			self.deckIndex = deckDict[KEY_POKER_DECK_INDEX] as? Int ?? 0
-			if let cArr = deckDict[KEY_POKER_DECK_CARDS] as? [[String:Any]] {
-				var card: StandardCard?
-				for cj in cArr {
-					card = StandardCard(json: cj)
-					if card != nil {
-						self.cards.push(card!)
-					}
-					else {
-						return nil
-					}
-				}
-			}
-		}
-		else {
-			return nil
-		}
-		for i in 0..<self.deckIndex {
-			self.discards.push(self.cards[i])
-		}
-	}
-*/
-
 	burn(numCards= 1)  {
         if (this.deckIndex + numCards > this.cards.length) {
             return null;
@@ -144,4 +117,4 @@ class PokerDeck extends BoundMethodsObject {
 	}
 }
 
-export {PokerDeck}
+export {PokerDeck};
