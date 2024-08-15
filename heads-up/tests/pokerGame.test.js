@@ -27,7 +27,7 @@ test('flop', () => {
     const mgr = new GameManager(g);
     expect(() => {mgr.flop();}).toThrowError('Cannot flop before initial deal');
     mgr.shuffleUpAndDeal();
-    debugLog('P',  g.playersStillInGame());
+    debugLog('P',  g.players);
     for (const p of g.playersStillInGame()) {
         debugLog('P', p);
     }

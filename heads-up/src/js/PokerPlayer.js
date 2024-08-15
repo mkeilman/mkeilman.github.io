@@ -97,6 +97,22 @@ class PokerPlayer extends BoundMethodsObject {
     static KEY_PLAYER_TOTAL_BETS_HAND = `${PokerPlayer.KEY_PLAYER}.totalBetsInHand`;
     static KEY_PLAYER_ID = `${PokerPlayer.KEY_PLAYER}.playerID`;
 
+   static buildPlayerArray(size, useSequentialFace = false) {
+        if (size <= 0) {
+            return [];
+        }
+
+        const pArr = [];
+        for (let i = 0; i < size; ++i) {
+            const p = new PokerPlayer();
+            if (useSequentialFace) {
+                p.pokerFace = self.getPokerFace(i);
+            }
+            pArr.push(p);
+        }
+		return pArr;
+	}
+
     static fromJSON(json) {
         const d = json[PokerPlayer.KEY_PLAYER];
         const p = new PokerPlayer(d[PokerPlayer.KEY_PLAYER_ID]);
@@ -125,22 +141,6 @@ class PokerPlayer extends BoundMethodsObject {
         return index === null ?
             PokerPlayer.PokerFaces.none :
             PokerPlayer.ValidFaces[index % PokerPlayer.ValidFaces.length];
-	}
-
-    static buildPlayerArray(size, useSequentialFace = false) {
-        if (size <= 0) {
-            return [];
-        }
-
-        const pArr = [];
-        for (let i = 0; i < size; ++i) {
-            const p = new PokerPlayer();
-            if (useSequentialFace) {
-                p.pokerFace = self.getPokerFace(i);
-            }
-            pArr.push(p);
-        }
-		return pArr;
 	}
 
     constructor(pid = null) {

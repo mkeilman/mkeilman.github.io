@@ -25,12 +25,6 @@ class PokerGame extends BoundMethodsObject {
         1, 5, 10, 25, 100
     ];
 
-	static CompleteStates = [
-		PokerGame.States.gameOver,
-		PokerGame.States.state === PokerGame.States.quorumFailedTimeExpired,
-		PokerGame.States.state === PokerGame.States.gameCanceled,
-	];
-
 	static GameTokens  = [
         '♣︎♣︎','♣︎♦︎','♣︎♥︎','♣︎♠︎','♣︎♧','♣︎♢','♣︎♡','♣︎♤',
         '♦︎♣︎','♦︎♦︎','♦︎♥︎','♦︎♠︎','♦︎♧','♦︎♢','♦︎♡','♦︎♤',
@@ -41,21 +35,6 @@ class PokerGame extends BoundMethodsObject {
         '♡♣︎','♡♦︎','♡♥︎','♡♠︎','♡♧','♡♢','♡♡','♡♤',
         '♤♣︎','♤♦︎','♤♥︎','♤♠︎','♤♧','♤♢','♤♡','♤♤',
     ];
-
-	static InProgressStates = [
-		PokerGame.States.quorumReachedTimeExpired,
-		PokerGame.States.state === PokerGame.States.ready,
-		PokerGame.States.state === PokerGame.States.preFlop,
-		PokerGame.States.state === PokerGame.States.preTurn,
-		PokerGame.States.state === PokerGame.States.preRiver,
-		PokerGame.States.state === PokerGame.States.finalBets,
-		PokerGame.States.state === PokerGame.States.handOver,
-	];
-	
-	static InvitingStates = [
-		PokerGame.States.invite,
-		PokerGame.States.state === PokerGame.States.quorumReachedTimeRemains,
-	];
 
 	static States = {
         none: 'none',
@@ -74,7 +53,28 @@ class PokerGame extends BoundMethodsObject {
         gameCanceled: 'gameCanceled',
     };
 
-    static SmallBlinds = [
+	static StatesComplete = [
+		PokerGame.States.gameOver,
+		PokerGame.States.state === PokerGame.States.quorumFailedTimeExpired,
+		PokerGame.States.state === PokerGame.States.gameCanceled,
+	];
+
+	static StatesInProgress = [
+		PokerGame.States.quorumReachedTimeExpired,
+		PokerGame.States.state === PokerGame.States.ready,
+		PokerGame.States.state === PokerGame.States.preFlop,
+		PokerGame.States.state === PokerGame.States.preTurn,
+		PokerGame.States.state === PokerGame.States.preRiver,
+		PokerGame.States.state === PokerGame.States.finalBets,
+		PokerGame.States.state === PokerGame.States.handOver,
+	];
+
+	static StatesInviting = [
+		PokerGame.States.invite,
+		PokerGame.States.state === PokerGame.States.quorumReachedTimeRemains,
+	];
+
+	static SmallBlinds = [
         5, 10, 15, 20, 25, 50, 75, 100, 150, 200
     ];
 
@@ -304,7 +304,7 @@ class PokerGame extends BoundMethodsObject {
 	}
 
 	isComplete() {
-		return PokerGame.CompleteStates.includes(this.state);
+		return PokerGame.StatesComplete.includes(this.state);
 	}
 
 	isEveryPlayerButCurrentAllIn() {
@@ -314,11 +314,11 @@ class PokerGame extends BoundMethodsObject {
 	}
 
 	isInProgress() {
-		return PokerGame.InProgressStates.includes(this.state);
+		return PokerGame.StatesInProgress.includes(this.state);
 	}
 
 	isInviting() {
-		return PokerGame.InvitingStates.includes(this.state);
+		return PokerGame.StatesInviting.includes(this.state);
 	}
 
 	isRoundOver() {
@@ -532,7 +532,8 @@ class PokerGame extends BoundMethodsObject {
 	}
 
 	playersStillInGame() {
-		return this.currentPlayers().filter(x => x.gameState === PokerPlayer.PlayerHandStates.alive || x.gameState === PokerPlayer.PlayerHandStates.winner)
+		return this.currentPlayers()
+			.filter(x => x.gameState === PokerPlayer.PlayerHandStates.alive || x.gameState === PokerPlayer.PlayerHandStates.winner)
 	}
 
 	playersStillInWhoHaveBetThisRound() {
