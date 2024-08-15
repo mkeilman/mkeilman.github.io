@@ -16,7 +16,48 @@ import {debugLog, Utils} from './Utils.js'
 
 class PokerGame extends BoundMethodsObject {
 
-    static States = {
+	static Blinds = {
+        small: 0,
+        big: 1,
+    };
+
+	static ChipValues = [
+        1, 5, 10, 25, 100
+    ];
+
+	static CompleteStates = [
+		PokerGame.States.gameOver,
+		PokerGame.States.state === PokerGame.States.quorumFailedTimeExpired,
+		PokerGame.States.state === PokerGame.States.gameCanceled,
+	];
+
+	static GameTokens  = [
+        '♣︎♣︎','♣︎♦︎','♣︎♥︎','♣︎♠︎','♣︎♧','♣︎♢','♣︎♡','♣︎♤',
+        '♦︎♣︎','♦︎♦︎','♦︎♥︎','♦︎♠︎','♦︎♧','♦︎♢','♦︎♡','♦︎♤',
+        '♥︎♣︎','♥︎♦︎','♥︎♥︎','♥︎♠︎','♥︎♧','♥︎♢','♥︎♡','♥︎♤',
+        '♠︎♣︎','♠︎♦︎','♠︎♥︎','♠︎♠︎','♠︎♧','♠︎♢','♠︎♡','♠︎♤',
+        '♧♣︎','♧♦︎','♧♥︎','♧♠︎','♧♧','♧♢','♧♡','♧♤',
+        '♢♣︎','♢♦︎','♢♥︎','♢♠︎','♢♧','♢♢','♢♡','♢♤',
+        '♡♣︎','♡♦︎','♡♥︎','♡♠︎','♡♧','♡♢','♡♡','♡♤',
+        '♤♣︎','♤♦︎','♤♥︎','♤♠︎','♤♧','♤♢','♤♡','♤♤',
+    ];
+
+	static InProgressStates = [
+		PokerGame.States.quorumReachedTimeExpired,
+		PokerGame.States.state === PokerGame.States.ready,
+		PokerGame.States.state === PokerGame.States.preFlop,
+		PokerGame.States.state === PokerGame.States.preTurn,
+		PokerGame.States.state === PokerGame.States.preRiver,
+		PokerGame.States.state === PokerGame.States.finalBets,
+		PokerGame.States.state === PokerGame.States.handOver,
+	];
+	
+	static InvitingStates = [
+		PokerGame.States.invite,
+		PokerGame.States.state === PokerGame.States.quorumReachedTimeRemains,
+	];
+
+	static States = {
         none: 'none',
         new: 'new',  // pre-invite
         invite: 'invite',
@@ -33,48 +74,8 @@ class PokerGame extends BoundMethodsObject {
         gameCanceled: 'gameCanceled',
     };
 
-	static COMPLETE_STATES = [
-		PokerGame.States.gameOver,
-		PokerGame.States.state === PokerGame.States.quorumFailedTimeExpired,
-		PokerGame.States.state === PokerGame.States.gameCanceled,
-	];
-
-	static IN_PROGRESS_STATES = [
-		PokerGame.States.quorumReachedTimeExpired,
-		PokerGame.States.state === PokerGame.States.ready,
-		PokerGame.States.state === PokerGame.States.preFlop,
-		PokerGame.States.state === PokerGame.States.preTurn,
-		PokerGame.States.state === PokerGame.States.preRiver,
-		PokerGame.States.state === PokerGame.States.finalBets,
-		PokerGame.States.state === PokerGame.States.handOver,
-	];
-
-	static INVITING_STATES = [
-		PokerGame.States.invite,
-		PokerGame.States.state === PokerGame.States.quorumReachedTimeRemains,
-	];
-
-    static Blinds = {
-        small: 0,
-        big: 1,
-    };
-
-    static SMALL_BLINDS = [
+    static SmallBlinds = [
         5, 10, 15, 20, 25, 50, 75, 100, 150, 200
-    ];
-    static CHIP_VALUES = [
-        1, 5, 10, 25, 100
-    ];
-
-    static GAME_TOKENS  = [
-        '♣︎♣︎','♣︎♦︎','♣︎♥︎','♣︎♠︎','♣︎♧','♣︎♢','♣︎♡','♣︎♤',
-        '♦︎♣︎','♦︎♦︎','♦︎♥︎','♦︎♠︎','♦︎♧','♦︎♢','♦︎♡','♦︎♤',
-        '♥︎♣︎','♥︎♦︎','♥︎♥︎','♥︎♠︎','♥︎♧','♥︎♢','♥︎♡','♥︎♤',
-        '♠︎♣︎','♠︎♦︎','♠︎♥︎','♠︎♠︎','♠︎♧','♠︎♢','♠︎♡','♠︎♤',
-        '♧♣︎','♧♦︎','♧♥︎','♧♠︎','♧♧','♧♢','♧♡','♧♤',
-        '♢♣︎','♢♦︎','♢♥︎','♢♠︎','♢♧','♢♢','♢♡','♢♤',
-        '♡♣︎','♡♦︎','♡♥︎','♡♠︎','♡♧','♡♢','♡♡','♡♤',
-        '♤♣︎','♤♦︎','♤♥︎','♤♠︎','♤♧','♤♢','♤♡','♤♤',
     ];
 
     static KEY_GAME_MODEL = 'game';
@@ -93,11 +94,11 @@ class PokerGame extends BoundMethodsObject {
     static KEY_GAME_TOKEN = `${PokerGame.KEY_GAME_MODEL}.token`;
 
 	static nextToken(currentToken) {
-		const tokenIndex = PokerGame.GAME_TOKENS.indexOf(currentToken || "");
+		const tokenIndex = PokerGame.GameTokens.indexOf(currentToken || "");
 		if (tokenIndex >= 0) {
-			return PokerGame.GAME_TOKENS[(tokenIndex + 1) % PokerGame.GAME_TOKENS.length];
+			return PokerGame.GameTokens[(tokenIndex + 1) % PokerGame.GameTokens.length];
 		}
-		return PokerGame.GAME_TOKENS[0];
+		return PokerGame.GameTokens[0];
 	}
 
 	static bestHandFromHandAndCards(commonHand, playerCards) {
@@ -189,31 +190,75 @@ class PokerGame extends BoundMethodsObject {
 		}
 		this.state = PokerGame.States.ready;
     }
-	
-	isInProgress() {
-		return PokerGame.IN_PROGRESS_STATES.includes(this.state);
-	}
-	
-	isComplete() {
-		return PokerGame.COMPLETE_STATES.includes(this.state);
-	}
 
-	isInviting() {
-		return PokerGame.INVITING_STATES.includes(this.state);
-	}
-
-	playersInPots() {
-		const pip  = [];
-		for (const pot of this.pots) {
-			pip.push(
-				pot.playersInPot.filter(x => this.playerWithID(x)).map(x => this.playerWithID(x))
-			);
+	allBetsEqual() {
+		let pihiacnt = this.playersInHandIncludingAllIn().length;
+		if (pihiacnt <= 0) {
+			return true;
 		}
-		return pip;
+
+		let p0 = this.playersInHandIncludingAllIn()[0];
+		let b0 = p0.totalBetsInRound();
+		for (let i = 1; i < pihiacnt; ++i) {
+			const p = this.playersInHandIncludingAllIn()[i];
+			if (p.totalBetsInRound() === b0) {
+				return false;
+			}
+		}
+		return true;
 	}
 
-	potsWithPlayer(player) {
-		return this.pots.filter(x => x.playersInPot.includes(player.playerID));
+	allBetsEqualAfterBettingAround() {
+		for(let i = 0; i < this.pots.length; ++i) {
+			const pot = this.pots[i];
+			let b0 = this.playerWithID(pot.playersInPot[0]).totalBetsInPotsInRound[i];
+			for (let j = 1; j < this.playersInPots()[i].length; ++j) {
+				let bi = this.playersInPots()[i][j].totalBetsInPotsInRound[i];
+				if (bi !== b0) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	allBetsEqualForPlayersNotAllIn() {
+		const pihcnt = this.playersInHand().length;
+		if (pihcnt <= 0) {
+			return true;
+		}
+
+		const b0 = this.playersInHand()[0].totalBetsInRound();
+		for (let i = 1; i < pihcnt; ++i) {
+			if (this.playersInHand()[i].totalBetsInRound() !== b0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	bestHandForPlayer(player) {
+		return PokerGame.bestHandFromCards(this.communityCards, player.currentCards);
+	}
+
+	bigBlind() {
+		return 2 * this.smallBlind();
+	}
+
+	bigBlindPosition() {
+		return (this.buttonPosition + (this.currentPlayers().length > 2 ? 2 : 1)) % this.currentPlayers().length;
+	}
+
+	compareBestHandsForPlayers(p1, p2) {
+		const bh1 = this.bestHandForPlayer(p1);
+		const bh2 = this.bestHandForPlayer(p2);
+		if (bh1 === null) {
+			return bh2 !== null  // nulls are equals
+		}
+		if (bh2 !== null) {
+			return bh1 - bh2;
+		}
+		return false;
 	}
 
 	currentPlayers() {
@@ -224,64 +269,73 @@ class PokerGame extends BoundMethodsObject {
 		);
 	}
 
-	playersStillToJoin() {
-		return this.players.filter(x => x.gameState === PokerPlayer.PlayerGameStates.invitedNotAccepted);
+	didPlayersCheckAround() {
+		return this.playersStillInGame().reduce((p, c) => c && p.lastAction === PokerPlayer.RoundActions.check, true);
 	}
 
-	playersInHand() {
-		return this.playersInHandIncludingAllIn().filter(x => x.stake > 0);
+	goToNextPosition() {
+		this.currentPosition = this.nextPosition();
 	}
 
-	playersInHandIncludingAllIn() {
-		return this.currentPlayers().filter(x => x.handState === PokerPlayer.PlayerHandStates.playing && ! x.wentAllInPreviousRound());
+	hasSmallBlindBeenPlayed() {
+		return this.playersStillInGame()
+			.reduce((p, c) => c || p.lastAction === PokerPlayer.RoundActions.smallBlind, false);
 	}
 
-	playersStillInWhoHaveBetThisRound() {
-		return this.playersInHand().filter(x => x.lastAction !== PokerPlayer.RoundActions.none);
+	haveAllPlayersActedThisRound() {
+		return this.playersStillInGame().reduce((p, c) => c && p.lastAction !== PokerPlayer.RoundActions.none, true);
 	}
 
-	playersWhoHaveBetThisRound()  {
-		return this.playersInHandIncludingAllIn().filter(x => PokerPlayer.isBettingAction(x.lastAction));
+	haveAnyBetsBeenMadeThisRound() {
+		return this.currentPlayers().reduce((p, c) => p + c.totalBetsInRound(), 0)  > 0;
 	}
 
-	playersStillInWhoHaveBetThisRoundExcluding(player)  {
-		return this.playersStillInWhoHaveBetThisRound().filter(x => x !== player);
-	}
-	
-	numPlayersLeftToJoin() {
-		return this.playersStillToJoin().length;
+	// big blind can be missed after players bust out (start > 2 players, down to 2)
+	isBigBlindInGame() {
+		return this.playersStillInGame().reduce((p, c) => p ||  c.position === this.bigBlindPosition(), false);
 	}
 
-	playerWithID(pID) {
-		return this.players.filter(x => x.playerID === pID)[0];
+	hasBigBlindBeenPlayed() {
+		return this.playersStillInGame().reduce((p, c) => p || c.lastAction === PokerPlayer.RoundActions.bigBlind, false);
 	}
 
-	positionsStillInHand() {
-		const posArr= [];
-		for (const p of this.playersInHand()) {
-			posArr.push(p.position);
+	isAnyPlayerAllIn() {
+		return this.playersSortedByTotalBetsInRound().reduce((p, c) => p || c.stake === 0, false);
+	}
+
+	isComplete() {
+		return PokerGame.CompleteStates.includes(this.state);
+	}
+
+	isEveryPlayerButCurrentAllIn() {
+		return this.playersInHand()
+			.filter(x => x.position !== this.currentPosition)
+			.reduce((p, c) => p && x.stake === 0, true);
+	}
+
+	isInProgress() {
+		return PokerGame.InProgressStates.includes(this.state);
+	}
+
+	isInviting() {
+		return PokerGame.InvitingStates.includes(this.state);
+	}
+
+	isRoundOver() {
+		if (! this.haveAllPlayersActedThisRound()) {
+			return false;
 		}
-		return posArr;
-	}
+		if (this.didPlayersCheckAround()) {
+			return true;
+		}
+		if (this.allBetsEqual()) {
+			return true;
+		}
 
-	playersStillInGame() {
-		return this.currentPlayers().filter(x => x.gameState === PokerPlayer.PlayerHandStates.alive || x.gameState === PokerPlayer.PlayerHandStates.winner)
-	}
-
-	playersOutOfGame() {
-		return this.currentPlayers().filter(x => x.gameState === PokerPlayer.PlayerHandStates.busted);
-	}
-
-	lastPosition() { // really last position, not modulo folded players etc
-		return (this.currentPosition + this.currentPlayers().length - 1) % this.currentPlayers().length;
-	}
-
-	playerAtCurrentPosition() {
-		return this.currentPlayers()[this.currentPosition];
-	}
-
-	playerAtLastPosition() {
-		return this.currentPlayers()[this.lastPosition];
+		if (this.playersInHandIncludingAllIn().length !== 2 || this.lastBettingPlayer() === null) {
+			return this.playersInHand().length === 1 ? this.allBetsEqualAfterBettingAround() : this.allBetsEqualForPlayersNotAllIn();
+		}
+		return false;
 	}
 
 	lastBettingPlayer() {
@@ -306,117 +360,28 @@ class PokerGame extends BoundMethodsObject {
 				done = true;
 			}
 		} while (! done)
-		
+
 		return lbp;
 	}
 
-	haveAllPlayersActedThisRound() {
-		return this.playersStillInGame().reduce((p, c) => c && p.lastAction !== PokerPlayer.RoundActions.none, true);
+	lastPosition() { // really last position, not modulo folded players etc
+		return (this.currentPosition + this.currentPlayers().length - 1) % this.currentPlayers().length;
 	}
 
-	didPlayersCheckAround() {
-		return this.playersStillInGame().reduce((p, c) => c && p.lastAction === PokerPlayer.RoundActions.check, true);
-	}
-	
-	// blinds follow button, which means they may end up in an empty seat
-	smallBlindPositon() {
-		let offset = this.currentPlayers().length > 2 ? 1 : 0;
-		return (this.buttonPosition + offset) % this.currentPlayers().length;
+	maxBetTotal() {
+		const p = this.playersSortedByTotalBetsInRound();
+		return p[p.length - 1].totalBetsInRound();
 	}
 
-	hasSmallBlindBeenPlayed() {
-		return this.playersStillInGame()
-			.reduce((p, c) => c || p.lastAction === PokerPlayer.RoundActions.smallBlind, false);
+	maxBetTotalInPot(potIndex) {
+		const p = this.playersSortedByTotalBetsInRoundAndPot(potIndex);
+		return p[p.length - 1].totalBetsInPotsInRound[potIndex];
 	}
 
-	bigBlindPosition() {
-		return (this.buttonPosition + (this.currentPlayers().length > 2 ? 2 : 1)) % this.currentPlayers().length;
+	minBetTotal() {
+		return this.playersSortedByTotalBetsInRound()[0].totalBetsInRound;
 	}
 
-	// big blind can be missed after players bust out (start > 2 players, down to 2)
-	isBigBlindInGame() {
-		return this.playersStillInGame().reduce((p, c) =>p ||  c.position === this.bigBlindPosition(), false);
-	}
-
-	hasBigBlindBeenPlayed() {
-		return this.playersStillInGame().reduce((p, c) => p || c.lastAction === PokerPlayer.RoundActions.bigBlind, false);
-	}
-
-	nextPosition() {
-		const cp = this.currentPosition;
-		let np = cp;
-		let done = false;
-
-		do {
-			np  = (np + 1) % this.currentPlayers().length
-			if (np !== cp) {
-				const player = this.currentPlayers()[np];
-				done = player.handState === PokerPlayer.PlayerGameStates.playing && player.stake > 0;
-			}
-			else {  // back to the original position
-				done = true;
-			}
-			
-		} while (! done);
-
-		return np;
-	}
-
-	goToNextPosition() {
-		this.currentPosition = this.nextPosition();
-	}
-	
-	// "simplified button"  - will move to next available seat.  Blinds may be missed
-	nextButtonPosition() {
-		const cp = this.buttonPosition;
-		let np = cp;
-		let done = false;
-
-		do {
-			np  = (np + 1) % this.currentPlayers().length;
-			if (np !== cp) {
-				const player = this.currentPlayers()[np];
-				done = player.gameState === PokerPlayer.PlayerGameStates.alive;
-			}
-			else {  // back to the original position
-				done = true
-			}
-		} while (! done);
-
-		this.buttonPosition = np;
-	}
-	
-	smallBlind() {
-		return PokerGame.SMALL_BLINDS[Math.min(this.handNumber, PokerGame.SMALL_BLINDS.length - 1)];
-	}
-
-	bigBlind() {
-		return 2 * this.smallBlind();
-	}
-
-	// only counts players who have bet something
-	playersSortedByTotalBetsInRound()  {
-		return this.currentPlayers()
-			.filter(x => x.totalBetsInRound() > 0)
-			.sort((p1, p2) => p1.totalBetsInRound() - p2.totalBetsInRound());
-	}
-
-	playersSortedByTotalBetsInRoundAndPot(potIndex) {
-		return this.playersInPots()[potIndex]
-			.filter(x => x.totalBetsInPotsInRound[potIndex] > 0 )
-			.sort((p1, p2) => p1.totalBetsInRound() - p2.totalBetsInRound());
-	}
-
-	isAnyPlayerAllIn() {
-		return this.playersSortedByTotalBetsInRound().reduce((p, c) => p || c.stake === 0, false);
-	}
-
-	isEveryPlayerButCurrentAllIn() {
-		return this.playersInHand()
-			.filter(x => x.position !== this.currentPosition)
-			.reduce((p, c) => p && x.stake === 0, true);
-	}
-	
 	minimumBet() {
 		//let mb = 0;
 		//for (let i = 0; i < this.pots.length; ++i) {
@@ -425,7 +390,7 @@ class PokerGame extends BoundMethodsObject {
 		return this.pots.reduce((p, c, i) => p + this.minimumBetInPot(i), 0);
 		//return mb;
 	}
-	
+
 	minimumBetInPot(potIndex) {
 		let minBet = this.bigBlind();
 		if (! this.isInProgress()) {
@@ -438,7 +403,7 @@ class PokerGame extends BoundMethodsObject {
 		let matchBet = this.maxBetTotalInPot(potIndex);
 		// bets have been made but none in this pot
 		if (matchBet === 0 && ! PokerPlayer.isBettingAction(this.playerAtCurrentPosition.lastAction)) {
-			
+
 			// if bets have been made in the pots above this one, then since
 			// this pot has no bets we can ignore it
 			let upperMinBets = 0;
@@ -468,95 +433,152 @@ class PokerGame extends BoundMethodsObject {
 		}
 		return matchBet - this.playerAtCurrentPosition().totalBetsInPotsInRound[potIndex];
 	}
-	
+
 	minimumRaise() {
 		let maxLastBet = Math.max(this.currentPlayers().map(x => x.currentBet));
 		return maxLastBet > 0 ? 2 * maxLastBet : 2 * this.bigBlind();
 	}
-	
+
+	// "simplified button"  - will move to next available seat.  Blinds may be missed
+	nextButtonPosition() {
+		const cp = this.buttonPosition;
+		let np = cp;
+		let done = false;
+
+		do {
+			np  = (np + 1) % this.currentPlayers().length;
+			if (np !== cp) {
+				const player = this.currentPlayers()[np];
+				done = player.gameState === PokerPlayer.PlayerGameStates.alive;
+			}
+			else {  // back to the original position
+				done = true
+			}
+		} while (! done);
+
+		this.buttonPosition = np;
+	}
+
+	nextPosition() {
+		const cp = this.currentPosition;
+		let np = cp;
+		let done = false;
+
+		do {
+			np  = (np + 1) % this.currentPlayers().length;
+			debugLog(this.currentPlayers());
+			if (np !== cp) {
+				const player = this.currentPlayers()[np];
+				done = player.handState === PokerPlayer.PlayerGameStates.playing && player.stake > 0;
+			}
+			else {  // back to the original position
+				done = true;
+			}
+
+		} while (! done);
+
+		return np;
+	}
+
+	numPlayersLeftToJoin() {
+		return this.playersStillToJoin().length;
+	}
+
+	playerAtCurrentPosition() {
+		return this.currentPlayers()[this.currentPosition];
+	}
+
+	playerAtLastPosition() {
+		return this.currentPlayers()[this.lastPosition];
+	}
+
+	playersInPots() {
+		const pip  = [];
+		for (const pot of this.pots) {
+			pip.push(
+				pot.playersInPot.filter(x => this.playerWithID(x)).map(x => this.playerWithID(x))
+			);
+		}
+		return pip;
+	}
+
+	playersInBestHandOrder() {
+		return this.currentPlayers().sort(this.compareBestHandsForPlayers);
+	}
+
+	playersInHand() {
+		return this.playersInHandIncludingAllIn().filter(x => x.stake > 0);
+	}
+
+	playersInHandIncludingAllIn() {
+		return this.currentPlayers().filter(x => x.handState === PokerPlayer.PlayerHandStates.playing && ! x.wentAllInPreviousRound());
+	}
+
+	playersOutOfGame() {
+		return this.currentPlayers().filter(x => x.gameState === PokerPlayer.PlayerHandStates.busted);
+	}
+
+	// only counts players who have bet something
+	playersSortedByTotalBetsInRound()  {
+		return this.currentPlayers()
+			.filter(x => x.totalBetsInRound() > 0)
+			.sort((p1, p2) => p1.totalBetsInRound() - p2.totalBetsInRound());
+	}
+
+	playersSortedByTotalBetsInRoundAndPot(potIndex) {
+		return this.playersInPots()[potIndex]
+			.filter(x => x.totalBetsInPotsInRound[potIndex] > 0 )
+			.sort((p1, p2) => p1.totalBetsInRound() - p2.totalBetsInRound());
+	}
+
+	playersStillInGame() {
+		return this.currentPlayers().filter(x => x.gameState === PokerPlayer.PlayerHandStates.alive || x.gameState === PokerPlayer.PlayerHandStates.winner)
+	}
+
+	playersStillInWhoHaveBetThisRound() {
+		return this.playersInHand().filter(x => x.lastAction !== PokerPlayer.RoundActions.none);
+	}
+
+	playersStillInWhoHaveBetThisRoundExcluding(player)  {
+		return this.playersStillInWhoHaveBetThisRound().filter(x => x !== player);
+	}
+
+	playersStillToJoin() {
+		return this.players.filter(x => x.gameState === PokerPlayer.PlayerGameStates.invitedNotAccepted);
+	}
+
+	playersWhoHaveBetThisRound()  {
+		return this.playersInHandIncludingAllIn().filter(x => PokerPlayer.isBettingAction(x.lastAction));
+	}
+
+	playerWithID(pID) {
+		return this.players.filter(x => x.playerID === pID)[0];
+	}
+
+	positionsStillInHand() {
+		const posArr= [];
+		for (const p of this.playersInHand()) {
+			posArr.push(p.position);
+		}
+		return posArr;
+	}
+
+	potsWithPlayer(player) {
+		return this.pots.filter(x => x.playersInPot.includes(player.playerID));
+	}
+
 	raisePlus() {
 		return this.minimumRaise() + this.minimumBet();
 	}
-	
-	allBetsEqual() {
-		let pihiacnt = this.playersInHandIncludingAllIn().length;
-		if (pihiacnt <= 0) {
-			return true;
-		}
-		
-		let p0 = this.playersInHandIncludingAllIn()[0];
-		let b0 = p0.totalBetsInRound();
-		for (let i = 1; i < pihiacnt; ++i) {
-			const p = this.playersInHandIncludingAllIn()[i];
-			if (p.totalBetsInRound() === b0) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	allBetsEqualAfterBettingAround() {
-		for(let i = 0; i < this.pots.length; ++i) {
-			const pot = this.pots[i];
-			let b0 = this.playerWithID(pot.playersInPot[0]).totalBetsInPotsInRound[i];
-			for (let j = 1; j < this.playersInPots()[i].length; ++j) {
-				let bi = this.playersInPots()[i][j].totalBetsInPotsInRound[i];
-				if (bi !== b0) {
-					return false;
-				}
-			}
-		}
-		return true;
-	}
-	
-	allBetsEqualForPlayersNotAllIn() {
-		const pihcnt = this.playersInHand().length;
-		if (pihcnt <= 0) {
-			return true;
-		}
-		
-		const b0 = this.playersInHand()[0].totalBetsInRound();
-		for (let i = 1; i < pihcnt; ++i) {
-			if (this.playersInHand()[i].totalBetsInRound() !== b0) {
-				return false;
-			}
-		}
-		return true;
-	}
-	
-	isRoundOver() {
-		if (! this.haveAllPlayersActedThisRound()) {
-			return false;
-		}
-		if (this.didPlayersCheckAround()) {
-			return true;
-		}
-		if (this.allBetsEqual()) {
-			return true;
-		}
 
-		if (this.playersInHandIncludingAllIn().length !== 2 || this.lastBettingPlayer() === null) {
-			return this.playersInHand().length === 1 ? this.allBetsEqualAfterBettingAround() : this.allBetsEqualForPlayersNotAllIn();
-		}
-		return false;
-	}
-	
-	maxBetTotal() {
-		const p = this.playersSortedByTotalBetsInRound();
-		return p[p.length - 1].totalBetsInRound();
+	smallBlind() {
+		return PokerGame.SmallBlinds[Math.min(this.handNumber, PokerGame.SmallBlinds.length - 1)];
 	}
 
-	maxBetTotalInPot(potIndex) {
-		const p = this.playersSortedByTotalBetsInRoundAndPot(potIndex);
-		return p[p.length - 1].totalBetsInPotsInRound[potIndex];
-	}
-
-	minBetTotal() {
-		return this.playersSortedByTotalBetsInRound()[0].totalBetsInRound;
-	}
-	
-	haveAnyBetsBeenMadeThisRound() {
-		return this.currentPlayers().reduce((p, c) => p + c.totalBetsInRound(), 0)  > 0;
+	// blinds follow button, which means they may end up in an empty seat
+	smallBlindPositon() {
+		let offset = this.currentPlayers().length > 2 ? 1 : 0;
+		return (this.buttonPosition + offset) % this.currentPlayers().length;
 	}
 
 	toJSON()  {
@@ -589,26 +611,6 @@ class PokerGame extends BoundMethodsObject {
 		}
 		return ts;
 	}
-	
-	_compareBestHandsForPlayers(p1, p2) {
-		const bh1 = this.bestHandForPlayer(p1);
-		const bh2 = this.bestHandForPlayer(p2);
-		if (bh1 === null) {
-			return bh2 !== null  // nulls are equals
-		}
-		if (bh2 !== null) {
-			return bh1 - bh2;
-		}
-		return false
-	}
-
-	bestHandForPlayer(player) {
-		return PokerGame.bestHandFromCards(this.communityCards, player.currentCards);
-	}
-
-	playersInBestHandOrder() {
-		return this.currentPlayers().sort(this._compareBestHandsForPlayers);
-	}
 
 	winningOrSplitPlayers() {
 		if (this.state !== PokerGame.States.handOver) {
@@ -639,7 +641,7 @@ class PokerGame extends BoundMethodsObject {
 			.filter(x => this.playerWithID(x) != null )
 			.map(x => this.playerWithID(x))
 			.filter(x => x.handState !== PokerPlayer.PlayerHandStates.folded)
-			.sort(this._compareBestHandsForPlayers);
+			.sort(this.compareBestHandsForPlayers);
 
 		const bhp = pInPArr[pInPArr.length - 1];
 		if (! bhp) {
@@ -661,156 +663,6 @@ class PokerGame extends BoundMethodsObject {
 			this.playersStillInGame().filter(x => x.gameState === PokerPlayer.PlayerGameStates.winner)[0] :
 			null;
 	}
-
-	/*
-	init?( json: [String:Any] ) {
-		guard let gameDict: [String: AnyObject] = json[KEY_GAME_MODEL] as? [String: AnyObject] else {
-			return null
-		}
-		guard let gID = gameDict[KEY_GAME_ID] as? String else {
-			return null
-		}
-		guard let gUID = UUID(uuidString: gID) else {
-			return null
-		}
-		
-		this.gameID = gUID
-		this.stateID = UUID(uuidString: gameDict[KEY_GAME_STATE_ID] as? String ?? "") ?? UUID()
-		this.authToken = gameDict[KEY_GAME_SERVER_AUTH_TOKEN] as? String
-		this.gameToken = gameDict[KEY_GAME_TOKEN] as? String ?? GAME_TOKENS[0]
-		this.state = GameStates(rawValue: gameDict[KEY_GAME_STATE] as? String ?? "none") ?? .none
-		this.deck = PokerDeck(json: gameDict[KEY_GAME_DECK] as? [String:Any] ?? [:]) ?? PokerDeck()
-		
-		if let pj = gameDict[KEY_GAME_POTS] as? [[String:Any]] {
-			if pj.length > 0 {
-				this.pots.removeAll()
-				for p in pj {
-					if let pot = Pot(json: p) {
-						this.pots.append(pot)
-					}
-				}
-			}
-		}
-		
-		this.currentPosition = gameDict[KEY_GAME_CURRENT_POSITION] as? Int ?? NSNotFound
-		this.buttonPosition = gameDict[KEY_GAME_BUTTON_POSITION] as? Int ?? NSNotFound
-		this.handNumber = gameDict[KEY_GAME_ROUND] as? Int ?? 0
-		
-		if let cCards = gameDict[KEY_GAME_COMMUNITY_CARDS] as? [[String:Any]] {
-			for ccDict in cCards {
-				if let card = StandardCard(json: ccDict) {
-					this.communityCards.append(card)
-				}
-			}
-		}
-		if let cPlayers = gameDict[KEY_GAME_PLAYERS] as? [[String:Any]] {
-			for cpDict in cPlayers {
-				if let p = Player(json: cpDict) {
-					this.players.append(p)
-				}
-			}
-		}
-	}
-	*/
-
-/*
-	// use this to rebuild game object to a previous state without creating a new object
-	func refresh( json: [String:Any] ) {
-		
-		guard let gameDict: [String: AnyObject] = json[KEY_GAME_MODEL] as? [String: AnyObject] else {
-			NSLog("GameModel.refresh - Bad JSON")
-			return
-		}
-		guard let gID = gameDict[KEY_GAME_ID] as? String else {
-			NSLog("GameModel.refresh - Bad Game ID")
-			return
-		}
-		guard let gUID = UUID(uuidString: gID) else {
-			NSLog("GameModel.refresh - Bad Game ID")
-			return
-		}
-			
-		// refresh local summary list
-		/STAR
-		let gameList = UserDefaults.standard.array(forKey: USER_DEFAULT_GAME_LIST) as? [[String:Any]] ?? [[String:Any]]()
-		//gameSummary
-		var idx = NSNotFound
-		for (gsIdx, gs) in gameList.enumerated() {
-			guard let gsGID = gs[KEY_GAME_ID] as? String else {
-				continue
-			}
-			if gsGID == gID {
-				idx = gsIdx
-				break
-			}
-		}
-		// no local summary
-		if idx == NSNotFound {
-			
-		}
-		 STAR/
-		
-		if gUID != this.gameID {
-			NSLog("GameModel.refresh - Game IDs do not match")
-			return
-		}
-			
-		this.authToken = gameDict[KEY_GAME_SERVER_AUTH_TOKEN] as? String
-		if let gt = gameDict[KEY_GAME_TOKEN] as? String {
-			this.gameToken = gt
-		}
-		
-		if let sid = gameDict[KEY_GAME_STATE_ID] as? String {
-			this.stateID = UUID(uuidString: sid) ?? UUID()
-		}
-		
-		// replace values where they are valid, otherwise ignore
-		if let gsj = gameDict[KEY_GAME_STATE] as? String {
-			if let gs = GameStates(rawValue: gsj) { this.state = gs }
-		}
-		if let dj = gameDict[KEY_GAME_DECK] as? [String:Any] {
-			if let d = PokerDeck(json: dj) { this.deck = d }
-		}
-	
-		if let pj = gameDict[KEY_GAME_POTS] as? [[String:Any]] {
-			if pj.length > 0 {
-				this.pots.removeAll()
-				for p in pj {
-					if let pot = Pot(json: p) {
-						this.pots.append(pot)
-					}
-				}
-			}
-		}
-
-		if let cp = gameDict[KEY_GAME_CURRENT_POSITION] as? Int {
-			this.currentPosition = cp
-		}
-		if let bp = gameDict[KEY_GAME_BUTTON_POSITION] as? Int {
-			this.buttonPosition = bp
-		}
-		if let hn = gameDict[KEY_GAME_ROUND] as? Int {
-			this.handNumber = hn
-		}
-		if let cCards = gameDict[KEY_GAME_COMMUNITY_CARDS] as? [[String:Any]] {
-			this.communityCards.removeAll()  // safe to replace objects
-			for ccDict in cCards {
-				if let card = StandardCard(json: ccDict) {
-					this.communityCards.append(card)
-				}
-			}
-		}
-		if let cPlayers = gameDict[KEY_GAME_PLAYERS] as? [[String:Any]] {
-			for (pIndex, p) in this.players.enumerated() {
-				if pIndex < cPlayers.length {
-					let cpDict = cPlayers[pIndex]
-					p.refresh(json: cpDict)
-				}
-			}
-		}
-	}
-*/
-	
 }
 
-export {PokerGame}
+export {PokerGame};

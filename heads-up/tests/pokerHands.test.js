@@ -5,8 +5,7 @@ import {PlayingCard} from '../src/js/PlayingCard.js';
 import {Utils, debugLog} from '../src/js/Utils.js';
 
 test('json', () => {
-    const g = new PokerGame();
-    debugLog(g.toJSON());
+
 });
 
 

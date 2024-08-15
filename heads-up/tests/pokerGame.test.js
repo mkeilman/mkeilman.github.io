@@ -21,3 +21,15 @@ test('shuffle up', () => {
         expect(p.currentCards.length).toBe(2);
     }
 });
+
+test('flop', () => {
+    const g = new PokerGame();
+    const mgr = new GameManager(g);
+    expect(() => {mgr.flop();}).toThrowError('Cannot flop before initial deal');
+    mgr.shuffleUpAndDeal();
+    debugLog('P',  g.playersStillInGame());
+    for (const p of g.playersStillInGame()) {
+        debugLog('P', p);
+    }
+    //mgr.flop();
+});

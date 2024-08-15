@@ -12,6 +12,7 @@ class GameManager  {
 	
 	shuffleUpAndDeal() {
 		function _setupActivePlayer(p) {
+			debugLog('S ACTIVE', p);
 			p.handState = PokerPlayer.PlayerGameStates.playing;
 			p.lastAction = PokerPlayer.RoundActions.none;
 			p.hasButton = p.position === this.game.buttonPosition;
@@ -25,6 +26,7 @@ class GameManager  {
 		}
 		
 		function _setupInactivePlayer(p) {
+			debugLog('S INACTIVE', p);
 			p.handState = PokerPlayer.PlayerGameStates.none;
 			p.lastAction = PokerPlayer.RoundActions.none;
 			p.hasButton = false;
@@ -50,6 +52,7 @@ class GameManager  {
 		}
 		
 		for (const p of this.game.playersStillInGame()) {
+			debugLog(this.game.playersStillInGame());
 			_setupActivePlayer(p);
 		}
 		
@@ -182,6 +185,10 @@ class GameManager  {
 	}
 	
 	flop(doAdvancePosition= true) {
+
+		if (this.game.state !== PokerGame.States.preFlop) {
+			throw new Error(`Cannot flop before initial deal; state=${this.game.state}`);
+		}
 
 		if (this.game.communityCards.length > 0) {
 			return false;
