@@ -13,12 +13,13 @@ class GameManager  extends BoundMethodsObject {
 	}
 	
 	shuffleUpAndDeal() {
+		const self = this;
 		function _setupActivePlayer(p) {
-			p.handState = PokerPlayer.PlayerGameStates.playing;
+			p.handState = PokerPlayer.PlayerHandStates.playing;
 			p.lastAction = PokerPlayer.RoundActions.none;
-			p.hasButton = p.position === this.game.buttonPosition;
-			p.isSmallBlind = p.position === this.game.smallBlindPositon();
-			p.isBigBlind = p.position === this.game.bigBlindPosition();
+			p.hasButton = p.position === self.game.buttonPosition;
+			p.isSmallBlind = p.position === self.game.smallBlindPositon();
+			p.isBigBlind = p.position === self.game.bigBlindPosition();
 			p.currentBet = 0;
 			p.totalBetsInHand = 0;
 			p.currentBets[0] = 0;
@@ -27,26 +28,20 @@ class GameManager  extends BoundMethodsObject {
 		}
 		
 		function _setupInactivePlayer(p) {
-			p.handState = PokerPlayer.PlayerGameStates.none;
+			p.handState = PokerPlayer.PlayerHandStates.none;
 			p.lastAction = PokerPlayer.RoundActions.none;
 			p.hasButton = false;
 			p.isSmallBlind = false;
 			p.isBigBlind = false;
 			p.currentCards = [];
 		}
-		
-		const deck = this.game.deck;
-		if (deck === null) {
-			return
-		}
-		
-		deck.shuffle();
 
+		this.game.deck.shuffle();
 		if (this.game.state === PokerGame.States.ready) {
 			for (const p of this.game.playersStillInGame()) {
 				p.currentCards = [];
-				p.currentCards.push(deck.dealCard());
-				p.currentCards.push(deck.dealCard());
+				p.currentCards.push(this.game.deck.dealCard());
+				p.currentCards.push(this.game.deck.dealCard());
 			}
 			this.game.state = PokerGame.States.preFlop;
 		}
@@ -131,7 +126,7 @@ class GameManager  extends BoundMethodsObject {
 			return;
 		}
 			
-		// create side pot for the remaning players (unless only one remains)
+		// create side pot for the remaining players (unless only one remains)
 		if (this.game.playersInHand().length > 1) {
 			this.game.pots.push(
 				new PokerPot(0, this.game.playersInHand.map(x => x.playerID))
@@ -188,11 +183,10 @@ class GameManager  extends BoundMethodsObject {
 		d[`${PokerGame.States.preFlop}`] = 'flop';
 		d[`${PokerGame.States.preTurn}`] = 'turn';
 		d[`${PokerGame.States.preRiver}`] = 'river';
-		(this[d[this.game.state]] || (() => {}))();
+		(this[d[this.game.state]] || (() => {}))(doAdvancePosition);
 	}
 
 	flop(doAdvancePosition= true) {
-
 		if (this.game.state !== PokerGame.States.preFlop) {
 			throw new Error(`Cannot deal flop; state=${this.game.state}`);
 		}
@@ -206,7 +200,7 @@ class GameManager  extends BoundMethodsObject {
 		}
 		
 		for (let i = 1; i <= 3; ++i) {
-			const c = this.game.deck?.dealCard();
+			const c = this.game.deck.dealCard();
 			if (! c) {
 				return false;
 			}

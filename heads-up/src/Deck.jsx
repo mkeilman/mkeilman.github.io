@@ -10,8 +10,8 @@ const Deck = ({deck}) => {
   return (
       <>
           <p>
-              {d.cards.map((x, i) => (
-                  <Card card={x} key={i} ></Card>
+              {d.cards.map(x => (
+                  <Card card={x} key={x.toString()} ></Card>
               ))}
           </p>
       </>

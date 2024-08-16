@@ -143,6 +143,7 @@ class PokerGame extends BoundMethodsObject {
 		const d = json[PokerGame.KEY_GAME_MODEL];
 		const p = d[PokerGame.KEY_GAME_PLAYERS].map(x => PokerPlayer.fromJSON(x));
 		const g = new PokerGame(p.length);
+		g.players = p;
 		g.gameID = d[PokerGame.KEY_GAME_ID];
 		g.stateID = d[PokerGame.KEY_GAME_STATE_ID];
 		g.authToken = d[PokerGame.KEY_GAME_SERVER_AUTH_TOKEN];
@@ -513,7 +514,8 @@ class PokerGame extends BoundMethodsObject {
 	}
 
 	playersInHandIncludingAllIn() {
-		return this.currentPlayers().filter(x => x.handState === PokerPlayer.PlayerHandStates.playing && ! x.wentAllInPreviousRound());
+		return this.currentPlayers()
+			.filter(x => x.handState === PokerPlayer.PlayerHandStates.playing && ! x.wentAllInPreviousRound);
 	}
 
 	playersOutOfGame() {
@@ -535,7 +537,7 @@ class PokerGame extends BoundMethodsObject {
 
 	playersStillInGame() {
 		return this.currentPlayers()
-			.filter(x => x.gameState === PokerPlayer.PlayerHandStates.alive || x.gameState === PokerPlayer.PlayerHandStates.winner)
+			.filter(x => x.gameState === PokerPlayer.PlayerGameStates.alive || x.gameState === PokerPlayer.PlayerGameStates.winner)
 	}
 
 	playersStillInWhoHaveBetThisRound() {
