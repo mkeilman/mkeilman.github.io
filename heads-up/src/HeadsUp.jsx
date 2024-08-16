@@ -26,11 +26,6 @@ const HeadsUp = () => {
         setGame(g);
     };
 
-    const shuffle = () => {
-        mgr.game.deck.shuffle();
-        setGame(PokerGame.fromJSON(mgr.game.toJSON()));
-    };
-    
     return (
         <>
             <h1>Heads Up!</h1>

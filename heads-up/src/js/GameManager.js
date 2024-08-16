@@ -63,12 +63,12 @@ class GameManager  extends BoundMethodsObject {
 
 			let bet = 0;
 			if (p.isSmallBlind) {
-				bet = Math.min(this.game.smallBlind, p.stake);
+				bet = Math.min(this.game.smallBlind(), p.stake);
 				p.lastAction = PokerPlayer.RoundActions.smallBlind;
 			}
 
 			if (p.isBigBlind) {
-				bet = Math.min(this.game.bigBlind, p.stake);
+				bet = Math.min(this.game.bigBlind(), p.stake);
 				p.lastAction =  PokerPlayer.RoundActions.bigBlind;
 			}
 			
@@ -80,6 +80,7 @@ class GameManager  extends BoundMethodsObject {
 	
 	placeBlindBetForPlayer(bet, player) {
 
+		debugLog('BLIND BET', bet);
 		// build this before the bet is recorded
 		const coverArr = [];
 

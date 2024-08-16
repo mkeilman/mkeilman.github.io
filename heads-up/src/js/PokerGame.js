@@ -179,7 +179,7 @@ class PokerGame extends BoundMethodsObject {
 		this.deck = new PokerDeck(true);
 
 		this.state = PokerGame.States.new;
-		this.pots = [];
+		this.pots = [new PokerPot()];
 		this.communityCards = [];
 		this.players = [];
 		this.buttonPosition = 0;
