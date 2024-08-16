@@ -27,7 +27,7 @@ const HeadsUp = () => {
     };
 
     return (
-        <>
+        <div className="card-table">
             <h1>Heads Up!</h1>
             <button>New Game</button>
             <div>
@@ -42,7 +42,7 @@ const HeadsUp = () => {
             {mgr.game.players.map((x, i) => (
                 <Player player={x} key={x.playerID} isBot={i === 0}></Player>
             ))}
-        </>
+        </div>
     )
 };
 
