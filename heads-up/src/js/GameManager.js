@@ -184,7 +184,7 @@ class GameManager  {
 	flop(doAdvancePosition= true) {
 
 		if (this.game.state !== PokerGame.States.preFlop) {
-			throw new Error(`Cannot flop before initial deal; state=${this.game.state}`);
+			throw new Error(`Cannot deal flop; state=${this.game.state}`);
 		}
 
 		if (this.game.communityCards.length > 0) {
@@ -209,6 +209,10 @@ class GameManager  {
 	}
 
 	turn(doAdvancePosition= true)  {
+		if (this.game.state !== PokerGame.States.preTurn) {
+			throw new Error(`Cannot deal turn; state=${this.game.state}`);
+		}
+
 		if (this.game.communityCards.length !== 3) {
 			return false;
 		}
@@ -227,6 +231,10 @@ class GameManager  {
 	}
 
 	river(doAdvancePosition= true) {
+		if (this.game.state !== PokerGame.States.preRiver) {
+			throw new Error(`Cannot deal river; state=${this.game.state}`);
+		}
+
 		if (this.game.communityCards.length !== 4) {
 			return false;
 		}

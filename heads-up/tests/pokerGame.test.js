@@ -25,11 +25,38 @@ test('shuffle up', () => {
 test('flop', () => {
     const g = new PokerGame();
     const mgr = new GameManager(g);
-    expect(() => {mgr.flop();}).toThrowError('Cannot flop before initial deal');
+    expect(() => {mgr.flop();}).toThrowError();
     mgr.shuffleUpAndDeal();
-    debugLog('P',  g.players);
-    for (const p of g.playersStillInGame()) {
-        debugLog('P', p);
-    }
-    //mgr.flop();
+    mgr.flop();
+    expect(g.state).toBe(PokerGame.States.preTurn);
+    expect(g.communityCards.length).toBe(3);
 });
+
+test('turn', () => {
+    const g = new PokerGame();
+    const mgr = new GameManager(g);
+    ['flop', 'turn'].forEach(f => {
+        expect(() => {mgr[f]();}).toThrowError();
+    });
+    mgr.shuffleUpAndDeal();
+    mgr.flop();
+    mgr.turn();
+    expect(g.state).toBe(PokerGame.States.preRiver);
+    expect(g.communityCards.length).toBe(4);
+});
+
+test('river', () => {
+    const g = new PokerGame();
+    const mgr = new GameManager(g);
+    ['flop', 'turn', 'river'].forEach(f => {
+        expect(() => {mgr[f]();}).toThrowError();
+    });
+    mgr.shuffleUpAndDeal();
+    mgr.flop();
+    mgr.turn();
+    mgr.river();
+    expect(g.state).toBe(PokerGame.States.finalBets);
+    expect(g.communityCards.length).toBe(5);
+});
+
+

@@ -12,7 +12,7 @@ import {PokerDeck} from './PokerDeck.js';
 import {PokerHand} from './PokerHand.js';
 import {PokerPlayer} from './PokerPlayer.js';
 import {PokerPot} from './PokerPot.js';
-import {debugLog, Utils} from './Utils.js'
+import {Utils, debugLog} from './Utils.js'
 
 class PokerGame extends BoundMethodsObject {
 
@@ -185,8 +185,11 @@ class PokerGame extends BoundMethodsObject {
 		this.currentPosition = 0;
 		this.handNumber = 0;
 
-		for (let i = 1; i <= numPlayers; ++i) {
-			this.players.push(new PokerPlayer());
+		for (let i = 0; i < numPlayers; ++i) {
+			const p = new PokerPlayer();
+			p.gameState = PokerPlayer.PlayerGameStates.alive;
+			p.position = i;
+			this.players.push(p);
 		}
 		this.state = PokerGame.States.ready;
     }
@@ -466,7 +469,6 @@ class PokerGame extends BoundMethodsObject {
 
 		do {
 			np  = (np + 1) % this.currentPlayers().length;
-			debugLog(this.currentPlayers());
 			if (np !== cp) {
 				const player = this.currentPlayers()[np];
 				done = player.handState === PokerPlayer.PlayerGameStates.playing && player.stake > 0;
