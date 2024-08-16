@@ -80,7 +80,6 @@ class GameManager  extends BoundMethodsObject {
 	
 	placeBlindBetForPlayer(bet, player) {
 
-		debugLog('BLIND BET', bet);
 		// build this before the bet is recorded
 		const coverArr = [];
 
@@ -157,14 +156,14 @@ class GameManager  extends BoundMethodsObject {
 
 			// move extra from previous pot to newest pot
 			if (numPots > 1 && numPlayersIn > 1) {
-				this.game.pots[numPots-1].amount += kickBack;
-				this.game.pots[numPots-2].amount -= kickBack;
-				p.currentBets[numPots-1] += kickBack;
-				p.currentBets[numPots-2] -= kickBack;
-				p.totalBetsInPotsInRound[numPots-1] += kickBack;
-				p.totalBetsInPotsInRound[numPots-2] -= kickBack;
-				p.totalBetsInPotsInHand[numPots-1] += kickBack;
-				p.totalBetsInPotsInHand[numPots-2] -= kickBack;
+				this.game.pots[numPots - 1].amount += kickBack;
+				this.game.pots[numPots - 2].amount -= kickBack;
+				p.currentBets[numPots - 1] += kickBack;
+				p.currentBets[numPots - 2] -= kickBack;
+				p.totalBetsInPotsInRound[numPots - 1] += kickBack;
+				p.totalBetsInPotsInRound[numPots - 2] -= kickBack;
+				p.totalBetsInPotsInHand[numPots - 1] += kickBack;
+				p.totalBetsInPotsInHand[numPots - 2] -= kickBack;
 			}
 			else {
 				this.game.pots[0].amount -= kickBack;
