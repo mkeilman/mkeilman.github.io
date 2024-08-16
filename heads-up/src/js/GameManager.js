@@ -1,11 +1,13 @@
+import {BoundMethodsObject} from './BoundMethodsObject.js';
 import {PokerGame} from './PokerGame.js';
 import {PokerHand} from './PokerHand.js';
 import {PokerPlayer} from './PokerPlayer.js';
 import {PokerPot} from './PokerPot.js';
 import {Utils, debugLog} from './Utils.js';
 
-class GameManager  {
+class GameManager  extends BoundMethodsObject {
 	constructor(game) {
+		super();
 		this.game = game
 		this.lastGoodGameState = null;
 	}
@@ -142,8 +144,7 @@ class GameManager  {
 		}
 
 		numPots = this.game.pots.length;
-		
-		//debugPrint("All in, checking for side pots or kickbacks")
+
 		let playersIn = this.game.playersStillInWhoHaveBetThisRound();
 		let numPlayersIn = playersIn.length;
 		let moveToPot = false;
@@ -180,7 +181,16 @@ class GameManager  {
 			}
 		}
 	}
-	
+
+	nextDeal(doAdvancePosition=true) {
+		const d = {};
+		d[`${PokerGame.States.ready}`] = 'shuffleUpAndDeal';
+		d[`${PokerGame.States.preFlop}`] = 'flop';
+		d[`${PokerGame.States.preTurn}`] = 'turn';
+		d[`${PokerGame.States.preRiver}`] = 'river';
+		(this[d[this.game.state]] || (() => {}))();
+	}
+
 	flop(doAdvancePosition= true) {
 
 		if (this.game.state !== PokerGame.States.preFlop) {

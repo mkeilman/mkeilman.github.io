@@ -27,7 +27,8 @@ test('flop', () => {
     const mgr = new GameManager(g);
     ['flop'].forEach(f => {
         expect(() => {mgr[f]();}).toThrowError();
-    });    mgr.shuffleUpAndDeal();
+    });
+    mgr.shuffleUpAndDeal();
     mgr.flop();
     expect(g.state).toBe(PokerGame.States.preTurn);
     expect(g.communityCards.length).toBe(3);
@@ -60,4 +61,30 @@ test('river', () => {
     expect(g.communityCards.length).toBe(5);
 });
 
-
+test('all deals', () => {
+    const g = new PokerGame();
+    const mgr = new GameManager(g);
+    expect(g.state).toBe(PokerGame.States.ready);
+    // deal to players
+    mgr.nextDeal();
+    expect(g.state).toBe(PokerGame.States.preFlop);
+    for (const p of g.playersStillInGame()) {
+        expect(p.currentCards.length).toBe(2);
+    }
+    // flop
+    mgr.nextDeal();
+    expect(g.state).toBe(PokerGame.States.preTurn);
+    expect(g.communityCards.length).toBe(3);
+    // turn
+    mgr.nextDeal();
+    expect(g.state).toBe(PokerGame.States.preRiver);
+    expect(g.communityCards.length).toBe(4);
+    // river
+    mgr.nextDeal();
+    expect(g.state).toBe(PokerGame.States.finalBets);
+    expect(g.communityCards.length).toBe(5);
+    // does nothing
+    mgr.nextDeal();
+    expect(g.state).toBe(PokerGame.States.finalBets);
+    expect(g.communityCards.length).toBe(5);
+});
