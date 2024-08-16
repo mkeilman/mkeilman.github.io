@@ -25,8 +25,9 @@ test('shuffle up', () => {
 test('flop', () => {
     const g = new PokerGame();
     const mgr = new GameManager(g);
-    expect(() => {mgr.flop();}).toThrowError();
-    mgr.shuffleUpAndDeal();
+    ['flop'].forEach(f => {
+        expect(() => {mgr[f]();}).toThrowError();
+    });    mgr.shuffleUpAndDeal();
     mgr.flop();
     expect(g.state).toBe(PokerGame.States.preTurn);
     expect(g.communityCards.length).toBe(3);
