@@ -1,6 +1,10 @@
 import {Utils} from './Utils.js';
 
 class BoundMethodsObject {
+    static poop() {
+
+    }
+
     constructor() {
         Object.getOwnPropertyNames(this.constructor.prototype)
             .filter(x => x !== 'constructor')

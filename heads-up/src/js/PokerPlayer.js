@@ -111,7 +111,7 @@ class PokerPlayer extends BoundMethodsObject {
             pArr.push(p);
         }
 		return pArr;
-	}
+   }
 
     static fromJSON(json) {
         const d = json[PokerPlayer.KEY_PLAYER];
@@ -142,6 +142,10 @@ class PokerPlayer extends BoundMethodsObject {
             PokerPlayer.PokerFaces.none :
             PokerPlayer.ValidFaces[index % PokerPlayer.ValidFaces.length];
 	}
+
+    static includes(players, player) {
+        return players.map(x => x.playerID).includes(player.playerID);
+    }
 
     constructor(pid = null) {
         super();

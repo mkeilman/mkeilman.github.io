@@ -28,7 +28,14 @@ const HeadsUp = () => {
 
     return (
         <div className="card-table">
-            <h1>Heads Up!</h1>
+            <div className="card-table-header">
+                <span className="card-table-header-blind-value">{mgr.game.smallBlind()}</span>
+                <span className="card-table-header-blind-value">{mgr.game.bigBlind()}</span>
+            </div>
+            <div className="card-table-header">
+                <span className="card-table-header-blind-label">Small Blind</span>
+                <span className="card-table-header-blind-label">Big Blind</span>
+            </div>
             <button>New Game</button>
             <div>
                 bets

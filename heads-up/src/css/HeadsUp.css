@@ -5,9 +5,27 @@
   text-align: center;
 }
 
+:root {
+  --blind-label: #EEBCFF;
+}
+
 .card-table {
   background-color: #008040;
 }
+
+.card-table-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-table-header-blind-label {
+  color: var(--blind-label);
+}
+
+.card-table-header-blind-value {
+  color: white;
+}
+
 
 .logo {
   height: 6em;

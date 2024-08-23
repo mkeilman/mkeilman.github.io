@@ -6,9 +6,81 @@ import {PokerPot} from './PokerPot.js';
 import {Utils, debugLog} from './Utils.js';
 
 class GameManager  extends BoundMethodsObject {
+	static BetActions = {
+		betAllIn: 'betAllIn',
+		call:  'call',
+		betCancel: 'betCancel',
+		minBet: 'minBet',
+		minBetPlus: 'minBetPlus',
+		raise: 'raise',
+	}
+
+	static BetActionStrings = {
+		betAllIn: 'All In',
+		call:  'Call',
+		betCancel: 'Cancel',
+		minBet: '',
+		minBetPlus: '',
+		raise: 'Raise',
+	}
+
+	static RaiseActions = {
+		raiseAllIn: 'raiseAllIn',
+		raiseCancel: 'raiseCancel',
+		minRaise: 'minRaise',
+		minRaisePlus: 'minRaisePlus',
+	}
+
+	static RaiseActionStrings = {
+		raiseAllIn: 'All In',
+		raiseCancel: 'Cancel',
+		minRaise: '',
+		minRaisePlus: '',
+	}
+
+	static GameActions = {
+		none: 'none',
+		newGame: 'newGame',
+		deal: 'deal',
+		flop: 'flop',
+		turn: 'turn',
+		river: 'river',
+		finish: 'finish',
+		show: 'show',
+		next: 'next',
+		bet: 'bet',
+		call: 'call',
+		raise: 'raise',
+		allIn: 'allIn',
+		check: 'check',
+		fold: 'fold',
+	};
+
+	static ActionStrings = {
+		none: '',
+		newGame: 'New Game',
+		deal: 'Deal',
+		flop: 'Flop',
+		turn: 'Turn',
+		river: 'River',
+		finish: 'Finish',
+		show: 'Show Hands',
+		next: 'Next Hand',
+		bet: 'Bet',
+		call: 'Call',
+		raise: 'Raise',
+		allIn: 'All In',
+		check: 'Check',
+		fold: 'Fold',
+	};
+
 	constructor(game) {
 		super();
 		this.game = game
+		this.me = game.players[1];
+		this.actions = {};
+		this.betActions = {};
+		this.raiseActions = {};
 		this.lastGoodGameState = null;
 	}
 	
@@ -77,7 +149,182 @@ class GameManager  extends BoundMethodsObject {
 			}
 		}
 	}
-	
+
+	determineBet(action) {
+		if (Object.keys(GameManager.BetActions).includes(action)) {
+			if (action === GameManager.BetActions.call) {
+				this.me.lastAction = PokerPlayer.RoundActions.call;
+				return Math.min(this.game.minimumBet(), this.me.stake);
+			}
+
+			this.me.lastAction = PokerPlayer.RoundActions.bet;
+			if (action === GameManager.BetActions.minBet) {
+				return Math.min(this.game.minimumBet(), this.me.stake);
+			}
+
+			if (action === GameManager.BetActions.minBetPlus) {
+				return Math.min(2 * this.game.minimumBet(), this.me.stake);
+			}
+
+			if (action === GameManager.BetActions.betAllIn) {
+				return this.me.stake;
+			}
+		}
+
+		this.me.lastAction = PokerPlayer.RoundActions.raise;
+		if (action === GameManager.RaiseActions.minRaise) {
+			return Math.min(this.game.minimumRaise(), this.me.stake);
+		}
+		if (action === GameManager.RaiseActions.minRaisePlus) {
+			return Math.min(this.game.raisePlus(), this.me.stake);
+		}
+		return this.me.stake;
+	}
+
+	goAllIn() {
+		let didAddPot = false;
+		// create side pot for the remaining players (unless only one remains)
+		// but only if next player cannot cover
+		if (this.game.playersInHand().length > 1) {
+			this.game.pots.push(
+				new PokerPot(0, this.game.playersInHand().map(x => x.playerID))
+			);
+			for (p of this.game.currentPlayers()) {
+				p.currentBets.push(0);
+				p.totalBetsInPotsInRound.push(0);
+				p.totalBetsInPotsInHand.push(0);
+			}
+			didAddPot = true;
+		}
+
+		const numPots = this.game.pots.length;
+		for (const player of this.game.playersWhoHaveBetThisRound().filter(x => ! x.equals(this.game.me))) {
+			if (player.totalBetsInRound() <= this.me.totalBetsInRound()) {
+				continue;
+			}
+
+			const kickBack = player.currentBet - this.me.totalBetsInRound();
+
+			// move extra from previous pot to newest pot
+			if (numPots > 1 && didAddPot) {
+				this.game.pots[numPots - 1].amount += kickBack;
+				this.game.pots[numPots - 2].amount -= kickBack;
+				player.currentBets[numPots - 1] += kickBack;
+				player.currentBets[numPots - 2] -= kickBack;
+				player.totalBetsInPotsInRound[numPots - 1] += kickBack;
+				player.totalBetsInPotsInRound[numPots - 2] -= kickBack;
+				player.totalBetsInPotsInHand[numPots - 1] += kickBack;
+				player.totalBetsInPotsInHand[numPots - 2] -= kickBack;
+			}
+			else {
+				let kb = kickBack;
+				for (let i = 1; i <= this.game.pots.length; ++i) {
+					let j = this.game.pots.length - i;
+					if (kb > 0 && PokerPlayer.includes(this.game.playersInPots[j], player)) {
+						const potKick = kb > player.currentBets[j] ? player.currentBets[j] : kb;
+						this.game.pots[j].amount -= potKick;
+						player.totalBetsInPotsInHand[j] -= potKick;
+						player.totalBetsInPotsInRound[j] -= potKick;
+						player.currentBets[j] -= potKick;
+						kb -= potKick;
+					}
+				}
+				player.lastBetInRound -= kickBack;
+				player.stake += kickBack;
+				player.currentBet -= kickBack;
+			}
+
+			// if, after all that, the player has a stake again, they can be in every pot
+			if (player.stake > 0) {
+				for (const p of this.game.pots) {
+					p.addPlayer(player);
+				}
+			}
+		}
+	}
+
+	placeBet(action) {
+
+		const bet = this.determineBet(action);
+
+		// build this before the bet is recorded
+		const coverArr = [];
+		for (let i = 0; i < this.game.pots.length; ++i) {
+			coverArr.push(this.game.minimumBetInPot(i));
+		}
+
+		this.myLastStake = this.me.stake;;
+		this.me.stake -= bet;
+		this.me.currentBet = bet;
+		this.me.lastBetInRound = bet;
+		this.me.totalBetsInHand += bet;
+
+		let numPots = this.game.pots.length;
+		let didAddPot = false;
+
+		if (numPots > 1) {
+			let betAmount = bet;
+			for (let i = 0; i < this.game.pots.length - 1; ++i) {
+				const pot = this.game.pots[i];
+				let toCover = coverArr[i];
+				if (betAmount >= toCover) {
+					pot.amount += toCover;
+					this.me.currentBets[i] = toCover;
+					this.me.totalBetsInPotsInRound[i] += toCover;
+					this.me.totalBetsInPotsInHand[i] += toCover;
+					betAmount -= toCover;
+				}
+				else {
+					pot.amount += betAmount;
+					this.me.currentBets[i] = betAmount;
+					this.me.totalBetsInPotsInRound[i] += betAmount;
+					this.me.totalBetsInPotsInHand[i] += betAmount;
+					betAmount = 0;
+				}
+			}
+
+			// leftovers in final pot
+			const i = this.game.pots.length - 1;
+			let pot = this.game.pots[i];
+			if (betAmount > 0) {
+				pot.amount += betAmount;
+				this.me.currentBets[i] = betAmount;
+				this.me.totalBetsInPotsInRound[i] += betAmount;
+				this.me.totalBetsInPotsInHand[i] += betAmount;
+				betAmount = 0;
+			}
+
+			// everything already in - if I am in the last pot, remove me
+			else {
+				if (this.me.stake === 0 && this.me.currentBets[i] === 0) {
+					pot.removePlayer(this.me);
+				}
+			}
+		}
+
+		else {
+			this.game.pots[0].amount += bet;
+			this.me.currentBets[0] = bet;
+			this.me.totalBetsInPotsInRound[0] += bet;
+			this.me.totalBetsInPotsInHand[0] += bet;
+		}
+
+		if (this.me.stake === 0) {
+			this.goAllIn();
+		}
+
+
+		// if a bet has been made, check to see if all players have same bet,
+		// in which case this round is over
+		if (! this.game.isRoundOver()) {
+			this.game.goToNextPosition();
+		}
+		else {
+			this.game.currentPosition = this.game.buttonPosition;
+		}
+	}
+
+
 	placeBlindBetForPlayer(bet, player) {
 
 		// build this before the bet is recorded
@@ -256,6 +503,147 @@ class GameManager  extends BoundMethodsObject {
 		this.resetForNextRound(doAdvancePosition);
 		return true;
 	}
+	/*
+	getActions() {
+		const gameActions = [];
+			switch this.game.state {
+			case .none:
+				gameActions.push(.newGame)
+			case .new: fallthrough
+			case .invite: fallthrough
+
+			case .ready:
+				if this.myPosition == this.game.currentPosition {
+					gameActions.push(.deal)
+				}
+			case .preFlop:
+				// these depend on position and previous bet
+				if this.myPosition == this.game.currentPosition {
+					if this.me.stake ?? 0 > 0 {
+						if !this.game.isRoundOver {  // cannot check, as the blinds count as bets
+							gameActions.push(.bet); gameActions.push(.fold)
+						}
+						else {
+							if this.game.playersInHand.length > 1 {
+								gameActions.push(.flop)
+							}
+							else {
+								//debugPrint("Nobody else can bet")
+								gameActions.push(.finish)
+							}
+						}
+					}
+					else {
+						//debugPrint("I cannot bet")
+						if this.game.playersInHand.length > 1 {
+							gameActions.push(.flop)
+						}
+						else {
+							//debugPrint("Nobody else can bet")
+							gameActions.push(.finish)
+						}
+					}
+				}
+			case .preTurn:
+				if this.myPosition == this.game.currentPosition {
+					if this.me.stake ?? 0 > 0 {
+						if !this.game.haveAnyBetsBeenMadeThisRound && this.me.lastAction == .none {  // no bets, can check
+							gameActions.push(.check)
+						}
+						//debugPrint("all bets equal? \(this.game.allBetsEqual)")
+						
+						if !this.game.isRoundOver {
+							gameActions.push(.bet); gameActions.push(.fold)
+						}
+						else {
+							if this.game.playersInHand.length > 1 {
+								gameActions.push(.turn)
+							}
+							else {
+								//debugPrint("Nobody else can bet")
+								gameActions.push(.finish)
+							}
+						}
+					}
+					else {
+						//debugPrint("I cannot bet")
+						if this.game.playersInHand.length > 1 {
+							gameActions.push(.turn)
+						}
+						else {
+							//debugPrint("Nobody else can bet")
+							gameActions.push(.finish)
+						}
+					}
+			}  // end if my turn
+			case .preRiver:
+				if this.myPosition == this.game.currentPosition {
+					if this.me.stake ?? 0 > 0 {
+						if !this.game.haveAnyBetsBeenMadeThisRound && this.me.lastAction == .none {  // no bets, can check
+							gameActions.push(.check)
+						}
+						//debugPrint("all bets equal? \(this.game.allBetsEqual)")
+						
+						if !this.game.isRoundOver {
+							gameActions.push(.bet); gameActions.push(.fold)
+						}
+						else {
+							if this.game.playersInHand.length > 1 {
+								gameActions.push(.river)
+							}
+							else {
+								//debugPrint("Nobody else can bet")
+								gameActions.push(.finish)
+							}
+						}
+					}
+					else {
+						//debugPrint("I cannot bet")
+						if this.game.playersInHand.length > 1 {
+							gameActions.push(.river)
+						}
+						else {
+							//debugPrint("Nobody else can bet")
+							gameActions.push(.finish)
+						}
+					}
+				}
+			case .finalBets:
+				if this.myPosition == this.game.currentPosition {
+					if this.me.stake ?? 0 > 0 {
+						if !this.game.haveAnyBetsBeenMadeThisRound && this.me.lastAction == .none {  // no bets, can check
+							gameActions.push(.check)
+						}
+						//debugPrint("all bets equal? \(this.game.allBetsEqual)")
+						if !this.game.isRoundOver {
+							gameActions.push(.bet); gameActions.push(.fold)
+						}
+						else {
+							gameActions.push(.show)
+						}
+					}
+					else {
+						//debugPrint("I cannot bet")
+						gameActions.push(.show)
+					}
+				}
+			case .handOver:
+				if this.myPosition == this.game.currentPosition {
+					gameActions.push(.next)
+				}
+			case .quorumFailedTimeExpired: fallthrough
+			case .gameCanceled: fallthrough
+			case .gameOver:
+				gameActions.push(.newGame)
+			default:
+				break
+			}
+
+
+
+		return gameActions;
+	}
+*/
 	
 	resetForNextRound(doAdvancePosition = true) {
 		 // assumes dealer performed the deal
@@ -286,4 +674,5 @@ class GameManager  extends BoundMethodsObject {
 
 }
 
-export {GameManager}
+export {GameManager};
+
