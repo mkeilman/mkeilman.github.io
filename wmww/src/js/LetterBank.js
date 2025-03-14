@@ -160,7 +160,6 @@ export class LetterBank {
         return lArr.sorted()
     }
 */
-    // we withdraw while building words, so remove one at a time
     withdrawFromBank(index, numLetters = 1) {
         if (index >= 0 && index < this.letterSet.letters.length && this.letterCounts[index] > 0) {
             this.letterCounts[index] -= numLetters;
@@ -177,21 +176,21 @@ export class LetterBank {
         }
     }
     depositWordIntoBank(word, mods) {
-        var j = 0;
-        var mType;
+        let j = -1;
         for (const c of word.toUpperCase()) {
+            ++j;
             const i = this.letterSet.letters.indexOf(c);
             this.depositIntoBank(i);
-            if (j < (mods || []).length) {
-                mType = mods[j];
-                if (mType == ModifierType.poison) {
-                    this.withdrawFromBank(i, 2);
-                }
-                else if (mType == ModifierType.lightning) {
-                    this.letterCounts[i] = 0;
-                }
+            if (j >= (mods || []).length) {
+                continue;
             }
-            j += 1;
+            const mType = mods[j];
+            if (mType == ModifierType.poison) {
+                this.withdrawFromBank(i, 2);
+            }
+            else if (mType == ModifierType.lightning) {
+                this.letterCounts[i] = 0;
+            }
         }
     }
 }

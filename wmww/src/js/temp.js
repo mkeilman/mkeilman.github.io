@@ -19,5 +19,5 @@ console.log(`LB ${lb.description()}`);
 lb.withdrawWordFromBank("cat");
 //lb.withdrawFromBank(0);
 console.log(`LB AFTER WD ${lb.description()}`);
-lb.depositWordIntoBank("dog", [ModifierType.poison]);
+lb.depositWordIntoBank("dog", [ModifierType.spin]);
 console.log(`LB AFTER DEP ${lb.description()}`);
