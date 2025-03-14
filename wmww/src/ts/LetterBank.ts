@@ -77,28 +77,26 @@ export class LetterBank {
 		this.letterCounts = this.letterCounts.map(x =>  x == 0 ? 1 : x);
 	}
 
-	/*
-	func doExchangeOfLetterAtIndex(_ index: Int) {
-		
-		if( index < this.letterSet.letters.count ) {
+	doExchangeOfLetterAtIndex(index: number): void {
+		if (index >= this.letterSet.letters.length) {
+            return;
+        }
 			
-			let n: Int = this.letterCounts[index];
-			let p: Int = this.letterSet.letterPrices[index];
-			let xn: Int = this.letterSet.letterExchangeCounts[index];
-			let xIndex: Int = this.letterSet.letterExchangeIndices[index];
-			debugPrint("LetterBank.doExchangeOfLetterAtIndex - Charging \(p) \(this.letterSet.letters[index]) for \(xn) \(this.letterSet.letters[xIndex])");
-			if n >= p {
-				//debugPrint("before exchanging \(index): \(self)");
-				letterCounts[index] -= p;
-				letterCounts[letterSet.letterExchangeIndices[index]] += xn;
-				//debugPrint("after: \(self)");
-			}
-			else {
-				debugPrint("LetterBank.doExchangeOfLetterAtIndex - Not enough \(this.letterSet.letters[index])s")
-			}
-		}
+        const n = this.letterCounts[index];
+        const p = this.letterSet.letterPrices[index];
+        const xn = this.letterSet.letterExchangeCounts[index];
+        //const xIndex = this.letterSet.letterExchangeIndices[index];
+        //console.log(`LetterBank.doExchangeOfLetterAtIndex - Charging ${p} ${this.letterSet.letters[index]} for ${xn} ${this.letterSet.letters[xIndex]}`);
+        if (n >= p) {
+            this.letterCounts[index] -= p;
+            this.letterCounts[this.letterSet.letterExchangeIndices[index]] += xn;
+        }
+        else {
+            console.log(`LetterBank.doExchangeOfLetterAtIndex - Not enough ${this.letterSet.letters[index]}s`);
+        }
 	}
 	
+    /*
 	// pick the first <numLetters> indices out of a randomized array of them
 	// if allowZeros is true, can choose letters the bank lacks
 	// if includePass is true, sticks the pass index in front
@@ -106,12 +104,12 @@ export class LetterBank {
 	func pickFromBank( _ numLetters: Int = DEFAULT_PICK_SIZE, allowZeros: Bool = true, includeIndex: Int? = nil, requireVowel: Bool = false ) -> [Int] {
 		
 		var lArr: [Int];  var leftoverArr: [Int]
-		let numLeftovers: Int = letterSet.letters.count - numLetters;
+		let numLeftovers: Int = letterSet.letters.length - numLetters;
 		if( numLetters > 0 && numLeftovers >= 0 ) {
 			
-			var rArr = ModelCommon.randomIndicesForArrayOfSize(this.letterSet.letters.count)
+			var rArr = ModelCommon.randomIndicesForArrayOfSize(this.letterSet.letters.length)
 			lArr = Array(rArr[0...numLetters-1]);
-			leftoverArr = Array(rArr[numLetters...rArr.count-1]);  // leftovers
+			leftoverArr = Array(rArr[numLetters...rArr.length-1]);  // leftovers
 			if includeIndex != nil {  // replace the 1st item in the picked array with the required index
 				if let laIndex = leftoverArr.firstIndex(of: includeIndex!) {
 					let l0 = lArr[0];  lArr[0] = leftoverArr[laIndex];  leftoverArr[laIndex] = l0
@@ -146,7 +144,7 @@ export class LetterBank {
 				}
 
 				// at least one letter has 0 occurances
-				if zIndices.count > 0 {
+				if zIndices.length > 0 {
 					
 					var nzIndices: [Int] = [];
 					
@@ -156,7 +154,7 @@ export class LetterBank {
 					}
 					
 					var nzIndex: Int = 0;
-					if nzIndices.count >= zIndices.count  {
+					if nzIndices.length >= zIndices.length  {
 						//var l: Int?;
 						for k in zIndices {
 							//l = lArr.indexOf(k);
@@ -216,7 +214,7 @@ export class LetterBank {
     /*
 	
 	func printCounts() {
-		for i in 0..<letterSet.letters.count {
+		for i in 0..<letterSet.letters.length {
 			debugPrint("\(letterSet.letters[i]): \(letterCounts[i])");
 		}
 	}

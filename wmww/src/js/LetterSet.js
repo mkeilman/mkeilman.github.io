@@ -32,11 +32,18 @@ export class LetterSet {
         }
         return a;
     }
-    // ignore locale for now
     constructor(locale = "en-US") {
         this.locale = locale;
-        this.letters = _a.letters.slice();
+        // ignore locale for now - eventually these instance properties will be based on that
+        this.frequencies = _a.frequencies.slice();
+        this.letterExchangeCounts = _a.letterExchangeCounts.slice();
+        this.letterExchangeIndices = _a.letterExchangeIndices.slice();
         this.letterIndices = _a.letterIndices.slice();
+        this.letterPrices = _a.letterPrices.slice();
+        this.letters = _a.letters.slice();
+        this.letterValues = _a.letterValues.slice();
+        this.vowelIndices = _a.vowelIndices.slice();
+        this.vowels = _a.vowels.slice();
     }
     // pick 1 random letter index
     randomLetter() {

@@ -16,8 +16,11 @@ console.log(`RND L ${ls.randomLetter()} RND V ${ls.randomVowel()}`);
 
 const lb = new LetterBank();
 console.log(`LB ${lb.description()}`);
-lb.withdrawWordFromBank("cat");
+//lb.withdrawWordFromBank("cat");
 //lb.withdrawFromBank(0);
-console.log(`LB AFTER WD ${lb.description()}`);
-lb.depositWordIntoBank("dog", [ModifierType.spin]);
-console.log(`LB AFTER DEP ${lb.description()}`);
+//console.log(`LB AFTER WD ${lb.description()}`);
+//lb.depositWordIntoBank("dog", [ModifierType.spin]);
+//console.log(`LB AFTER DEP ${lb.description()}`);
+lb.doExchangeOfLetterAtIndex(0);
+console.log(`LB AFTER EXCH ${lb.description()}`);
+

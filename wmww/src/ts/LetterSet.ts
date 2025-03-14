@@ -48,13 +48,27 @@ export class LetterSet  {
         return a;
     }
 
-    letters: string[];
+    frequencies: number[];
+    letterExchangeCounts: number[];
+    letterExchangeIndices: number[];
     letterIndices: number[];
-
-    // ignore locale for now
+    letterPrices: number[];
+    letters: string[];
+    letterValues: number[];
+    vowelIndices: number[];
+    vowels: string[];
+    
 	constructor(protected locale="en-US") {
-        this.letters = LetterSet.letters.slice();
+         // ignore locale for now - eventually these instance properties will be based on that
+        this.frequencies = LetterSet.frequencies.slice();
+        this.letterExchangeCounts = LetterSet.letterExchangeCounts.slice();
+        this.letterExchangeIndices = LetterSet.letterExchangeIndices.slice();
         this.letterIndices = LetterSet.letterIndices.slice();
+        this.letterPrices = LetterSet.letterPrices.slice();
+        this.letters = LetterSet.letters.slice();
+        this.letterValues = LetterSet.letterValues.slice();
+        this.vowelIndices = LetterSet.vowelIndices.slice();
+        this.vowels = LetterSet.vowels.slice();
 	}
 	
 	
