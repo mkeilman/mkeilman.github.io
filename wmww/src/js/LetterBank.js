@@ -6,6 +6,7 @@
 //  Copyright (c) 2025 Michael Keilman. All rights reserved
 //
 import { LetterSet } from "./LetterSet.js";
+import { ModifierType } from "./common.js";
 const DEFAULT_BANK_SIZE = 50;
 const DEFAULT_PICK_SIZE = 8;
 export class LetterBank {
@@ -57,7 +58,6 @@ export class LetterBank {
         else {
             this.topUpBank();
         }
-        console.log(`LetterBank.fillBank - Bank now has size ${this.currentBankSize()}`);
     }
     topUpBank() {
         this.letterCounts = this.letterCounts.map(x => x == 0 ? 1 : x);
@@ -169,6 +169,29 @@ export class LetterBank {
     withdrawWordFromBank(word) {
         for (const c of word.toUpperCase()) {
             this.withdrawFromBank(this.letterSet.letters.indexOf(c));
+        }
+    }
+    depositIntoBank(index, numLetters = 1) {
+        if (index >= 0 && index < this.letterSet.letters.length) {
+            this.letterCounts[index] += numLetters;
+        }
+    }
+    depositWordIntoBank(word, mods) {
+        var j = 0;
+        var mType;
+        for (const c of word.toUpperCase()) {
+            const i = this.letterSet.letters.indexOf(c);
+            this.depositIntoBank(i);
+            if (j < (mods || []).length) {
+                mType = mods[j];
+                if (mType == ModifierType.poison) {
+                    this.withdrawFromBank(i, 2);
+                }
+                else if (mType == ModifierType.lightning) {
+                    this.letterCounts[i] = 0;
+                }
+            }
+            j += 1;
         }
     }
 }

@@ -7,6 +7,7 @@
 //
 
 import { LetterSet } from "./LetterSet.js";
+import { ModifierType } from "./common.js";
 
 const DEFAULT_BANK_SIZE = 50;
 const DEFAULT_PICK_SIZE = 8;
@@ -70,7 +71,6 @@ export class LetterBank {
 		else {
 			this.topUpBank();
 		}
-		console.log(`LetterBank.fillBank - Bank now has size ${this.currentBankSize()}`);
 	}
 
 	topUpBank(): void {
@@ -188,36 +188,33 @@ export class LetterBank {
 		}
 	}
 
-	/*
-	func depositIntoBank( _ index: Int, numLetters: Int = 1 ) {
-		//debugPrint("before adding \(index): \(self)")
-		if( index >= 0 && index < letterSet.letters.count  ) {
-			letterCounts[index] += numLetters
+
+	depositIntoBank(index: number, numLetters: number=1): void {
+		if (index >= 0 && index < this.letterSet.letters.length) {
+			this.letterCounts[index] += numLetters;
 		}
-		//debugPrint("after: \(self)")
 	}
-	
-	func depositIntoBank( _ word: String, mods: [ModifierType]? = nil, isWordValid: Bool ) {
-		
-		//debugPrint("before adding \(word): \(self)")
-		var j: Int = 0;  var mType: ModifierType
-		for c in word.uppercased() {
-			if let i = letterSet.letters.firstIndex(of: c) {
-				depositIntoBank(i)
-				if j < mods?.count ?? 0 {
-					mType = mods![j]
-					if mType == .poison {
-						withdrawFromBank(i, numLetters: 2)
-					}
-					else if mType == .lightning {
-						this.letterCounts[i] = 0
-					}
-				}
-			}
-			j += 1
+
+	depositWordIntoBank(word: string, mods?: [ModifierType]): void {
+		var j = 0;
+        var mType: ModifierType;
+
+		for (const c of word.toUpperCase()) {
+			const i = this.letterSet.letters.indexOf(c);
+            this.depositIntoBank(i);
+            if (j < (mods || []).length) {
+                mType = mods[j];
+                if (mType == ModifierType.poison) {
+                    this.withdrawFromBank(i, 2);
+                }
+                else if (mType == ModifierType.lightning) {
+                    this.letterCounts[i] = 0;
+                }
+            }
+			j += 1;
 		}
-		//debugPrint("after: \(self)")
 	}
+    /*
 	
 	func printCounts() {
 		for i in 0..<letterSet.letters.count {

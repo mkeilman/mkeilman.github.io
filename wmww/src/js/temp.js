@@ -1,6 +1,7 @@
 import { randomIndices, randomElement, indexArray } from "./collectionUtils.js";
 import { LetterSet } from "./LetterSet.js";
 import { LetterBank } from "./LetterBank.js";
+import { ModifierType } from "./common.js";
 
 
 const message = 'Hello, World!!';
@@ -18,3 +19,5 @@ console.log(`LB ${lb.description()}`);
 lb.withdrawWordFromBank("cat");
 //lb.withdrawFromBank(0);
 console.log(`LB AFTER WD ${lb.description()}`);
+lb.depositWordIntoBank("dog", [ModifierType.poison]);
+console.log(`LB AFTER DEP ${lb.description()}`);
