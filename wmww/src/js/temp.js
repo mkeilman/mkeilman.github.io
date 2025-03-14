@@ -15,3 +15,6 @@ console.log(`RND L ${ls.randomLetter()} RND V ${ls.randomVowel()}`);
 
 const lb = new LetterBank();
 console.log(`LB ${lb.description()}`);
+lb.withdrawWordFromBank("cat");
+//lb.withdrawFromBank(0);
+console.log(`LB AFTER WD ${lb.description()}`);

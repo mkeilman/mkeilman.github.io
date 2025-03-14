@@ -174,25 +174,21 @@ export class LetterBank {
 		}
 		return lArr.sorted()
 	}
+*/
+	// we withdraw while building words, so remove one at a time
+	withdrawFromBank(index: number, numLetters: number=1 ): void {
+		if ( index >= 0 && index < this.letterSet.letters.length && this.letterCounts[index] > 0 ) {
+			this.letterCounts[index] -= numLetters;
+		}
+	}
+	
+	withdrawWordFromBank(word: string): void {
+		for (const c of word.toUpperCase()) {
+			this.withdrawFromBank(this.letterSet.letters.indexOf(c));
+		}
+	}
 
-	// we withdraw while building words, so remove one at a time.  We also have the index
-	// so the Char is not needed
-	func withdrawFromBank( _ index: Int, numLetters: Int = 1 ) {
-		//debugPrint("before withdrawing \(index): \(self)");
-		if( index >= 0 && index < letterSet.letters.count && letterCounts[index] > 0 ) {
-			letterCounts[index] -= numLetters;
-		}
-		//debugPrint("after: \(self)");
-	}
-	
-	func withdrawFromBank( _ word: String ) {
-		for c in word.uppercased() {
-			if let i = letterSet.letters.firstIndex(of: c) {
-				withdrawFromBank(i);
-			}
-		}
-	}
-	
+	/*
 	func depositIntoBank( _ index: Int, numLetters: Int = 1 ) {
 		//debugPrint("before adding \(index): \(self)")
 		if( index >= 0 && index < letterSet.letters.count  ) {
