@@ -35,6 +35,8 @@ export class LetterSet {
     // ignore locale for now
     constructor(locale = "en-US") {
         this.locale = locale;
+        this.letters = _a.letters.slice();
+        this.letterIndices = _a.letterIndices.slice();
     }
     // pick 1 random letter index
     randomLetter() {

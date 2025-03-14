@@ -48,8 +48,13 @@ export class LetterSet  {
         return a;
     }
 
+    letters: string[];
+    letterIndices: number[];
+
     // ignore locale for now
 	constructor(protected locale="en-US") {
+        this.letters = LetterSet.letters.slice();
+        this.letterIndices = LetterSet.letterIndices.slice();
 	}
 	
 	
