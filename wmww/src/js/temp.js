@@ -23,6 +23,6 @@ console.log(`LB ${lb.description()}`);
 //console.log(`LB AFTER DEP ${lb.description()}`);
 //lb.doExchangeOfLetterAtIndex(0);
 //console.log(`LB AFTER EXCH ${lb.description()}`);
-console.log(`PICK ${lb.pickFromBank()}`);
+console.log(`PICK ${lb.pick()}`);
 
 

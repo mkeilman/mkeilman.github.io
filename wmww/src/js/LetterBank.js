@@ -84,7 +84,7 @@ export class LetterBank {
     // if allowZeros is true, can choose letters the bank lacks
     // if includePass is true, sticks the pass index in front
     // if includeIndex is not nil (and is a valid index for the letter set), that index is always in the array
-    pickFromBank(numLetters = DEFAULT_PICK_SIZE, allowZeros = true, includeIndex, requireVowel = false) {
+    pick(numLetters = DEFAULT_PICK_SIZE, allowZeros = true, includeIndex, requireVowel = false) {
         let numLeftovers = this.letterSet.letters.length - numLetters;
         if (numLetters <= 0 || numLeftovers <= 0) {
             return [];
