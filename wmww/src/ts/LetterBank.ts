@@ -186,14 +186,6 @@ export class LetterBank {
             }
 		}
 	}
-    /*
-	
-	func printCounts() {
-		for i in 0..<letterSet.letters.length {
-			debugPrint("\(letterSet.letters[i]): \(letterCounts[i])");
-		}
-	}
-	*/
 
 	toJSON(): object {
         const json = {};
