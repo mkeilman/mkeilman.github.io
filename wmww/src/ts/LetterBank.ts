@@ -18,10 +18,10 @@ export class LetterBank {
     protected minBankSize: number;
     letterCounts: number[];
 
-    static KEY_LETTER_BANK: string = "LB";
-    static KEY_LETTER_BANK_LETTER_SET:string = `${LetterBank.KEY_LETTER_BANK}.ls`;
-    static KEY_LETTER_BANK_SIZE:string = `${LetterBank.KEY_LETTER_BANK}.sz`;
-    static KEY_LETTER_BANK_COUNTS:string = `${LetterBank.KEY_LETTER_BANK}.ct`;
+    static KEY_LETTER_BANK = "LetterBank";
+    static KEY_LETTER_BANK_LETTER_SET:string = "letterSet";
+    static KEY_LETTER_BANK_SIZE:string = "minBankSize";
+    static KEY_LETTER_BANK_COUNTS:string = "letterCounts";
 
     static fromJSON(json: object): LetterBank {
         const b = new LetterBank(new LetterSet(), json[LetterBank.KEY_LETTER_BANK][LetterBank.KEY_LETTER_BANK_SIZE]);
