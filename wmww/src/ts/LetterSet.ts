@@ -73,12 +73,12 @@ export class LetterSet  {
 	
 	
 	// pick 1 random letter index
-	randomLetter(): string {
-		return randomElement(LetterSet.letters);
+	randomLetterIndex(): number {
+		return randomElement(LetterSet.letterIndices);
 	}
 
-	randomVowel(): string {
-		return randomElement(LetterSet.vowels);
+	randomVowelIndex(): number {
+		return randomElement(LetterSet.vowelIndices);
 	}
 
 	toJSONValid(): object {

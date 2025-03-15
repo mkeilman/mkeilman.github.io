@@ -46,11 +46,11 @@ export class LetterSet {
         this.vowels = _a.vowels.slice();
     }
     // pick 1 random letter index
-    randomLetter() {
-        return randomElement(_a.letters);
+    randomLetterIndex() {
+        return randomElement(_a.letterIndices);
     }
-    randomVowel() {
-        return randomElement(_a.vowels);
+    randomVowelIndex() {
+        return randomElement(_a.vowelIndices);
     }
     toJSONValid() {
         return {

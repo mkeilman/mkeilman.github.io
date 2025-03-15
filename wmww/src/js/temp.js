@@ -12,7 +12,7 @@ console.log(`RND IDX ${randomIndices(10)}`);
 console.log(`RND EL ${randomElement(indexArray(5))}`);
 
 const ls = new  LetterSet();
-console.log(`RND L ${ls.randomLetter()} RND V ${ls.randomVowel()}`);
+console.log(`RND L ${ls.randomLetterIndex()} RND V ${ls.randomVowelIndex()}`);
 
 const lb = new LetterBank();
 console.log(`LB ${lb.description()}`);
@@ -21,6 +21,8 @@ console.log(`LB ${lb.description()}`);
 //console.log(`LB AFTER WD ${lb.description()}`);
 //lb.depositWordIntoBank("dog", [ModifierType.spin]);
 //console.log(`LB AFTER DEP ${lb.description()}`);
-lb.doExchangeOfLetterAtIndex(0);
-console.log(`LB AFTER EXCH ${lb.description()}`);
+//lb.doExchangeOfLetterAtIndex(0);
+//console.log(`LB AFTER EXCH ${lb.description()}`);
+console.log(`PICK ${lb.pickFromBank()}`);
+
 
