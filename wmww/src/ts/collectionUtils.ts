@@ -9,6 +9,18 @@ export function indexArray(size: number): number[] {
 	return Array(size).fill(0).map((_, i) => i);
 }
 
+export function intArrayFromDigitString(inString :string, zeroToTen=false): number[] {
+	var arr: number[] = [];
+	return inString.split("").map(x => {
+		const i = parseInt(x);
+		return i ? i : (zeroToTen ? 10: 0);
+	});
+}
+
+export function randomElement(arr: any[]): any {
+	return arr[Math.floor(Math.random() * arr.length)];
+}
+
 export function randomIndices(size: number): number[] {
 	let iArr = indexArray(size);
 	
@@ -22,17 +34,4 @@ export function randomIndices(size: number): number[] {
 	
 	return iArr;
 }
-
-export function intArrayFromDigitString(inString :string, zeroToTen=false): number[] {
-	var arr: number[] = [];
-	return inString.split("").map(x => {
-		const i = parseInt(x);
-		return i ? i : (zeroToTen ? 10: 0);
-	});
-}
-
-export function randomElement(arr: any[]): any {
-	return arr[Math.floor(Math.random() * arr.length)];
-}
-
 
