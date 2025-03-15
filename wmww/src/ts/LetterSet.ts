@@ -81,7 +81,7 @@ export class LetterSet  {
 		return randomElement(LetterSet.vowelIndices);
 	}
 
-	toJSONValid(): object {
+	toJSON(): object {
 		return {
             KEY_LETTER_SET : {
                 KEY_LETTER_SET_LETTERS : LetterSet.letters,

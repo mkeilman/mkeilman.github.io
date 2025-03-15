@@ -4,18 +4,18 @@ import { LetterBank } from "./LetterBank.js";
 import { ModifierType } from "./common.js";
 
 
-const message = 'Hello, World!!';
-console.log(message);
+//const message = 'Hello, World!!';
+//console.log(message);
 
 
-console.log(`RND IDX ${randomIndices(10)}`);
-console.log(`RND EL ${randomElement(indexArray(5))}`);
+//console.log(`RND IDX ${randomIndices(10)}`);
+//console.log(`RND EL ${randomElement(indexArray(5))}`);
 
-const ls = new  LetterSet();
-console.log(`RND L ${ls.randomLetterIndex()} RND V ${ls.randomVowelIndex()}`);
+//const ls = new  LetterSet();
+//console.log(`RND L ${ls.randomLetterIndex()} RND V ${ls.randomVowelIndex()}`);
 
 const lb = new LetterBank();
-console.log(`LB ${lb.description()}`);
+console.log("LB", lb);
 //lb.withdrawWordFromBank("cat");
 //lb.withdrawFromBank(0);
 //console.log(`LB AFTER WD ${lb.description()}`);
@@ -23,6 +23,10 @@ console.log(`LB ${lb.description()}`);
 //console.log(`LB AFTER DEP ${lb.description()}`);
 //lb.doExchangeOfLetterAtIndex(0);
 //console.log(`LB AFTER EXCH ${lb.description()}`);
-console.log(`PICK ${lb.pick()}`);
+//console.log(`PICK ${lb.pick()}`);
+const j = lb.toJSON();
+console.log("JSON", j);
+const jlb = LetterBank.fromJSON(j);
+console.log("FROM JSON", jlb);
 
 

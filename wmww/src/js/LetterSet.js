@@ -52,7 +52,7 @@ export class LetterSet {
     randomVowelIndex() {
         return randomElement(_a.vowelIndices);
     }
-    toJSONValid() {
+    toJSON() {
         return {
             KEY_LETTER_SET: {
                 KEY_LETTER_SET_LETTERS: _a.letters,

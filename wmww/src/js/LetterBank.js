@@ -11,6 +11,13 @@ import { ModifierType } from "./common.js";
 const DEFAULT_BANK_SIZE = 50;
 const DEFAULT_PICK_SIZE = 8;
 export class LetterBank {
+    static fromJSON(json) {
+        console.log("FROM", json);
+        const b = new LetterBank(new LetterSet(), json[LetterBank.KEY_LETTER_BANK][LetterBank.KEY_LETTER_BANK_SIZE]);
+        b.letterCounts = json[LetterBank.KEY_LETTER_BANK][LetterBank.KEY_LETTER_BANK_COUNTS];
+        console.log(b);
+        return b;
+    }
     constructor(letterSet = new LetterSet(), minBankSize = DEFAULT_BANK_SIZE) {
         this.letterSet = letterSet;
         this.minBankSize = minBankSize;
@@ -169,4 +176,23 @@ export class LetterBank {
             }
         }
     }
+    /*
+    
+    func printCounts() {
+        for i in 0..<letterSet.letters.length {
+            debugPrint("\(letterSet.letters[i]): \(letterCounts[i])");
+        }
+    }
+    */
+    toJSON() {
+        const json = {};
+        json[`${LetterBank.KEY_LETTER_BANK}`] = {};
+        json[`${LetterBank.KEY_LETTER_BANK}`][`${LetterBank.KEY_LETTER_BANK_SIZE}`] = this.minBankSize;
+        json[`${LetterBank.KEY_LETTER_BANK}`][`${LetterBank.KEY_LETTER_BANK_COUNTS}`] = this.letterCounts;
+        return json;
+    }
 }
+LetterBank.KEY_LETTER_BANK = "LB";
+LetterBank.KEY_LETTER_BANK_LETTER_SET = `${LetterBank.KEY_LETTER_BANK}.ls`;
+LetterBank.KEY_LETTER_BANK_SIZE = `${LetterBank.KEY_LETTER_BANK}.sz`;
+LetterBank.KEY_LETTER_BANK_COUNTS = `${LetterBank.KEY_LETTER_BANK}.ct`;

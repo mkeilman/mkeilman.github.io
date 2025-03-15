@@ -18,6 +18,17 @@ export class LetterBank {
     protected minBankSize: number;
     letterCounts: number[];
 
+    static KEY_LETTER_BANK: string = "LB";
+    static KEY_LETTER_BANK_LETTER_SET:string = `${LetterBank.KEY_LETTER_BANK}.ls`;
+    static KEY_LETTER_BANK_SIZE:string = `${LetterBank.KEY_LETTER_BANK}.sz`;
+    static KEY_LETTER_BANK_COUNTS:string = `${LetterBank.KEY_LETTER_BANK}.ct`;
+
+    static fromJSON(json: object): LetterBank {
+        const b = new LetterBank(new LetterSet(), json[LetterBank.KEY_LETTER_BANK][LetterBank.KEY_LETTER_BANK_SIZE]);
+        b.letterCounts = json[LetterBank.KEY_LETTER_BANK][LetterBank.KEY_LETTER_BANK_COUNTS];
+        return b;
+    }
+
 	constructor(letterSet: LetterSet=new LetterSet(), minBankSize: number=DEFAULT_BANK_SIZE) {
         this.letterSet = letterSet;
         this.minBankSize = minBankSize;
@@ -28,29 +39,6 @@ export class LetterBank {
     currentBankSize() : number {
         return this.letterCounts.reduce((prev, curr) => prev + curr, 0);
     }
-	
-    description() : string {
-		var desc = "";
-		for (let i = 0; i <= this.letterSet.letters.length - 2; ++i) {
-			desc += `${this.letterSet.letters[i]}: ${this.letterCounts[i]}; `;
-		}
-		desc += `${this.letterSet.letters[this.letterSet.letters.length - 1]}: ${this.letterCounts[this.letterSet.letters.length - 1]}`;
-		return desc;
-	}
-
-    /*
-	init?( letterSet: LetterSet, json: [String: AnyObject] ) {
-		
-		if( JSONSerialization.isValidJSONObject(json) ) {
-			this.letterCounts = json[KEY_LETTER_BANK_COUNTS] as! [Int];
-			this.minimumBankSize = json[KEY_LETTER_BANK_SIZE] as! Int;
-			this.letterSet = letterSet;
-		}
-		else {
-			return nil;
-		}
-	}
-    */
 
 	fillBank(useFrequency: boolean = true, numLetters?: number): void {
 		
@@ -205,16 +193,14 @@ export class LetterBank {
 			debugPrint("\(letterSet.letters[i]): \(letterCounts[i])");
 		}
 	}
-	
-	func toJSONValid() -> [String: AnyObject] {
-		
-		let json = [KEY_LETTER_BANK :[
-			KEY_LETTER_BANK_SIZE: this.minimumBankSize,
-			KEY_LETTER_BANK_COUNTS: this.letterCounts
-		]];
-		
-		return json as [String : AnyObject];
-	}
 	*/
+
+	toJSON(): object {
+        const json = {};
+        json[`${ LetterBank.KEY_LETTER_BANK}`] = {};
+        json[`${ LetterBank.KEY_LETTER_BANK}`][`${LetterBank.KEY_LETTER_BANK_SIZE}`] = this.minBankSize;
+        json[`${ LetterBank.KEY_LETTER_BANK}`][`${LetterBank.KEY_LETTER_BANK_COUNTS}`] = this.letterCounts;
+		return json;
+    }
 }
 
