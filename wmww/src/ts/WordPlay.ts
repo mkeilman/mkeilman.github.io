@@ -16,7 +16,7 @@ let KEY_WORD_PLAY_PLAY_WORD_INDEX =  KEY_WORD_PLAY + ".pwi";
 let KEY_WORD_PLAY_PLAY_POINTS =  KEY_WORD_PLAY + ".pp";
 let KEY_WORD_PLAY_PLAY_MODS =  KEY_WORD_PLAY + ".pmds";
 
-class WordPlay {
+export class WordPlay {
 
     mods: ModifierType[];
     points: number;
