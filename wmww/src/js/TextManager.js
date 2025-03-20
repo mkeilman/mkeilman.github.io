@@ -80,7 +80,6 @@ export class TextManager {
         while (min <= max) {
             mid = Math.floor((min + max) / 2);
             const listWord = this.wordSearchArray[mid];
-            console.log(`${word} VS ${listWord} ${mid} EQ? ${word == listWord}`);
             if (word == listWord) {
                 return mid;
             }
@@ -90,7 +89,6 @@ export class TextManager {
             else {
                 min = mid + 1;
             }
-            console.log(`NEXT LOOP MIN ${min} MAX ${max}`);
         }
         return INVALID_WORD_INDEX;
     }
@@ -124,93 +122,93 @@ export class TextManager {
         const w = word.toLowerCase();
         const i = this.find(w);
         let j = w.indexOf("y");
-        console.log(`${w} ${i} INDEX ${j}`);
         if (i < 0 || w.length <= 1 || j < 0) {
             return false;
         }
-        if (j > 0) {
-            return true;
-        }
-        return this.letterSet.vowels.indexOf(w[1]) < 0;
+        return j > 0 || this.letterSet.vowels.indexOf(w[1]) < 0;
     }
     wordsForLetters(lArr, lb, minLength, maxLength, maxNum) {
-        if (!lArr.length) {
-            return [];
-        }
-        const sArr = [];
-        const lCountArr = Array(this.letterSet.letters.length).fill(0);
-        let lString = ""; // for quick comparisons
-        let nLetters = 0;
-        let nLettersInBank = 0;
-        let maxIndex = lArr[lArr.length - 1];
-        for (const lIndex of lArr) {
-            nLettersInBank = lb.letterCounts[lIndex];
-            if (!nLettersInBank) {
-                continue;
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!lArr.length) {
+                return [];
             }
-            lCountArr[lIndex] += nLettersInBank;
-            nLetters += nLettersInBank;
-            lString += this.letterSet.letters[lIndex];
-        }
-        if (nLetters < this.minWordLength()) {
-            return [];
-        }
-        let lowerLen = minLength || this.minWordLength();
-        let upperLen = maxLength || Math.min(this.maxWordLength(), nLetters);
-        let maxWords = maxNum || Number.MAX_SAFE_INTEGER;
-        for (let l = lowerLen; l <= upperLen; ++l) {
-            if (sArr.length >= maxWords) {
-                break;
-            }
-            let wordArr;
-            readText("../data/" + `${l}`.padStart(2, "0") + ".txt", data => {
-                wordArr = data.map(x => this.wordSearchArray[parseInt(x)]);
-            });
-            if (!wordArr) {
-                continue;
-            }
-            const wCountArr = Array(lCountArr.length).fill(0);
-            var lenDone = sArr.length >= maxWords;
-            for (const word of wordArr) {
-                var wOK = true;
-                var j = 0;
-                for (const c of word) {
-                    const cIndex = this.letterSet.letters.indexOf(c);
-                    // if leading char bigger than any we have, no more of this length, because
-                    // words are in alphabetical order
-                    if (j == 0) {
-                        lenDone = (cIndex > maxIndex) || sArr.length >= maxWords;
-                    }
-                    j += 1;
-                    wOK = wOK && !lenDone && lString.includes(c);
-                    if (!wOK) {
-                        // don't have this letter, move on
-                        break;
-                    }
-                    if (cIndex >= 0) {
-                        wCountArr[cIndex] += 1;
-                    }
+            const sArr = [];
+            const lCountArr = Array(this.letterSet.letters.length).fill(0);
+            let lString = ""; // for quick comparisons
+            let nLetters = 0;
+            let nLettersInBank = 0;
+            let maxIndex = lArr[lArr.length - 1];
+            for (const lIndex of lArr) {
+                nLettersInBank = lb.letterCounts[lIndex];
+                if (!nLettersInBank) {
+                    continue;
                 }
-                if (wOK) {
-                    for (let i = 0; i < wCountArr.length; ++i) {
-                        if (wCountArr[i] > 0) {
-                            wOK = wOK && (lCountArr[i] - wCountArr[i] >= 0);
-                        }
-                        if (!wOK) {
-                            break;
-                        }
-                    }
-                    if (wOK && word != "") {
-                        sArr.push(word);
-                        lenDone = sArr.length >= maxWords;
-                    }
-                }
-                if (lenDone) {
+                lCountArr[lIndex] += nLettersInBank;
+                nLetters += nLettersInBank;
+                lString += this.letterSet.letters[lIndex];
+            }
+            if (nLetters < this.minWordLength()) {
+                return [];
+            }
+            console.log(`HAVE ${nLetters} LETTERS ${lCountArr}`);
+            let lowerLen = minLength || this.minWordLength();
+            let upperLen = maxLength || Math.min(this.maxWordLength(), nLetters);
+            let maxWords = maxNum || Number.MAX_SAFE_INTEGER;
+            for (let l = lowerLen; l <= upperLen; ++l) {
+                if (sArr.length >= maxWords) {
                     break;
                 }
-            } // end loop over words of this length
-        } // end loop over lengths
-        return sArr;
+                let wordArr;
+                yield readText("../data/" + `${l}`.padStart(2, "0") + ".txt", data => {
+                    wordArr = data.split("\n").map(x => this.wordSearchArray[parseInt(x)]);
+                });
+                if (!wordArr.length) {
+                    continue;
+                }
+                //console.log(`FOUND ${wordArr.length} WORDS LEN ${l}`);
+                const wCountArr = Array(lCountArr.length).fill(0);
+                var lenDone = sArr.length >= maxWords;
+                for (const word of wordArr) {
+                    var wOK = true;
+                    var j = 0;
+                    for (const c of word) {
+                        const cIndex = this.letterSet.letters.indexOf(c);
+                        // if leading char bigger than any we have, no more of this length, because
+                        // words are in alphabetical order
+                        if (j == 0) {
+                            lenDone = (cIndex > maxIndex) || sArr.length >= maxWords;
+                        }
+                        j += 1;
+                        wOK = wOK && !lenDone && lString.includes(c);
+                        if (!wOK) {
+                            // don't have this letter, move on
+                            break;
+                        }
+                        if (cIndex >= 0) {
+                            wCountArr[cIndex] += 1;
+                        }
+                    }
+                    if (wOK) {
+                        for (let i = 0; i < wCountArr.length; ++i) {
+                            if (wCountArr[i] > 0) {
+                                wOK = wOK && (lCountArr[i] - wCountArr[i] >= 0);
+                            }
+                            if (!wOK) {
+                                break;
+                            }
+                        }
+                        if (wOK && word != "") {
+                            sArr.push(word);
+                            lenDone = sArr.length >= maxWords;
+                        }
+                    }
+                    if (lenDone) {
+                        break;
+                    }
+                } // end loop over words of this length
+            } // end loop over lengths
+            return sArr;
+        });
     }
     getRandomWord() {
         return this.wordSearchArray[Math.floor(Math.random() * this.wordSearchArray.length)];

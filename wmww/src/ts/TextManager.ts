@@ -142,20 +142,15 @@ export class TextManager {
         const w = word.toLowerCase();
         const i = this.find(w);
         let j = w.indexOf("y");
-        console.log(`${w} ${i} INDEX ${j}`);
         
         if (i < 0 || w.length <= 1 || j < 0) {
             return false;
         }
-
-        if (j > 0) {
-            return true;
-        }
-    
-        return this.letterSet.vowels.indexOf(w[1]) < 0;
+        
+        return j > 0 || this.letterSet.vowels.indexOf(w[1]) < 0;
 	}
 	
-	wordsForLetters(lArr: number[], lb: LetterBank, minLength: number, maxLength: number, maxNum: number): string[] {
+	async wordsForLetters(lArr: number[], lb: LetterBank, minLength: number, maxLength: number, maxNum: number): string[] {
 	
         if (! lArr.length) {
             return [];
@@ -183,7 +178,9 @@ export class TextManager {
         if (nLetters < this.minWordLength()) {
             return [];
         }
-            
+        
+        console.log(`HAVE ${nLetters} LETTERS ${lCountArr}`);
+
         let lowerLen = minLength || this.minWordLength();
         let upperLen =  maxLength || Math.min(this.maxWordLength(), nLetters);
         let maxWords = maxNum || Number.MAX_SAFE_INTEGER;
@@ -194,12 +191,13 @@ export class TextManager {
             }
 
             let wordArr: string[];
-            readText("../data/" + `${l}`.padStart(2, "0") + ".txt", data => {
-                wordArr = data.map(x => this.wordSearchArray[parseInt(x)]);
+            await readText("../data/" + `${l}`.padStart(2, "0") + ".txt", data => {
+                wordArr = data.split("\n").map(x => this.wordSearchArray[parseInt(x)]);
             });
-            if (! wordArr) {
+            if (! wordArr.length) {
                 continue;
             }
+            //console.log(`FOUND ${wordArr.length} WORDS LEN ${l}`);
 
             const wCountArr = Array(lCountArr.length).fill(0);
             var lenDone = sArr.length >= maxWords;
