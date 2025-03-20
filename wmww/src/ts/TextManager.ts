@@ -67,8 +67,7 @@ export class TextManager {
 	
 	async buildWordList() {
         await readText("../data/words_alpha.txt", data => {
-            this.wordSearchArray = data.split("\n").map(x => x.trim().toLowerCase());
-            console.log(this.wordSearchArray.length);
+            this.wordSearchArray = data.split("\n").map(x => x.trim().toLowerCase()).sort();
         });
 
         await readText("../data/WordMeta.json", data => {
@@ -83,7 +82,6 @@ export class TextManager {
 		
 	// binary search, returns index
 	find(word: string): number {
-		
 		if (word == PASS_TOKEN) {
 			return PASS_TOKEN_INDEX;
 		}
@@ -91,7 +89,6 @@ export class TextManager {
         let mid: number; 
         var min = 0; 
         var max: number = this.wordSearchArray.length - 1;
-        console.log(min, max);
 
         while (min <= max) {
             mid = Math.floor((min + max) / 2);
@@ -145,8 +142,9 @@ export class TextManager {
         const w = word.toLowerCase();
         const i = this.find(w);
         let j = w.indexOf("y");
+        console.log(`${w} ${i} INDEX ${j}`);
         
-        if (i < 0 || word.length == 1 || j < 0) {
+        if (i < 0 || w.length <= 1 || j < 0) {
             return false;
         }
 

@@ -54,14 +54,11 @@ export class TextManager {
         this.wordSearchArray = [];
         this.difficulty = difficulty;
         this.letterSet = new LetterSet();
-        //this.buildWordList();
-        //this.buildDifficultyIndices();
     }
     buildWordList() {
         return __awaiter(this, void 0, void 0, function* () {
             yield readText("../data/words_alpha.txt", data => {
-                this.wordSearchArray = data.split("\n").map(x => x.trim().toLowerCase());
-                console.log(this.wordSearchArray.length);
+                this.wordSearchArray = data.split("\n").map(x => x.trim().toLowerCase()).sort();
             });
             yield readText("../data/WordMeta.json", data => {
                 this.wordLengthFreq = JSON.parse(data);
@@ -80,11 +77,10 @@ export class TextManager {
         let mid;
         var min = 0;
         var max = this.wordSearchArray.length - 1;
-        console.log(min, max);
         while (min <= max) {
             mid = Math.floor((min + max) / 2);
             const listWord = this.wordSearchArray[mid];
-            console.log(`CHECK EQ? ${word == listWord} ${mid} WORD --${word}-- VS **${listWord}**`);
+            console.log(`${word} VS ${listWord} ${mid} EQ? ${word == listWord}`);
             if (word == listWord) {
                 return mid;
             }
@@ -94,7 +90,7 @@ export class TextManager {
             else {
                 min = mid + 1;
             }
-            console.log("NEXT LOOP");
+            console.log(`NEXT LOOP MIN ${min} MAX ${max}`);
         }
         return INVALID_WORD_INDEX;
     }
@@ -128,7 +124,8 @@ export class TextManager {
         const w = word.toLowerCase();
         const i = this.find(w);
         let j = w.indexOf("y");
-        if (i < 0 || word.length == 1 || j < 0) {
+        console.log(`${w} ${i} INDEX ${j}`);
+        if (i < 0 || w.length <= 1 || j < 0) {
             return false;
         }
         if (j > 0) {
