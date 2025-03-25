@@ -5,8 +5,28 @@
 //  Created by Michael Keilman on 2025-03-05
 //  Copyright (c) 2025 Michael Keilman. All rights reserved
 //
+export function buildObj(keys, values) {
+    if (keys.length !== values.length) {
+        throw new Error(`number of keys must equal number of values: ${keys.length} != ${values.length}`);
+    }
+    const o = {};
+    for (const i in keys) {
+        o[`${keys[i]}`] = values[i];
+    }
+    return o;
+}
 export function indexArray(size) {
     return Array(size).fill(0).map((_, i) => i);
+}
+export function intArrayFromDigitString(inString, zeroToTen = false) {
+    var arr = [];
+    return inString.split("").map(x => {
+        const i = parseInt(x);
+        return i ? i : (zeroToTen ? 10 : 0);
+    });
+}
+export function randomElement(arr) {
+    return arr[Math.floor(Math.random() * arr.length)];
 }
 export function randomIndices(size) {
     let iArr = indexArray(size);
@@ -18,14 +38,4 @@ export function randomIndices(size) {
         iArr[size - i - 1] = temp;
     }
     return iArr;
-}
-export function intArrayFromDigitString(inString, zeroToTen = false) {
-    var arr = [];
-    return inString.split("").map(x => {
-        const i = parseInt(x);
-        return i ? i : (zeroToTen ? 10 : 0);
-    });
-}
-export function randomElement(arr) {
-    return arr[Math.floor(Math.random() * arr.length)];
 }

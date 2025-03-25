@@ -19,6 +19,7 @@ import { DifficultyLevels } from "./common.js";
 import { readText } from "./common.js";
 import { LetterSet } from "./LetterSet.js";
 import { PASS_TOKEN } from "./common.js";
+import { buildObj } from "./collectionUtils.js";
 const WORD_LIST_FILENAME = "WordList";
 const WORD_LIST_FILETYPE = "txt";
 const WORD_META_FOLDER = "WordMeta";
@@ -26,18 +27,21 @@ const WORD_META_FILENAME = "WordMeta";
 const WORD_META_FILETYPE = "json";
 const WORD_META_LENGTHS_FILETYPE = "txt";
 const WORD_DIFF_INDICES_FILETYPE = "txt";
-let KEY_WORD_META = "WordMeta";
-let KEY_WORD_META_LENGTH_FREQ = "lengthFreqencies";
+const KEY_WORD_META = "WordMeta";
+const KEY_WORD_META_LENGTH_FREQ = "lengthFreqencies";
 const DEFAULT_WORD_MIN_LENGTH = 2;
 const DEFAULT_WORD_MAX_LENGTH = 127;
-let PASS_TOKEN_INDEX = -2;
-let INVALID_WORD_INDEX = -1;
 export class TextManager {
     static instantiate() {
-        return __awaiter(this, arguments, void 0, function* (difficulty = DifficultyLevels.normal) {
-            const tm = new TextManager(difficulty);
+        return __awaiter(this, arguments, void 0, function* (difficulty = DifficultyLevels.normal, letterSet = new LetterSet()) {
+            const tm = new TextManager(difficulty, letterSet);
             yield tm.buildWordList();
             return tm;
+        });
+    }
+    static fromJSON(json) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return TextManager.instantiate(json[TextManager.KEY_TEXT_MANAGER][TextManager.KEY_TEXT_MANAGER_DIFFICULTY], LetterSet.fromJSON(json[TextManager.KEY_TEXT_MANAGER][TextManager.KEY_TEXT_MANAGER_DIFFICULTY]));
         });
     }
     minWordLength() {
@@ -48,12 +52,12 @@ export class TextManager {
         const k = Object.keys(this.wordLengthFreq).map(x => parseInt(x));
         return k ? Math.max(...k) : DEFAULT_WORD_MAX_LENGTH;
     }
-    constructor(difficulty = DifficultyLevels.normal) {
+    constructor(difficulty = DifficultyLevels.normal, letterSet = new LetterSet()) {
         this.didSeed = false;
         this.difficulty = DifficultyLevels.normal;
         this.wordSearchArray = [];
         this.difficulty = difficulty;
-        this.letterSet = new LetterSet();
+        this.letterSet = letterSet;
     }
     buildWordList() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -72,7 +76,7 @@ export class TextManager {
     // binary search, returns index
     find(word) {
         if (word == PASS_TOKEN) {
-            return PASS_TOKEN_INDEX;
+            return TextManager.PASS_TOKEN_INDEX;
         }
         let mid;
         var min = 0;
@@ -90,7 +94,7 @@ export class TextManager {
                 min = mid + 1;
             }
         }
-        return INVALID_WORD_INDEX;
+        return TextManager.INVALID_WORD_INDEX;
     }
     baseScore(word) {
         let score = 0;
@@ -282,10 +286,13 @@ export class TextManager {
         return s.split("").filter(x => this.letterSet.letters.indexOf(x) == lIndex).length;
     }
     toJSON() {
-        return {
-            KEY_TEXT_MANAGER: {
-                KEY_TEXT_MANAGER_LETTER_SET: this.letterSet.toJSON(),
-            }
-        };
+        return buildObj([TextManager.KEY_TEXT_MANAGER], [
+            buildObj([TextManager.KEY_TEXT_MANAGER_LETTER_SET], [this.letterSet.toJSON()])
+        ]);
     }
 }
+TextManager.PASS_TOKEN_INDEX = -2;
+TextManager.INVALID_WORD_INDEX = -1;
+TextManager.KEY_TEXT_MANAGER = "TextManager";
+TextManager.KEY_TEXT_MANAGER_DIFFICULTY = "difficulty";
+TextManager.KEY_TEXT_MANAGER_LETTER_SET = "letterSet";

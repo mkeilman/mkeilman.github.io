@@ -5,6 +5,17 @@
 //  Created by Michael Keilman on 2025-03-05
 //  Copyright (c) 2025 Michael Keilman. All rights reserved
 //
+export function buildObj(keys: any[], values: any[]) {
+	if (keys.length !== values.length) {
+		throw new Error(`number of keys must equal number of values: ${keys.length} != ${values.length}`);
+	}
+	const o = {};
+	for (const i in keys) {
+		o[`${keys[i]}`] = values[i];
+	}
+	return o;
+}
+
 export function indexArray(size: number): number[] {
 	return Array(size).fill(0).map((_, i) => i);
 }

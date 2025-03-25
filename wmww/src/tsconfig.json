@@ -1,8 +1,13 @@
 {
     "compilerOptions": {
       "target": "es6",
-      "module": "ES2022",
-      "typeRoots": ["./node_modules/@types"],
+      "module": "NodeNext",
+      "moduleResolution": "nodenext",
+      "lib": [
+        "ES2022",
+        "DOM",
+      ],
+      "typeRoots": ["../../node_modules/@types"],
       "esModuleInterop": true,
       "forceConsistentCasingInFileNames": true,
       "outDir": "js"

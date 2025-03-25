@@ -15,6 +15,7 @@ import { LetterSet } from "./LetterSet.js";
 
 import { INVALID_WORD_TOKEN, PASS_TOKEN, WATCH_WORD_PLACEHOLDER } from "./common.js";
 import { isReturnStatement } from "../../../node_modules/typescript/lib/typescript.js";
+import { buildObj } from "./collectionUtils.js";
 
 const WORD_LIST_FILENAME = "WordList";
 const WORD_LIST_FILETYPE = "txt";
@@ -24,16 +25,15 @@ const WORD_META_FILETYPE = "json";
 const WORD_META_LENGTHS_FILETYPE = "txt";
 const WORD_DIFF_INDICES_FILETYPE = "txt";
 
-let KEY_WORD_META = "WordMeta";
-let KEY_WORD_META_LENGTH_FREQ = "lengthFreqencies";
+const KEY_WORD_META = "WordMeta";
+const KEY_WORD_META_LENGTH_FREQ = "lengthFreqencies";
 
 const DEFAULT_WORD_MIN_LENGTH = 2;
 const DEFAULT_WORD_MAX_LENGTH = 127;
 
-let PASS_TOKEN_INDEX = -2;
-let INVALID_WORD_INDEX = -1;
-
 export class TextManager {
+    static PASS_TOKEN_INDEX = -2;
+    static INVALID_WORD_INDEX = -1;
 
     didSeed = false;
     difficulty: DifficultyLevels = DifficultyLevels.normal;
@@ -44,10 +44,21 @@ export class TextManager {
 	wordSearchArray: string[] = [];
 	wordLengthFreq: object;
 
-    static async instantiate(difficulty: DifficultyLevels=DifficultyLevels.normal) {
-        const tm = new TextManager(difficulty);
+    static KEY_TEXT_MANAGER = "TextManager";
+    static KEY_TEXT_MANAGER_DIFFICULTY = "difficulty";
+    static KEY_TEXT_MANAGER_LETTER_SET = "letterSet";
+
+    static async instantiate(difficulty: DifficultyLevels=DifficultyLevels.normal, letterSet: LetterSet=new LetterSet()) {
+        const tm = new TextManager(difficulty, letterSet);
 		await tm.buildWordList();
 		return tm;
+    }
+
+    static async fromJSON(json: object) {
+        return TextManager.instantiate(
+            json[TextManager.KEY_TEXT_MANAGER][TextManager.KEY_TEXT_MANAGER_DIFFICULTY],
+            LetterSet.fromJSON(json[TextManager.KEY_TEXT_MANAGER][TextManager.KEY_TEXT_MANAGER_DIFFICULTY]),
+        )
     }
 
 	minWordLength(): number {
@@ -60,9 +71,9 @@ export class TextManager {
 		return k ? Math.max(...k) : DEFAULT_WORD_MAX_LENGTH;
 	}
 
-	private constructor(difficulty: DifficultyLevels=DifficultyLevels.normal) {
+	private constructor(difficulty: DifficultyLevels=DifficultyLevels.normal, letterSet: LetterSet=new LetterSet()) {
 		this.difficulty = difficulty;
-		this.letterSet = new LetterSet();
+		this.letterSet = letterSet;
 	}
 	
 	async buildWordList() {
@@ -83,7 +94,7 @@ export class TextManager {
 	// binary search, returns index
 	find(word: string): number {
 		if (word == PASS_TOKEN) {
-			return PASS_TOKEN_INDEX;
+			return TextManager.PASS_TOKEN_INDEX;
 		}
 
         let mid: number; 
@@ -104,7 +115,7 @@ export class TextManager {
             }
         }
 
-		return INVALID_WORD_INDEX;
+		return TextManager.INVALID_WORD_INDEX;
 	}
 	
 	baseScore(word: string): number {
@@ -150,7 +161,7 @@ export class TextManager {
         return j > 0 || this.letterSet.vowels.indexOf(w[1]) < 0;
 	}
 	
-	async wordsForLetters(lArr: number[], lb: LetterBank, minLength: number, maxLength: number, maxNum: number): string[] {
+	async wordsForLetters(lArr: number[], lb: LetterBank, minLength: number, maxLength: number, maxNum: number) {
 	
         if (! lArr.length) {
             return [];
@@ -333,11 +344,15 @@ export class TextManager {
 	}
 	
 	toJSON(): object {
-		return {
-            KEY_TEXT_MANAGER: {
-                KEY_TEXT_MANAGER_LETTER_SET : this.letterSet.toJSON(),
-            }
-        };
+        return buildObj(
+            [TextManager.KEY_TEXT_MANAGER],
+            [
+                buildObj(
+                    [TextManager.KEY_TEXT_MANAGER_LETTER_SET],
+                    [this.letterSet.toJSON()]
+                )
+            ]
+        );
 	}
 
 }

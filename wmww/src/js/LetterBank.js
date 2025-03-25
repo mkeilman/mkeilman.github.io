@@ -12,10 +12,8 @@ const DEFAULT_BANK_SIZE = 50;
 const DEFAULT_PICK_SIZE = 8;
 export class LetterBank {
     static fromJSON(json) {
-        console.log("FROM", json);
         const b = new LetterBank(new LetterSet(), json[LetterBank.KEY_LETTER_BANK][LetterBank.KEY_LETTER_BANK_SIZE]);
         b.letterCounts = json[LetterBank.KEY_LETTER_BANK][LetterBank.KEY_LETTER_BANK_COUNTS];
-        console.log(b);
         return b;
     }
     constructor(letterSet = new LetterSet(), minBankSize = DEFAULT_BANK_SIZE) {
@@ -27,27 +25,6 @@ export class LetterBank {
     currentBankSize() {
         return this.letterCounts.reduce((prev, curr) => prev + curr, 0);
     }
-    description() {
-        var desc = "";
-        for (let i = 0; i <= this.letterSet.letters.length - 2; ++i) {
-            desc += `${this.letterSet.letters[i]}: ${this.letterCounts[i]}; `;
-        }
-        desc += `${this.letterSet.letters[this.letterSet.letters.length - 1]}: ${this.letterCounts[this.letterSet.letters.length - 1]}`;
-        return desc;
-    }
-    /*
-    init?( letterSet: LetterSet, json: [String: AnyObject] ) {
-        
-        if( JSONSerialization.isValidJSONObject(json) ) {
-            this.letterCounts = json[KEY_LETTER_BANK_COUNTS] as! [Int];
-            this.minimumBankSize = json[KEY_LETTER_BANK_SIZE] as! Int;
-            this.letterSet = letterSet;
-        }
-        else {
-            return nil;
-        }
-    }
-    */
     fillBank(useFrequency = true, numLetters) {
         if (useFrequency) {
             for (let i = 1; i <= this.minBankSize; ++i) {
@@ -176,14 +153,6 @@ export class LetterBank {
             }
         }
     }
-    /*
-    
-    func printCounts() {
-        for i in 0..<letterSet.letters.length {
-            debugPrint("\(letterSet.letters[i]): \(letterCounts[i])");
-        }
-    }
-    */
     toJSON() {
         const json = {};
         json[`${LetterBank.KEY_LETTER_BANK}`] = {};
@@ -192,7 +161,7 @@ export class LetterBank {
         return json;
     }
 }
-LetterBank.KEY_LETTER_BANK = "LB";
-LetterBank.KEY_LETTER_BANK_LETTER_SET = `${LetterBank.KEY_LETTER_BANK}.ls`;
-LetterBank.KEY_LETTER_BANK_SIZE = `${LetterBank.KEY_LETTER_BANK}.sz`;
-LetterBank.KEY_LETTER_BANK_COUNTS = `${LetterBank.KEY_LETTER_BANK}.ct`;
+LetterBank.KEY_LETTER_BANK = "LetterBank";
+LetterBank.KEY_LETTER_BANK_LETTER_SET = "letterSet";
+LetterBank.KEY_LETTER_BANK_SIZE = "minBankSize";
+LetterBank.KEY_LETTER_BANK_COUNTS = "letterCounts";

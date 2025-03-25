@@ -6,45 +6,30 @@
 //  Created by Michael Keilman on 2025-03-14.
 //  Copyright (c) 2025 Michael Keilman. All rights reserved.
 //
-import { ModifierType, PASS_TOKEN } from "./common";
-import { TextManager } from "./TextManager";
-let KEY_WORD_PLAY = "WP";
-let KEY_WORD_PLAY_PLAY_ID = KEY_WORD_PLAY + ".pid";
-let KEY_WORD_PLAY_PLAY_WORD = KEY_WORD_PLAY + ".pw";
-let KEY_WORD_PLAY_PLAY_WORD_INDEX = KEY_WORD_PLAY + ".pwi";
-let KEY_WORD_PLAY_PLAY_POINTS = KEY_WORD_PLAY + ".pp";
-let KEY_WORD_PLAY_PLAY_MODS = KEY_WORD_PLAY + ".pmds";
-class WordPlay {
-    constructor(word, points) {
-        this.word = word;
+import { ModifierType } from "./common.js";
+export class WordPlay {
+    static fromJSON(json) {
+        const p = json[WordPlay.KEY_WORD_PLAY];
+        return new WordPlay(p[WordPlay.KEY_WORD_PLAY_PLAY_WORD], p[WordPlay.KEY_WORD_PLAY_PLAY_POINTS], p[WordPlay.KEY_WORD_PLAY_PLAY_WORD_INDEX]);
+    }
+    constructor(word, points, wordIndex) {
         this.points = points;
+        this.word = word;
+        this.wordIndex = wordIndex;
     }
     toJSON(includeWord = false, includeMods = false) {
-        let pj;
-        let wi;
-        if (this.wordIndex == null) {
-            wi = TextManager.INVALID_WORD_INDEX;
-        }
-        else {
-            if (this.word == PASS_TOKEN) {
-                wi = TextManager.PASS_TOKEN_INDEX;
-            }
-            else {
-                wi = this.wordIndex;
-            }
-        }
-        const pjDict = {
-            KEY_WORD_PLAY_PLAY_WORD_INDEX: wi,
+        const json = {
+            KEY_WORD_PLAY_PLAY_WORD_INDEX: this.wordIndex,
             KEY_WORD_PLAY_PLAY_POINTS: this.points,
         };
         if (includeWord) {
-            pjDict[KEY_WORD_PLAY_PLAY_WORD] = this.word;
+            json[WordPlay.KEY_WORD_PLAY_PLAY_WORD] = this.word;
         }
         if (includeMods && this.mods != null) {
-            pjDict[KEY_WORD_PLAY_PLAY_MODS] = this.mods;
+            json[WordPlay.KEY_WORD_PLAY_PLAY_MODS] = this.mods;
         }
         return {
-            KEY_WORD_PLAY: pjDict,
+            KEY_WORD_PLAY: json,
         };
     }
     unshieldedWord() {
@@ -63,3 +48,9 @@ class WordPlay {
     }
     ;
 }
+WordPlay.KEY_WORD_PLAY = "WP";
+WordPlay.KEY_WORD_PLAY_PLAY_ID = WordPlay.KEY_WORD_PLAY + ".pid";
+WordPlay.KEY_WORD_PLAY_PLAY_WORD = WordPlay.KEY_WORD_PLAY + ".pw";
+WordPlay.KEY_WORD_PLAY_PLAY_WORD_INDEX = WordPlay.KEY_WORD_PLAY + ".pwi";
+WordPlay.KEY_WORD_PLAY_PLAY_POINTS = WordPlay.KEY_WORD_PLAY + ".pp";
+WordPlay.KEY_WORD_PLAY_PLAY_MODS = WordPlay.KEY_WORD_PLAY + ".pmds";
