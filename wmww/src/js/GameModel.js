@@ -105,33 +105,30 @@ export class GameModel {
         });
     }
     constructor(numPlayers = 2, difficulty = DifficultyLevels.normal) {
-        this.difficulty = DifficultyLevels.normal;
-        this.numPlayers = 2;
-        this.myNumModsInReserve = DEFAULT_NUM_MODS;
-        this.myNumModsInPlay = buildObj([ModifierType.shield, ModifierType.poison], [0, 0]);
-        //myNumModsInPlay: [ModifierType : number] = [.shield:0, .poison:0, .lightning:0]
-        this.playFlag = false;
-        this.invalidWordFlag = false;
-        this.modFlag = false;
-        this.bonusMultiplier = 2;
         this.bonusLetterIndex = -1;
-        this.myPosition = -1;
+        this.bonusMultiplier = 2;
         this.currentPosition = -1;
-        this.isMyTurn = true;
-        this.roundsInThisGame = 1;
         this.currentRound = 0;
-        this.newRoundFlag = false;
-        this.myPickedArray = [];
-        this.numSpins = DEFAULT_NUM_SPINS;
+        this.difficulty = DifficultyLevels.normal;
         this.didSpin = false;
-        this.isMyTurnPending = false;
         this.gotNewPickedArray = false;
-        this.watchWordMods = [];
-        this.swapFlag = false;
+        this.invalidWordFlag = false;
         this.isGameInProgress = false;
+        this.isMyTurn = true;
+        this.isMyTurnPending = false;
+        this.modFlag = false;
+        this.myNumModsInPlay = buildObj([ModifierType.shield, ModifierType.poison], [0, 0]);
+        this.myNumModsInReserve = DEFAULT_NUM_MODS;
+        this.myPickedArray = [];
+        this.myPosition = -1;
+        this.newRoundFlag = false;
+        this.numPlayers = 2;
+        this.numSpins = DEFAULT_NUM_SPINS;
+        this.playFlag = false;
+        this.swapFlag = false;
+        this.roundsInThisGame = 1;
+        this.watchWordMods = [];
         this.gameID = randomString();
-        //this.textManager = await TextManager.instantiate(difficulty);
-        //this.bonusLetterIndex = this.textManager.letterSet.randomLetterIndex();
         this.myPosition = 0;
         this.numPlayers = numPlayers;
         this.difficulty = difficulty;
@@ -143,11 +140,7 @@ export class GameModel {
         this.playTurns = Array(this.roundsInThisGame).fill(Array(this.numPlayers).fill([]));
         this.firstRetiredPlayerPosition = Array(this.roundsInThisGame).fill(-1);
         this.playerData = Array(this.numPlayers).fill({});
-        //this.newWatchWord();
         this.bonusMultiplier = this.newBonusMultiplier();
-        //this.myPickedArray = this.letterBank.pick(null, false, this.bonusLetterIndex, this.isDifficultyEasyHalf());
-        //this.wordOfTheDay = this.textManager.getRandomWordOfLength(WOD_LENGTH_MIN, WOD_LENGTH_MAX, true);
-        //this.playerData[0] = this.toPlayerData();
     }
     // for convenience
     isDifficultyEasyHalf() {

@@ -119,52 +119,51 @@ class WordPlayTurn {
 
 export class GameModel {
 
+    bonusLetterIndex = -1;
+    bonusMultiplier = 2;
+    currentPosition = -1;
+    currentRound = 0;
+    currentTurnHoursLeft: number;
 	difficulty: DifficultyLevels = DifficultyLevels.normal;
+    didSpin = false;
+    firstRetiredPlayerPosition: number[];
+    forfeitingPositions: number[];
     gameID: string;
+    gotNewPickedArray = false;
+    invalidWordFlag = false;
+    isGameInProgress = false;
+    isMyTurn = true;
+    isMyTurnPending = false;
     lastPlay: WordPlay;
     letterBank: LetterBank;
-	textManager: TextManager;
-    numPlayers = 2;
-    pointsSpent: number[];
-	wordOfTheDay: string;
-    watchWords: string[][];
-	wwLength: number[];
-    myNumModsInReserve: object = DEFAULT_NUM_MODS;
-	myWordInProgress: number[];
-	myWordInProgressMods: ModifierType[];
-    playTurns: WordPlayTurn[][][];
-    playerNames: string[];
-	myNumModsInPlay:object = buildObj(
+    modFlag = false;
+    myNumModsInPlay:object = buildObj(
         [ModifierType.shield, ModifierType.poison],
         [0, 0]
     );
-	//myNumModsInPlay: [ModifierType : number] = [.shield:0, .poison:0, .lightning:0]
-    playFlag = false;
-    invalidWordFlag = false;
-    modFlag = false;
-    bonusMultiplier = 2;
-    bonusLetterIndex = -1;
+    myNumModsInReserve: object = DEFAULT_NUM_MODS;
+    myPickedArray: number[] = [];
     myPosition = -1;
-    currentPosition = -1;
-    firstRetiredPlayerPosition: number[];
-	isMyTurn = true;
     myTurnStartDate: Date;
     myTurnTimeLeft: number;
-    currentTurnHoursLeft: number
-	roundsInThisGame: number = 1;
-	currentRound: number = 0;
+    myWordInProgress: number[];
+	myWordInProgressMods: ModifierType[];
     newRoundFlag = false;
-	myPickedArray: number[] = [];
-	numSpins: number = DEFAULT_NUM_SPINS;
-	didSpin = false;
-	isMyTurnPending = false;
-	gotNewPickedArray = false;
+    numPlayers = 2;
+    numSpins = DEFAULT_NUM_SPINS;
     playerData: object[];
-    watchWordMods: ModifierType[][][] = [];
+    playerNames: string[];
+    playFlag = false;
+    playTurns: WordPlayTurn[][][];
+    pointsSpent: number[];
     swapFlag = false;
-	forfeitingPositions: number[];
-    isGameInProgress = false;
-
+    roundsInThisGame: number = 1;
+	textManager: TextManager;
+    watchWordMods: ModifierType[][][] = [];
+    watchWords: string[][];
+	wordOfTheDay: string;
+	wwLength: number[];
+c
     static KEY_GAME_MODEL = "GameModel";
     static KEY_GAME_MODEL_GAME_ID = "gameId";
     static KEY_GAME_MODEL_IS_CURRENT_GAME = "isCurrentGame";
@@ -236,8 +235,6 @@ export class GameModel {
     private constructor(numPlayers: number=2, difficulty: DifficultyLevels = DifficultyLevels.normal) {
 		
 		this.gameID = randomString();
-		//this.textManager = await TextManager.instantiate(difficulty);
-		//this.bonusLetterIndex = this.textManager.letterSet.randomLetterIndex();
 		this.myPosition = 0;
 		this.numPlayers = numPlayers;
 		this.difficulty = difficulty
@@ -252,15 +249,8 @@ export class GameModel {
             Array(this.numPlayers).fill([])
         );
 		this.firstRetiredPlayerPosition = Array(this.roundsInThisGame).fill(-1);
-
 		this.playerData = Array(this.numPlayers).fill({});
-		
-		//this.newWatchWord();
 		this.bonusMultiplier = this.newBonusMultiplier();
-		//this.myPickedArray = this.letterBank.pick(null, false, this.bonusLetterIndex, this.isDifficultyEasyHalf());
-		//this.wordOfTheDay = this.textManager.getRandomWordOfLength(WOD_LENGTH_MIN, WOD_LENGTH_MAX, true);
-		//this.playerData[0] = this.toPlayerData();
-		
 	}
 
      // for convenience
