@@ -10,6 +10,7 @@ export default defineConfig({
             input: {
                 main: resolve(__dirname, 'index.html'),
                 headsUp: resolve(__dirname, 'heads-up/index.html'),
+                giftExchange: resolve(__dirname, 'keilman-gift-exchange/index.html'),
             },
         },
     },
