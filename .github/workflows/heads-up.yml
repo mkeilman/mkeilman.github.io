@@ -1,5 +1,5 @@
 name: heads-up-actions
-run-name: ${{ github.actor }} is learning GitHub Actions
+run-name: Deploy heads-up
 on: [push]
 defaults:
   run:
