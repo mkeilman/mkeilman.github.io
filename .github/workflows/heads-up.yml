@@ -1,9 +1,8 @@
-name: heads-up-actions
-run-name: Deploy heads-up
+name: pages-actions
+run-name: Deploy pages
 on: [push]
 defaults:
   run:
-    #working-directory: ./heads-up
     working-directory: .
 jobs:
     build:
@@ -24,7 +23,6 @@ jobs:
               uses: actions/upload-artifact@v4
               with:
                 name: dist-files
-                #path: ./heads-up/dist
                 path: ./dist
             #- name: List
             #  run: ls -R ./dist
@@ -42,7 +40,6 @@ jobs:
             uses: actions/download-artifact@v4
             with:
               name: dist-files
-              #path: ./heads-up/dist
               path: ./dist
           #- name: List
           #  run: ls -R ./dist
@@ -52,5 +49,4 @@ jobs:
             with:
                 github_token: ${{ secrets.GITHUB_TOKEN }}
                 publish_branch: gh-pages
-                #publish_dir: ./heads-up/dist
                 publish_dir: ./dist
