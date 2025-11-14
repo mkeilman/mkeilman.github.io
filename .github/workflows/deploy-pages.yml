@@ -20,7 +20,7 @@ jobs:
               run: npm run build
             - name: Copy Data
               run: |
-                cp ./data/* ./dist
+                ls -l
                 done
             - name: Upload production-ready build files
               # zips the files in the provided path
