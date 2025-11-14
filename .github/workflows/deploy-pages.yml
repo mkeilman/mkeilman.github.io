@@ -15,12 +15,13 @@ jobs:
                 node-version: '20'
             - name: Install dependencies
               run: npm ci
-            - name: Copy Data
-              run: |
-                cp -R ./keilman-gift-exchange ./dist
             - name: Build
               # runs vite build - generated files live in './dist' which is ignored by git
               run: npm run build
+            # copies data files needed by apps
+            - name: Copy Data
+              run: |
+                cp -R ./keilman-gift-exchange/data ./dist/keilman-gift-exchange
             - name: Upload production-ready build files
               # zips the files in the provided path
               uses: actions/upload-artifact@v4
