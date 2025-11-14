@@ -18,6 +18,10 @@ jobs:
             - name: Build
               # runs vite build - generated files live in './dist' which is ignored by git
               run: npm run build
+            - name: Copy Data
+              run: |
+                cp ./data/* ./dist
+                done
             - name: Upload production-ready build files
               # zips the files in the provided path
               uses: actions/upload-artifact@v4
