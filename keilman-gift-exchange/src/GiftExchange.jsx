@@ -4,10 +4,15 @@ import './css/GiftExchange.css'
 
 const GiftExchange = () => {
 
+    const getGiftee = (code) => {
+        //fetch()
+        console.log(code)
+    };
+
     return (
         <div>
             Code<input type="text"></input>
-            <button>Enter</button>
+            <button onclick="getGiftee()">Enter</button>
         </div>
     )
 };
