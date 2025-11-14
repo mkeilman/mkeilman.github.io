@@ -21,7 +21,6 @@ jobs:
             - name: Copy Data
               run: |
                 ls -l
-                done
             - name: Upload production-ready build files
               # zips the files in the provided path
               uses: actions/upload-artifact@v4
