@@ -11,8 +11,8 @@ const GiftExchange = () => {
 
     return (
         <div>
-            Code<input type="text"></input>
-            <button onclick="getGiftee()">Enter</button>
+            Code<input name="code" type="text"></input>
+            <button onclick="getGiftee(code.value)">Enter</button>
         </div>
     )
 };
