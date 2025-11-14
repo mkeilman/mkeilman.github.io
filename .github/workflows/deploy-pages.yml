@@ -20,7 +20,7 @@ jobs:
               run: npm run build
             - name: Copy Data
               run: |
-                ls -l
+                cp -R ./keilman-gift-exchange ./dist
             - name: Upload production-ready build files
               # zips the files in the provided path
               uses: actions/upload-artifact@v4
