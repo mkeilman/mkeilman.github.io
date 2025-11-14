@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import './css/HeadsUp.css'
+import './css/GiftExchange.css'
 
 
 const GiftExchange = () => {
