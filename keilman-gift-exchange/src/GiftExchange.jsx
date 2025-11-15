@@ -1,20 +1,20 @@
 import { useState } from 'react'
 import './css/GiftExchange.css'
 
+let exchangeData;
+
+window.onload = async () => {
+    const res = await fetch('https://mkeilman.github.io/keilman-gift-exchange/data/2025.json');
+    exchangeData = await res.json();
+}
 
 const GiftExchange = () => {
 
     const handleClick = (userCode) => {
         console.log(userCode);
-        const j =  getData();
-        console.log(j);
+        console.log(exchangeData);
     };
 
-    async function getData() {
-        const res = await fetch('https://mkeilman.github.io/keilman-gift-exchange/data/2025.json');
-        const jres = await res.json();
-        return jres;
-    }
 
     return (
         <div>
