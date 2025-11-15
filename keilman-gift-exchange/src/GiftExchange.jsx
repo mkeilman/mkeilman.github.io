@@ -12,8 +12,8 @@ const GiftExchange = () => {
 
     return (
         <div>
-            Code<input name="userCode" type="text"></input>
-            <button onClick={(e) => handleClick(this.userCode.value)}>Enter</button>
+            Code<input name="userCode" id="user_code" type="text"></input>
+            <button onClick={(e) => handleClick(document.getElementByName("userCode").value)}>Enter</button>
         </div>
     )
 };
