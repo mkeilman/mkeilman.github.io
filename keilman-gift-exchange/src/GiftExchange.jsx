@@ -5,10 +5,16 @@ import './css/GiftExchange.css'
 const GiftExchange = () => {
 
     const handleClick = (userCode) => {
-        //fetch()
-        //console.log(this.userCode.value);
         console.log(userCode);
+        const j =  getData();
+        console.log(j);
     };
+
+    async function getData() {
+        const res = await fetch('https://mkeilman.github.io/keilman-gift-exchange/data/2025.json');
+        const jres = await res.json();
+        return jres;
+    }
 
     return (
         <div>
