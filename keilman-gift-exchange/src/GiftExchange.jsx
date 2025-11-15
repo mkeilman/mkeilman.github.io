@@ -7,13 +7,13 @@ const GiftExchange = () => {
     const handleClick = (userCode) => {
         //fetch()
         //console.log(this.userCode.value);
-        console.log('POOP');
+        console.log(userCode);
     };
 
     return (
         <div>
             Code<input name="userCode" type="text"></input>
-            <button onClick={handleClick}>Enter</button>
+            <button onClick={(e) => handleClick('PEEP')}>Enter</button>
         </div>
     )
 };
