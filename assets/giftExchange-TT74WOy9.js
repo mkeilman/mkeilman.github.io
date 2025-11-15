@@ -1,1 +1,0 @@
-import{j as e,c as t,R as o}from"./client-BW4HFQ8H.js";const n=()=>e.jsxs("div",{children:["Code",e.jsx("input",{name:"userCode",type:"text"}),e.jsx("button",{onclick:()=>comsole.log("POOP"),children:"Enter"})]});t.createRoot(document.getElementById("root")).render(e.jsx(o.StrictMode,{children:e.jsx(n,{})}));
