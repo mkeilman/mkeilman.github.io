@@ -13,7 +13,7 @@ const GiftExchange = () => {
     return (
         <div>
             Code<input name="userCode" type="text"></input>
-            <button onclick={() => getGiftee('POOP')}>Enter</button>
+            <button onclick={() => comsole.log('POOP')}>Enter</button>
         </div>
     )
 };
