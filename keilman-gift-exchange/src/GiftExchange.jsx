@@ -13,7 +13,7 @@ const GiftExchange = () => {
     return (
         <div>
             Code<input name="userCode" type="text"></input>
-            <button onClick={(e) => handleClick('PEEP')}>Enter</button>
+            <button onClick={(e) => handleClick(this.userCode.value)}>Enter</button>
         </div>
     )
 };
