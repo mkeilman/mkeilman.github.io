@@ -1,34 +1,53 @@
 {
-    "Mike":{
-        "code": "h9zgWtb1AQ",
-        "giftee": ""
+    "participants": {
+        "Mike": {
+            "code": "h9zgWtb1AQ",
+            "giftee": "",
+            "name": "Mike"
+        },
+        "John": {
+            "code": "okZnQQC2RZ",
+            "giftee": "",
+            "name": "John"
+        },
+        "Joe": {
+            "code": "jFpVN8N1da",
+            "giftee": "",
+            "name": "Joe"
+        },
+        "Thomb": {
+            "code": "IyTsFSdFW9",
+            "giftee": "",
+            "name": "Thomb"
+        },
+        "Patrick": {
+            "code": "TnwspUGzlQ",
+            "giftee": "",
+            "name": "Patrick"
+        },
+        "Jerry": {
+            "code": "mRvg4VSU8Q",
+            "giftee": "",
+            "name": "Jerry"
+        },
+        "Sari": {
+            "code": "MIEhChGuf4",
+            "giftee": "",
+            "name": "Sari"
+        },
+        "Erin": {
+            "code": "jgTUs2Tahd",
+            "giftee": "",
+            "name": "Erin"
+        }
     },
-    "John": {
-        "code": "okZnQQC2RZ",
-        "giftee": ""
-    },
-    "Joe": {
-        "code": "jFpVN8N1da",
-        "giftee": ""
-    },
-    "Thomb": {
-        "code": "IyTsFSdFW9",
-        "giftee": ""
-    },
-    "Patrick": {
-        "code": "TnwspUGzlQ",
-        "giftee": ""
-    },
-    "Jerry": {
-        "code": "mRvg4VSU8Q",
-        "giftee": ""
-    },
-    "Sari": {
-        "code": "MIEhChGuf4",
-        "giftee": ""
-    },
-    "Erin": {
-        "code": "jgTUs2Tahd",
-        "giftee": ""
-    }
+    "inclusions": [
+        ["Erin", "Sari"]
+    ],
+    "exclusions": [
+        ["Jerry", "Sari"],
+        ["Sari", "Jerry"],
+        ["Erin", "Joe"],
+        ["Joe", "Erin"]
+    ]
 }
