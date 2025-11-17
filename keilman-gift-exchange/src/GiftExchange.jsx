@@ -21,8 +21,11 @@ const GiftExchange = () => {
         //console.log(exchangeData);
         gifteeLabel = document.getElementById("gifteeLabel");
         if (! exchangeData) {
-            gifteeLabel.
+            gifteeLabel.innerHTML = "ERROR";
+            return;
         }
+        const giftee = exchangeData[userCode];
+        gifteeLabel.innerHTML = giftee;
     };
 
 
