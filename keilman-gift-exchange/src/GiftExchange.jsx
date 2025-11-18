@@ -5,7 +5,15 @@ let exchangeData;
 
 window.onload = async () => {
     try {
-        const res = await fetch('https://mkeilman.github.io/keilman-gift-exchange/data/2025.json');
+        const res = await fetch(
+            'https://mkeilman.github.io/keilman-gift-exchange/data/2025.json',
+            {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json",
+                }
+            }
+        );
         exchangeData = await res.json();
     }
     catch (error) {
