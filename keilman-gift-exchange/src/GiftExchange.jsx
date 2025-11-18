@@ -24,7 +24,7 @@ const GiftExchange = () => {
             gifteeLabel.innerHTML = "ERROR";
             return;
         }
-        const giftee = exchangeData[userCode];
+        const giftee = exchangeData.participants[userCode].giftee;
         gifteeLabel.innerHTML = giftee;
     };
 

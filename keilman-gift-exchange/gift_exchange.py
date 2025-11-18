@@ -144,6 +144,12 @@ def main():
         default=False,
         dest="regen_codes",
     )
+    p.add_argument(
+        "--regift",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        dest="regift",
+    )
     a, _ = p.parse_known_args()
 
     data_dict = None
