@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Gift Exchange Admin</title>
+  <script src="../common.js"></script>
+  <script src="../giftExchange.js"></script>
+  <script src="giftExchangeAdmin.js"></script>
+  <script>
+        let exchangeData = {};
+        window.onload = (e) => { loadGiftData(init); };
+  </script>
+  </head>
+  <body>
+    <div id="root">
+        <h1>Admin</h1>
+    </div>
+    
+    <div id="participants" style="padding: 8px;">
+        <table id="participantTable">
+            <caption>Participants</caption>
+            <thead>
+                <tr>
+                    <th>Gifter</th><th>Link</th><th>Action</th>
+                </tr>
+            </thead>
+            <tr id="newParticipant">
+                <td><input id="newName" type="text" placeholder="New Participant"></td>
+                <td>&nbsp;</td>
+                <td><button id="addParticipant" type="button" value="Add" >+</button></td>
+            </tr>
+        </table>
+    </div>
+    
+    <div id="inclusions" style="padding: 8px;">
+        <table id="inclusionsTable">
+            <caption>Inclusions</caption>
+            <tr>
+                <th>Gifter</th><th>Gifee</th><!--<th>Action</th>-->
+            </tr>
+            <!--
+            <tr id="newInclusion">
+                <td><select></select></td>
+                <td><select></select></td>
+                <td><button id="addInclusion" type="button" value="Add" >+</button></td>
+            </tr>
+            -->
+        </table>
+    </div>
+    
+    <div id="exclusions" style="padding: 8px;">
+        <table id="exclusionsTable">
+            <caption>Exclusions</caption>
+            <tr>
+                <th>Gifter</th><th>Gifee</th><!--<th>Action</th>-->
+            </tr>
+            <!--
+            <tr id="newExclusion">
+                <td><select></select></td>
+                <td><select></select></td>
+                <td><button id="addExclusion" type="button" value="Add" >+</button></td>
+            </tr>
+            -->
+        </table>
+    </div>
+    
+    <div id="regenerate" style="padding: 8px;">
+        <button title="Regenerate exchanges" id="regenerateButton" type="button" value="Regenerate">Regenerate</button>
+    </div>
+    
+  </body>
+</html>
