@@ -98,6 +98,15 @@ def main():
     import argparse
     import json
 
+    KEY_CODE = "code"
+    KEY_EXCLUSIONS = "exclusions"
+    KEY_GIFTEE = "giftee"
+    KEY_GIFTEE_CODE = "gifteeCode"
+    KEY_INCLUSIONS = "inclusions"
+    KEY_NAME = "name"
+    KEY_PARTICIPANTS = "participants"
+    KEY_SUGGESTIONS = "suggestions"
+
     def _to_tuples(e):
         return [tuple(x) for x in e]
 
@@ -107,16 +116,17 @@ def main():
             if not p:
                 break
             d["participants"][p] = {
-                "code": "",
-                "name": p,
-                "giftee": "",
+                KEY_CODE: "",
+                KEY_NAME: p,
+                KEY_GIFTEE: "",
+                KEY_GIFTEE_CODE: "",
             }
 
     def _input_inclusions(d):
-        _input_exchange("Inclusion: ", "inclusions", d)
+        _input_exchange("Inclusion: ", KEY_INCLUSIONS, d)
 
     def _input_exclusions(d):
-         _input_exchange("Exclusion: ", "exclusions", d)
+         _input_exchange("Exclusion: ", KEY_EXCLUSIONS, d)
 
     def _input_exchange(prompt, key, d):
         i = []
@@ -125,12 +135,12 @@ def main():
             if not p:
                 break
             p1, p2 = p.split(",")
-            assert p1 in d["participants"] and p2 in d["participants"]
+            assert p1 in d[KEY_PARTICIPANTS] and p2 in d[KEY_PARTICIPANTS]
             i.append([p1, p2])
         d[key] = i
 
 
-    p = argparse.ArgumentParser(description="run AdventOfCode for the given year and day")
+    p = argparse.ArgumentParser(description="generate a gift exchange for the given year")
     p.add_argument("year", type=int, help="year to run")
     p.add_argument(
         "--new",
@@ -157,9 +167,9 @@ def main():
 
     if a.new:
         data_dict = {
-            "participants": {},
-            "inclusions": [],
-            "exclusions": [],
+            KEY_PARTICIPANTS: {},
+            KEY_INCLUSIONS: [],
+            KEY_EXCLUSIONS: [],
         }
         _input_participants(data_dict)
 
@@ -171,19 +181,22 @@ def main():
     _input_inclusions(data_dict)
     _input_exclusions(data_dict)
     
-    participants = data_dict["participants"]
+    participants = data_dict[KEY_PARTICIPANTS]
     k = participants.keys()
     for p in k:
-        if a.regen_codes or not participants[p]["code"]:
-            participants[p]["code"] = random_base62(10)
+        if a.regen_codes or not participants[p][KEY_CODE]:
+            participants[p][KEY_CODE] = random_base62(10)
+        if not participants[p][KEY_SUGGESTIONS]:
+            participants[p][KEY_SUGGESTIONS] = []
 
     exchs = random_exchanges(
         list(k),
-        inclusions=_to_tuples(data_dict.get("inclusions", [])),
-        exclusions=_to_tuples(data_dict.get("exclusions", []))
+        inclusions=_to_tuples(data_dict.get(KEY_INCLUSIONS, [])),
+        exclusions=_to_tuples(data_dict.get(KEY_EXCLUSIONS, []))
     )
     for a in exchs:
-        participants[a[0]]["giftee"] = a[1]
+        participants[a[0]][KEY_GIFTEE] = a[1]
+        participants[a[0]][KEY_GIFTEE_CODE] = participants[a[1]][KEY_CODE]
 
     print(data_dict)
 

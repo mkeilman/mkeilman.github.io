@@ -2,12 +2,45 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <!--<link rel="icon" type="image/svg+xml" href="/vite.svg" />-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Keilman Gift Exchange</title>
+  <script src="giftExchange.js"></script>
+  <script>
+        let exchangeData = {};
+        window.onload = (e) => { loadGiftData(2025, setExchange); };
+    </script>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="./src/main.jsx"></script>
+      <h2>🎄 Keilman Gift Exchange! 🎄</h2>
+    <div id="root">
+        <div>
+            <!--
+            <label>Code</label><input id="userCode" type="text">
+            <button onClick="handleClick(document.getElementById('userCode').value)">Enter</button>
+            -->
+            <!--<label>Giftee</label><span id="gifteeLabel"></span>-->
+            <span>
+                <span id="gifterLabel" style="font-weight:bold;">Nobody</span>
+                is giving to 
+                <span id="gifteeLabel" style="font-weight:bold;">No one</span> this year!
+                🎁
+            </span>
+        </div>
+        <div id="gifteeSuggestions">
+          <table id="gifteeSuggestionsTable">
+            <caption id="gifteeSuggestionsTableCaption"></caption>
+          </table>
+        </div>
+        <div id="mySuggestions">
+          <table id="gifterSuggestionsTable">
+            <caption>Gift Suggestions</caption>
+            <tr id="newSuggestion">
+                <td><input id="newSuggestionText" type="text" placeholder="New Suggestion"></td>
+                <td>&nbsp;</td>
+                <td><button id="addSuggestionButton" type="button" value="Add" onClick="addSuggestion();">+</button></td>
+            </tr>
+          </table>
+        </div>
+    </div>
   </body>
 </html>

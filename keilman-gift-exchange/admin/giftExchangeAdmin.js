@@ -158,9 +158,12 @@ const init = (participantData) => {
 const participantRowId = (name) => `${PARTICIPANT_ROW_ID_PREFIX}${name}`;
 
 const regenerateExchanges = async (callback) => {
+    const year = document.getElementById('yearText').value.trim();
+    const url = `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}`;
+
     try {
         const res = await fetch (
-            'https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php',
+            url,
             {
                 method: 'GET',
                 headers: {

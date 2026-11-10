@@ -9,7 +9,7 @@
   <script src="giftExchangeAdmin.js"></script>
   <script>
         let exchangeData = {};
-        window.onload = (e) => { loadGiftData(init); };
+        window.onload = (e) => { loadGiftData(2025, init); };
   </script>
   </head>
   <body>
@@ -17,6 +17,11 @@
         <h1>Admin</h1>
     </div>
     
+    <div id="year" style="padding: 8px;">
+        <input id="yearText" type="text" placeholder="Year" value="2026">
+        <input id="excludePastYears" type="checkbox" checked="true">Exclude pairings from past years (may not be possible)
+    </div>
+
     <div id="participants" style="padding: 8px;">
         <table id="participantTable">
             <caption>Participants</caption>
@@ -67,6 +72,7 @@
     
     <div id="regenerate" style="padding: 8px;">
         <button title="Regenerate exchanges" id="regenerateButton" type="button" value="Regenerate">Regenerate</button>
+        <input id="testOnly" type="checkbox" checked="true">Test without permanent changes
     </div>
     
   </body>

@@ -2,6 +2,7 @@
 
 $retVal = null;
 $res = null;
+$year =  $_GET['year'] ?? '';
 
 header('Content-type: application/json');
 
