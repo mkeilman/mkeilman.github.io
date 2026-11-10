@@ -3,11 +3,12 @@
 const SUGGESTION_ROW_ID_PREFIX = 'suggestion-';
 let gifter;
 let giftee;
+let year;
 
-const loadGiftData = async (year, callback) => {
+const loadGiftData = async (_year, callback) => {
     try {
         const res = await fetch (
-            `https://slickanix.com/giftExchange/data/${year}.json`,
+            `https://slickanix.com/giftExchange/data/${_year}.json`,
             {
                 method: 'GET',
                 headers: {
@@ -19,6 +20,7 @@ const loadGiftData = async (year, callback) => {
         exchangeData = await res.json();
 
         if (callback) {
+            year = _year;
             callback(exchangeData);
         }
     }
@@ -32,6 +34,8 @@ const addSuggestion = () => {
         gifter.suggestions = [];
     }
     gifter.suggestions.push(document.getElementById('newSuggestionText').value.trim());
+    save();
+
     buildSuggestionTable(gifter);
 };
 
@@ -83,15 +87,8 @@ const buildSuggestionTable = (participant) => {
     }
     
     const prefix = isGifter(participant) ? 'gifter' : 'giftee';
-
-    // non-anonymous so re-adding does not duplicate listeners
-    function addSuggestionListener() {
-        addSuggestion(participant);
-    }
     
     if (isGifter(participant)) {
-        //document.getElementById('addSuggestionButton')
-        //    .addEventListener('click', addSuggestionListener);
         document.getElementById('newSuggestionText').value = '';
     }
 
@@ -129,13 +126,54 @@ const deleteSuggestion = (participant, index) => {
 const isGiftee = (participant) => participant == giftee;
 const isGifter = (participant) => participant == gifter;
 
+const getParticipant = (participantCode) => {
+    const participants = exchangeData.participants;
+    for (let n in participants) {
+        const p = participants[n];
+        if (p.code == participantCode) {
+            return p;
+        }
+    }
+    return null;
+};
+
+const save = async () => {
+    const url = `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}`;
+
+    const json = JSON.stringify(exchangeData);
+    console.log('NEW DATA', year, json);
+
+    /*
+    try {
+        const res = await fetch (
+            url,
+            {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            }
+        );
+        //console.log(`GOT RES`, res);
+        exchangeData = await res.json();
+        //console.log(`GOT DATA ${exchangeData}`);
+        if (callback) {
+            // we get back a string, so we must parse it here
+            callback(JSON.parse(exchangeData));
+        }
+    }
+    catch (error) {
+        console.log(error);
+    }
+    */
+};
+
 // executed on page load
 const setExchange = (exchangeData) => {
     const params = new URLSearchParams(window.location.search);
     if (params.size == 0 || ! params.has("code")) {
         return;
     }
-    //const p = getParticipant(params.get("code"));
     gifter = getParticipant(params.get("code"));
     if (! gifter) {
         return;
@@ -153,32 +191,3 @@ const setExchange = (exchangeData) => {
     buildSuggestionTable(giftee);
 };
 
-const getParticipant = (participantCode) => {
-    const participants = exchangeData.participants;
-    for (let n in participants) {
-        const p = participants[n];
-        if (p.code == participantCode) {
-            return p;
-        }
-    }
-    return null;
-}
-
-const handleClick = (participantCode) => {
-    gifteeLabel = document.getElementById('gifteeLabel');
-    gifteeLabel.innerHTML = '';
-    if (! exchangeData) {
-        gifteeLabel.innerHTML = 'ERROR';
-        return;
-    }
-    const gifter = getParticipant(participantCode);
-    if (! gifter) {
-        gifteeLabel.innerHTML = 'NO SUCH GIFTER!';
-        return;
-    }
-    const giftee = getParticipant(gifter.gifteeCode);
-    console.log(giftee);
-    gifteeLabel.innerHTML = giftee.name;
-
-
-};

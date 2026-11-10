@@ -63,7 +63,8 @@ def random_exchanges(elements, inclusions=None, exclusions=None):
 
     # there are n(n - 1) / 2 possible exchanges, and each exclusion removes 2, so
     # check if enough remain to pair (at least n pairings)
-    if (n * (n - 1) // 2) - 2 * len(excl) < n:
+    # (if only 1 pair (n == 2) and no exclusions, keep going)
+    if n > 2 and (n * (n - 1) // 2) - 2 * len(excl) < n:
         raise ValueError(f"can exclude no more than {n * (n - 2) // 2} pairs")
 
     # randomize the elements so any forced assignment is not always the same
@@ -186,7 +187,7 @@ def main():
     for p in k:
         if a.regen_codes or not participants[p][KEY_CODE]:
             participants[p][KEY_CODE] = random_base62(10)
-        if not participants[p][KEY_SUGGESTIONS]:
+        if not participants[p].get(KEY_SUGGESTIONS):
             participants[p][KEY_SUGGESTIONS] = []
 
     exchs = random_exchanges(
