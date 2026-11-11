@@ -79,7 +79,7 @@ const buildSuggestionRow = (participant, index) => {
 // if gifter, include add row and delete buttons
 // if giftee, onliy list the suggestions
 const buildSuggestionTable = (participant) => {
-     
+
     if (! participant) {
         return;
     }
@@ -102,13 +102,14 @@ const buildSuggestionTable = (participant) => {
         }
     }
 
-    if (! isGifter(participant)) {
-        const hasSuggestions = "suggestions" in participant && participant.suggestions.length > 0;
+    if (isGiftee(participant)) {
+        const hasSuggestions = "suggestions" in giftee && giftee.suggestions.length > 0;
         document.getElementById('gifteeSuggestionsTableCaption').innerHTML =
-            giftee.name +
+            giftee.name + (
                 hasSuggestions ?
-                ' has no suggestions yet' :
-                "'s Suggestions";
+                "'s Suggestions" :
+                ' has no suggestions yet'
+            );
     }
 
     for (let i = 0; i < participant.suggestions.length; ++i) {
