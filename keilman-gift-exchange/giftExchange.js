@@ -112,6 +112,9 @@ const buildSuggestionTable = (participant) => {
             );
     }
 
+    if (! participant.suggestions) {
+        return;
+    }
     for (let i = 0; i < participant.suggestions.length; ++i) {
         t.appendChild(buildSuggestionRow(participant, i));
     }
