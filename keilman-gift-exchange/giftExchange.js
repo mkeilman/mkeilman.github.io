@@ -29,14 +29,12 @@ const loadGiftData = async (_year, callback) => {
     }
 }
 
-const addSuggestion = () => {
+const addSuggestion = async () => {
     if (! gifter.suggestions) {
         gifter.suggestions = [];
     }
     gifter.suggestions.push(document.getElementById('newSuggestionText').value.trim());
-    save();
-
-    buildSuggestionTable(gifter);
+    await save();
 };
 
 const buildSuggestionRow = (participant, index) => {
@@ -105,7 +103,7 @@ const buildSuggestionTable = (participant) => {
     }
 
     if (! isGifter(participant)) {
-        const hasSuggestions = "suggestions" in participant && participant.suggestions.length;
+        const hasSuggestions = "suggestions" in participant && participant.suggestions.length > 0;
         document.getElementById('gifteeSuggestionsTableCaption').innerHTML =
             giftee.name +
                 hasSuggestions ?
@@ -118,9 +116,9 @@ const buildSuggestionTable = (participant) => {
     }
 };
 
-const deleteSuggestion = (participant, index) => {
+const deleteSuggestion = async (participant, index) => {
     participant.suggestions.splice(index, 1);
-    buildSuggestionTable(participant);
+    await save();
 };
 
 const isGiftee = (participant) => participant == giftee;
@@ -138,34 +136,25 @@ const getParticipant = (participantCode) => {
 };
 
 const save = async () => {
-    const url = `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}`;
-
+    const url = `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&mode=update`;
     const json = JSON.stringify(exchangeData);
-    console.log('NEW DATA', year, json);
 
-    /*
     try {
-        const res = await fetch (
+        const _ = await fetch (
             url,
             {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
-                }
+                },
+                body: json,
             }
         );
-        //console.log(`GOT RES`, res);
-        exchangeData = await res.json();
-        //console.log(`GOT DATA ${exchangeData}`);
-        if (callback) {
-            // we get back a string, so we must parse it here
-            callback(JSON.parse(exchangeData));
-        }
+        buildSuggestionTable(gifter);
     }
     catch (error) {
         console.log(error);
     }
-    */
 };
 
 // executed on page load
