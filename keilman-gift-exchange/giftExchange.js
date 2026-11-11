@@ -46,7 +46,7 @@ const buildSuggestionRow = (participant, index) => {
     }
 
     const row = document.createElement('tr');
-    row.setAttribute('id', `${SUGGESTION_ROW_ID_PREFIX}-${index}`);
+    row.setAttribute('id', `${SUGGESTION_ROW_ID_PREFIX}${index}`);
                 
     let el = document.createElement('td');
     el.appendChild(document.createTextNode(suggestion));
