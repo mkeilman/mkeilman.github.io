@@ -36,6 +36,8 @@ const addParticipant = (participantData) => {
     participants[name] = {
         name: name,
         giftee: '',
+        gifteeCode: '',
+        suggestions: [],
         code: name,
     }
     buildParticipantTable(participantData);
