@@ -121,9 +121,6 @@ const deleteSuggestion = async (participant, index) => {
     await save();
 };
 
-const isGiftee = (participant) => participant == giftee;
-const isGifter = (participant) => participant == gifter;
-
 const getParticipant = (participantCode) => {
     const participants = exchangeData.participants;
     for (let n in participants) {
@@ -134,6 +131,9 @@ const getParticipant = (participantCode) => {
     }
     return null;
 };
+
+const isGiftee = (participant) => participant == giftee;
+const isGifter = (participant) => participant == gifter;
 
 const save = async () => {
     const url = `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&mode=update`;
@@ -179,4 +179,3 @@ const setExchange = (exchangeData) => {
     buildSuggestionTable(gifter);
     buildSuggestionTable(giftee);
 };
-
