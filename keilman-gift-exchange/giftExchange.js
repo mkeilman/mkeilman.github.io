@@ -92,7 +92,7 @@ const buildSuggestionTable = (participant) => {
 
     const t = document.getElementById(prefix + 'SuggestionsTable');
     
-    // easiest to clear out all data and regenerate them
+    // easiest to clear out all data and regenerate them.
     // start at the end so the row is always the "last"
     for (let i = t.children.length - 1; i >= 0; --i) {
         const r = t.children[t.children.length - 1];
