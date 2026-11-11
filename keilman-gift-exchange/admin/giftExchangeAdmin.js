@@ -173,9 +173,7 @@ const regenerateExchanges = async (callback) => {
                 }
             }
         );
-        //console.log(`GOT RES`, res);
         exchangeData = await res.json();
-        //console.log(`GOT DATA ${exchangeData}`);
         if (callback) {
             // we get back a string, so we must parse it here
             callback(JSON.parse(exchangeData));
@@ -188,4 +186,26 @@ const regenerateExchanges = async (callback) => {
 
 const saveParticipants = (participantData) => {
     
+};
+
+const setActiveYear = async () => {
+    const url = `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&mode=config`;
+    const json = JSON.stringify(adminConfig, null, 4);
+
+    try {
+        const _ = await fetch (
+            url,
+            {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                },
+                body: json,
+            }
+        );
+        buildSuggestionTable(gifter);
+    }
+    catch (error) {
+        console.log(error);
+    }
 };

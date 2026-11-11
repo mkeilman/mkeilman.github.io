@@ -4,10 +4,19 @@ $retVal = null;
 $res = null;
 $year =  $_GET['year'] ?? '';
 $dataFile = '../data/' . $year . '.json';
+$configFile = 'config.json';
 $execString = 'python3 ../gift_exchange.py ' . $year . ' --regift';
 $mode = $_GET['mode'] ?? '';
 
 header('Content-type: application/json');
+
+// config mode saves the provided config
+// must use php://input to get json
+if ($mode == 'config')
+    $newData = file_get_contents('php://input');
+    file_put_contents($configFile, $newData, LOCK_EX);
+    echo json_encode($newData);
+    return;
 
 // update mode saves the provided data
 // must use php://input to get json

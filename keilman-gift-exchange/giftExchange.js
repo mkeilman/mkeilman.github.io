@@ -5,30 +5,6 @@ let gifter;
 let giftee;
 let year;
 
-const loadGiftData = async (_year, callback) => {
-    try {
-        const res = await fetch (
-            `https://slickanix.com/giftExchange/data/${_year}.json`,
-            {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                }
-            }
-        );
-        // declared in index.html <script> tag
-        exchangeData = await res.json();
-
-        if (callback) {
-            year = _year;
-            callback(exchangeData);
-        }
-    }
-    catch (error) {
-        console.log(error);
-    }
-}
-
 const addSuggestion = async () => {
     if (! gifter.suggestions) {
         gifter.suggestions = [];
@@ -125,6 +101,34 @@ const deleteSuggestion = async (participant, index) => {
     await save();
 };
 
+const getActiveYear = async() => {
+    const cfg = await getData('https://slickanix.com/giftExchange/admin/config.json');
+    return (cfg || {}).activeYear;
+};
+
+const getData = async(url) => {
+    let data;
+    try {
+        const res = await fetch (
+            url,
+            {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            }
+        );
+        data = await res.json();
+    }
+    catch (error) {
+        console.log(error);
+    }
+    finally {
+        return data;
+    }
+};
+
+
 const getParticipant = (participantCode) => {
     const participants = exchangeData.participants;
     for (let n in participants) {
@@ -139,15 +143,30 @@ const getParticipant = (participantCode) => {
 const isGiftee = (participant) => participant == giftee;
 const isGifter = (participant) => participant == gifter;
 
-const save = async () => {
-    const url = `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&mode=update`;
+const loadGiftData = async (_year, callback) => {
+    // declared in index.html <script> tag
+    exchangeData = await loadData(`https://slickanix.com/giftExchange/data/${_year}.json`);
 
-    // since I may edit the json file directly, send the pretty-printed
-    // string
-    const json = JSON.stringify(exchangeData, null, 4);
+    if (callback) {
+        year = await getActiveYear();
+        callback(exchangeData);
+    }
+};
+
+const save = async () => {
+    const _ = await saveData(
+        `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&mode=update`,
+        exchangeData
+    );
+    buildSuggestionTable(gifter);
+};
+
+const saveData = async (url, data) => {
+    const json = JSON.stringify(data, null, 4);
+    let savedData;
 
     try {
-        const _ = await fetch (
+        const savedData = await fetch (
             url,
             {
                 method: 'POST',
@@ -157,10 +176,12 @@ const save = async () => {
                 body: json,
             }
         );
-        buildSuggestionTable(gifter);
     }
     catch (error) {
         console.log(error);
+    }
+    finally {
+        return savedData;
     }
 };
 
