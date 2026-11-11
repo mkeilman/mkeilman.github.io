@@ -141,7 +141,10 @@ const isGifter = (participant) => participant == gifter;
 
 const save = async () => {
     const url = `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&mode=update`;
-    const json = JSON.stringify(exchangeData);
+
+    // since I may edit the json file directly, send the pretty-printed
+    // string
+    const json = JSON.stringify(exchangeData, null, 4);
 
     try {
         const _ = await fetch (
