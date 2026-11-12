@@ -1,6 +1,7 @@
 'use strict';
 
 const SUGGESTION_ROW_ID_PREFIX = 'suggestion-';
+let myGiftData;
 let gifter;
 let giftee;
 let year;
@@ -10,7 +11,7 @@ const addSuggestion = async () => {
         gifter.suggestions = [];
     }
     gifter.suggestions.push(document.getElementById('newSuggestionText').value.trim());
-    await save();
+    await saveMyGiftData();
 };
 
 const buildSuggestionRow = (participant, index) => {
@@ -98,41 +99,11 @@ const buildSuggestionTable = (participant) => {
 
 const deleteSuggestion = async (participant, index) => {
     participant.suggestions.splice(index, 1);
-    await save();
+    await saveMyGiftData();
 };
 
-const getActiveYear = async() => {
-    const cfg = await loadData('https://slickanix.com/giftExchange/admin/config.json');
-    return (cfg || {}).activeYear;
-};
-
-/*
-const getData = async(url) => {
-    let data;
-    try {
-        // tack on the timestamp for cache-busting
-        const res = await fetch (
-            url + `?t=${new Date().getTime()}`,
-            {
-                method: 'GET',
-                headers: {
-                    'Accept': 'application/json',
-                }
-            }
-        );
-        data = await res.json();
-    }
-    catch (error) {
-        console.log(error);
-    }
-    finally {
-        return data;
-    }
-};
-*/
-
-const getParticipant = (data, participantCode) => {
-    const participants = data.participants;
+const getParticipant = (participantCode) => {
+    const participants = myGiftData.participants;
     for (let n in participants) {
         const p = participants[n];
         if (p.code == participantCode) {
@@ -145,65 +116,37 @@ const getParticipant = (data, participantCode) => {
 const isGiftee = (participant) => participant == giftee;
 const isGifter = (participant) => participant == gifter;
 
-const loadMyGiftData = async (_year) => {
-    const d = await loadData(`https://slickanix.com/giftExchange/data/${_year}.json`);
-    setExchange(d);
+const loadMyGiftData = async () => {
+    year = new URLSearchParams(window.location.search).get("year");
+    
+    myGiftData = await loadData(`https://slickanix.com/giftExchange/data/${year}.json`);
+    setExchange();
 };
 
-const save = async () => {
+const saveMyGiftData = async () => {
     const _ = await saveData(
         `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&mode=update`,
-        giftData
+        myGiftData
     );
     buildSuggestionTable(gifter);
 };
 
-/*
-const saveData = async (url, data) => {
-    const json = JSON.stringify(data, null, 4);
-    let savedData;
-
-    try {
-        const res = await fetch (
-            url,
-            {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                },
-                body: json,
-            }
-        );
-        // clone the response to ensure the promise is not locked
-        savedData = await res.clone().json();
-    }
-    catch (error) {
-        console.log(error);
-    }
-    finally {
-        return savedData;
-    }
-};
-*/
-
-// executed on page load
-const setExchange = (data) => {
-
+const setExchange = () => {
     const params = new URLSearchParams(window.location.search);
     if (params.size == 0 || ! params.has("code")) {
         return;
     }
-    gifter = getParticipant(data, params.get("code"));
+    gifter = getParticipant(params.get("code"));
     if (! gifter) {
         return;
     }
     document.getElementById('gifterLabel').innerHTML = gifter.name;
 
-    giftee = getParticipant(data, gifter.gifteeCode);
+    giftee = getParticipant(gifter.gifteeCode);
     if (! giftee) {
         return;
     }
-
+    
     document.getElementById('gifteeLabel').innerHTML = giftee.name;
 
     buildSuggestionTable(gifter);
