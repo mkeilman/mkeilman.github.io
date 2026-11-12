@@ -10,7 +10,7 @@ const addSuggestion = async () => {
         gifter.suggestions = [];
     }
     gifter.suggestions.push(document.getElementById('newSuggestionText').value.trim());
-    await save();
+    await saveSuggestions();
 };
 
 const buildSuggestionRow = (participant, index) => {
@@ -98,7 +98,7 @@ const buildSuggestionTable = (participant) => {
 
 const deleteSuggestion = async (participant, index) => {
     participant.suggestions.splice(index, 1);
-    await save();
+    await saveSuggestions();
 };
 
 const getActiveYear = async() => {
@@ -153,7 +153,7 @@ const loadGiftData = async (_year, callback) => {
     }
 };
 
-const save = async () => {
+const saveSuggestions = async () => {
     const _ = await saveData(
         `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&mode=update`,
         exchangeData
@@ -166,7 +166,7 @@ const saveData = async (url, data) => {
     let savedData;
 
     try {
-        const savedData = await fetch (
+        const res = await fetch (
             url,
             {
                 method: 'POST',
@@ -176,6 +176,7 @@ const saveData = async (url, data) => {
                 body: json,
             }
         );
+        savedData = await res.json();
     }
     catch (error) {
         console.log(error);
