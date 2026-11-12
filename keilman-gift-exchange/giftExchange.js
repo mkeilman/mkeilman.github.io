@@ -10,7 +10,7 @@ const addSuggestion = async () => {
         gifter.suggestions = [];
     }
     gifter.suggestions.push(document.getElementById('newSuggestionText').value.trim());
-    await saveSuggestions();
+    await save();
 };
 
 const buildSuggestionRow = (participant, index) => {
@@ -98,7 +98,7 @@ const buildSuggestionTable = (participant) => {
 
 const deleteSuggestion = async (participant, index) => {
     participant.suggestions.splice(index, 1);
-    await saveSuggestions();
+    await save();
 };
 
 const getActiveYear = async() => {
@@ -109,8 +109,9 @@ const getActiveYear = async() => {
 const getData = async(url) => {
     let data;
     try {
+        // tack on the timestamp for cache-busting
         const res = await fetch (
-            url,
+            url + `?t=${new Date().getTime()}`,
             {
                 method: 'GET',
                 headers: {
@@ -128,7 +129,6 @@ const getData = async(url) => {
     }
 };
 
-
 const getParticipant = (participantCode) => {
     const participants = exchangeData.participants;
     for (let n in participants) {
@@ -144,16 +144,16 @@ const isGiftee = (participant) => participant == giftee;
 const isGifter = (participant) => participant == gifter;
 
 const loadGiftData = async (_year, callback) => {
+    year = await getActiveYear();
     // declared in index.html <script> tag
-    exchangeData = await loadData(`https://slickanix.com/giftExchange/data/${_year}.json`);
+    exchangeData = await getData(`https://slickanix.com/giftExchange/data/${_year}.json`);
 
     if (callback) {
-        year = await getActiveYear();
         callback(exchangeData);
     }
 };
 
-const saveSuggestions = async () => {
+const save = async () => {
     const _ = await saveData(
         `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&mode=update`,
         exchangeData
@@ -176,7 +176,8 @@ const saveData = async (url, data) => {
                 body: json,
             }
         );
-        savedData = await res.json();
+        // clone the response to ensure the promise is not locked
+        savedData = await res.clone().json();
     }
     catch (error) {
         console.log(error);
