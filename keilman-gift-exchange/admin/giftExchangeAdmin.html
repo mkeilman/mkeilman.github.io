@@ -5,11 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Gift Exchange Admin</title>
   <script src="../common.js"></script>
+  <script src="../giftExchangeData.js"></script>
   <script src="../giftExchange.js"></script>
   <script src="giftExchangeAdmin.js"></script>
   <script>
         let adminConfig = {};
-        let exchangeData = {};
+        let giftData = {};
         window.onload = (e) => { loadGiftData(2025, init); };
   </script>
   </head>
@@ -19,7 +20,7 @@
     </div>
     
     <div id="year" style="padding: 8px;">
-        <div style="padding: 4px;"><input id="yearText" type="number" placeholder="Year" value="2026"></div>
+        <div style="padding: 4px;"><input id="yearText" type="number" placeholder="Year" value="2026" ></div>
         <div style="padding: 4px;"><input id="excludePastYears" type="checkbox" checked="true">If possible, exclude pairings from past years</div>
     </div>
 

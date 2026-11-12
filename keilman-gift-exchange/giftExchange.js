@@ -102,10 +102,11 @@ const deleteSuggestion = async (participant, index) => {
 };
 
 const getActiveYear = async() => {
-    const cfg = await getData('https://slickanix.com/giftExchange/admin/config.json');
+    const cfg = await loadData('https://slickanix.com/giftExchange/admin/config.json');
     return (cfg || {}).activeYear;
 };
 
+/*
 const getData = async(url) => {
     let data;
     try {
@@ -128,9 +129,10 @@ const getData = async(url) => {
         return data;
     }
 };
+*/
 
-const getParticipant = (participantCode) => {
-    const participants = exchangeData.participants;
+const getParticipant = (data, participantCode) => {
+    const participants = data.participants;
     for (let n in participants) {
         const p = participants[n];
         if (p.code == participantCode) {
@@ -143,24 +145,20 @@ const getParticipant = (participantCode) => {
 const isGiftee = (participant) => participant == giftee;
 const isGifter = (participant) => participant == gifter;
 
-const loadGiftData = async (_year, callback) => {
-    year = await getActiveYear();
-    // declared in index.html <script> tag
-    exchangeData = await getData(`https://slickanix.com/giftExchange/data/${_year}.json`);
-
-    if (callback) {
-        callback(exchangeData);
-    }
+const loadMyGiftData = async (_year) => {
+    const d = await loadData(`https://slickanix.com/giftExchange/data/${_year}.json`);
+    setExchange(d);
 };
 
 const save = async () => {
     const _ = await saveData(
         `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&mode=update`,
-        exchangeData
+        giftData
     );
     buildSuggestionTable(gifter);
 };
 
+/*
 const saveData = async (url, data) => {
     const json = JSON.stringify(data, null, 4);
     let savedData;
@@ -186,24 +184,26 @@ const saveData = async (url, data) => {
         return savedData;
     }
 };
+*/
 
 // executed on page load
-const setExchange = (exchangeData) => {
+const setExchange = (data) => {
+
     const params = new URLSearchParams(window.location.search);
     if (params.size == 0 || ! params.has("code")) {
         return;
     }
-    gifter = getParticipant(params.get("code"));
+    gifter = getParticipant(data, params.get("code"));
     if (! gifter) {
         return;
     }
     document.getElementById('gifterLabel').innerHTML = gifter.name;
 
-    giftee = getParticipant(gifter.gifteeCode);
+    giftee = getParticipant(data, gifter.gifteeCode);
     if (! giftee) {
         return;
     }
-    
+
     document.getElementById('gifteeLabel').innerHTML = giftee.name;
 
     buildSuggestionTable(gifter);

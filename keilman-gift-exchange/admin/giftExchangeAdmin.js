@@ -146,6 +146,11 @@ const deleteParticipant = (name, participantData) => {
     buildParticipantTable(participantData);
 };
 
+const getAdminConfig = async () => {
+    const cfg = await loadData('https://slickanix.com/giftExchange/admin/config.json');
+    return cfg || {};
+};
+
 const init = (participantData) => {
     document
         .getElementById('regenerateButton')
@@ -154,6 +159,14 @@ const init = (participantData) => {
             () => { regenerateExchanges(buildParticipantTable); }
     );
     buildTables(participantData);
+};
+
+const loadGiftData = async (year) => {
+    adminConfig = await getAdminConfig();
+    const y = year || adminConfig.activeYear;
+
+    giftData = await loadData(`https://slickanix.com/giftExchange/data/${y}.json`);
+    init(giftData);
 };
 
 
@@ -173,10 +186,10 @@ const regenerateExchanges = async (callback) => {
                 }
             }
         );
-        exchangeData = await res.json();
+        giftData = await res.json();
         if (callback) {
             // we get back a string, so we must parse it here
-            callback(JSON.parse(exchangeData));
+            callback(JSON.parse(giftData));
         }
     }
     catch (error) {
@@ -189,6 +202,7 @@ const saveParticipants = (participantData) => {
 };
 
 const setActiveYear = async () => {
+    
     const url = `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&mode=config`;
     const json = JSON.stringify(adminConfig, null, 4);
 
