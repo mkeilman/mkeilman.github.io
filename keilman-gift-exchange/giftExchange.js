@@ -65,6 +65,7 @@ const buildSuggestionTable = (participant) => {
     
     if (isGifter(participant)) {
         document.getElementById('newSuggestionText').value = '';
+        validateSuggestion();
     }
 
     const t = document.getElementById(prefix + 'SuggestionsTable');
@@ -116,6 +117,8 @@ const getParticipant = (participantCode) => {
 const isGiftee = (participant) => participant == giftee;
 const isGifter = (participant) => participant == gifter;
 
+const isSuggestionValid = () => document.getElementById('newSuggestionText').value.length > 0;
+
 const loadMyGiftData = async () => {
     year = new URLSearchParams(window.location.search).get("year");
     
@@ -152,3 +155,7 @@ const setExchange = () => {
     buildSuggestionTable(gifter);
     buildSuggestionTable(giftee);
 };
+
+const validateSuggestion = () => {
+    document.getElementById('addSuggestionButton').disabled = ! isSuggestionValid();
+}
