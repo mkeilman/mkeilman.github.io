@@ -108,7 +108,7 @@ const buildRow = (name, participantData) => {
     const g = p.giftee;
     const c = p.code;
     //console.log('G', g, 'C', c);
-    const link = g && c ? `https://slickanix.com/giftExchange/index.html?code=${c}` : 'N/A';
+    const link = g && c ? `https://slickanix.com/giftExchange/index.html?year=${adminConfig.activeYear}&code=${c}` : 'N/A';
     //el.appendChild(document.createTextNode(p.giftee || 'N/A'));
     const anchor = document.createElement('a');
     anchor.setAttribute('href', link);
@@ -199,27 +199,4 @@ const regenerateExchanges = async (callback) => {
 
 const saveParticipants = (participantData) => {
     
-};
-
-const setActiveYear = async () => {
-    
-    const url = `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&mode=config`;
-    const json = JSON.stringify(adminConfig, null, 4);
-
-    try {
-        const _ = await fetch (
-            url,
-            {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                },
-                body: json,
-            }
-        );
-        buildSuggestionTable(gifter);
-    }
-    catch (error) {
-        console.log(error);
-    }
 };
