@@ -6,6 +6,12 @@ $retVal = null;
 $mode = $_GET['mode'] ?? '';
 $year =  $_GET['year'] ?? '';
 
+$GIFT_DATA_TEMPLATE = [
+    'participants' => [],
+    'inclusions' => [],
+    'exclusions' => []
+];
+
 function returnError($code, $message) {
     error_log($message);
     echo json_encode(
@@ -15,6 +21,10 @@ function returnError($code, $message) {
             'message' => $message
         ]
     );
+}
+
+function dataFile($y) {
+    return '../data/' . $y . '.json';
 }
 
 // posted json, if any; must use php://input, not $_POST.
@@ -30,24 +40,37 @@ header('Content-type: application/json');
 
 // config mode saves the provided config
 if ($mode == 'config') {
+    
+    // if the provided year has no data file, create one before
+    // saving the change
+    $activeYear = json_decode($dataIn, true)['activeYear'];
+    $dataFile = dataFile($activeYear);
+    
+    if (! file_exists($dataFile)) {
+        $n = file_put_contents($dataFile, json_encode($GIFT_DATA_TEMPLATE), LOCK_EX);
+        if ($n == false) {
+            returnError(500, 'error writing to ' . $dataFile);
+            return;
+        }
+    }
+    
     file_put_contents('config.json', $dataIn, LOCK_EX);
-    echo json_encode($dataIn);
+    echo $dataIn;
     return;
 }
 
 // update mode saves the provided data
 if ($mode == 'update') {
-    $dataFile = '../data/' . $year . '.json';
+    $dataFile = dataFile($year);
     //error_log('updating ' . $dataFile);
     $n = file_put_contents($dataFile, $dataIn, LOCK_EX);
-    
     if ($n == false) {
         returnError(500, 'error writing to ' . $dataFile);
         return;
     }
     
     //error_log('wrote ' . $n . ' bytes');
-    echo json_encode($dataIn);
+    echo $dataIn;
     return;
 }
 
