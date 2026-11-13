@@ -15,7 +15,7 @@ const addParticipant = () => {
         suggestions: [],
         code: name,
     }
-    buildParticipantTable(giftData);
+    buildParticipantTable();
 };
 
 const buildPairTable = (pairType) => {
@@ -63,7 +63,7 @@ const buildParticipantTable = () => {
     }
 
     for (let name in participants) {
-        t.appendChild(buildRow(name, giftData));
+        t.appendChild(buildRow(name));
     }
 };
 
@@ -103,7 +103,7 @@ const buildRow = (name) => {
     // "p" is not defined in the global scope
     b.addEventListener(
         'click',
-        () => { deleteParticipant(name, giftData); }
+        () => { deleteParticipant(name); }
     );
     el.appendChild(b);
     row.appendChild(el);
@@ -116,35 +116,36 @@ const buildTables = () => {
     ['inclusions', 'exclusions'].forEach(x => buildPairTable(x));
 }
 
+const changeYear = async () => {
+    adminConfig.activeYear = document.getElementById('yearText').value;
+    await saveAdminConfig();
+};
+
 const deleteParticipant = (name) => {
     delete giftData.participants[name];
-    buildParticipantTable(giftData);
+    buildParticipantTable();
 };
 
-const getAdminConfig = async () => {
-    const cfg = await loadData('https://slickanix.com/giftExchange/admin/config.json');
-    return cfg || {};
+const loadAdminConfig = async () => {
+    adminConfig = await loadData('https://slickanix.com/giftExchange/admin/config.json');
+    //return cfg || {};
 };
 
-const initAdmin = () => {
+const initAdmin = async () => {
+    await updateAdmin();
+    document.getElementById('yearText').value = adminConfig.activeYear;
+    
     document
         .getElementById('regenerateButton')
         .addEventListener(
             'click',
             () => { regenerateExchanges(buildParticipantTable); }
     );
-
-    buildTables();
 };
 
-const loadGiftData = async (year) => {
-    adminConfig = await getAdminConfig();
-    const y = year || adminConfig.activeYear;
-
-    giftData = await loadData(`https://slickanix.com/giftExchange/data/${y}.json`);
-    init(giftData);
+const loadGiftData = async () => {
+    giftData = await loadData(`https://slickanix.com/giftExchange/data/${adminConfig.activeYear}.json`);
 };
-
 
 const participantRowId = (name) => `${PARTICIPANT_ROW_ID_PREFIX}${name}`;
 
@@ -173,6 +174,24 @@ const regenerateExchanges = async (callback) => {
     }
 };
 
+const saveAdminConfig = async () => {
+    adminConfig = await saveData(
+        `https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?mode=config`,
+            adminConfig
+        );
+    updateAdmin(false);
+    //giftData = await loadData(`https://slickanix.com/giftExchange/data/${adminConfig.activeYear}.json`);
+    //buildTables();
+}
+
 const saveParticipants = (giftData) => {
     
+};
+
+const updateAdmin = async (reload=true) => {
+    if (reload) {
+        await loadAdminConfig();
+    }
+    await loadGiftData();
+    buildTables();
 };
