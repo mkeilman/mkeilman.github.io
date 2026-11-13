@@ -2,34 +2,9 @@
 
 const PARTICIPANT_ROW_ID_PREFIX = 'participant-';
 
-/*
-const NO_SUCH_KEY = 'NO_SUCH_KEY';
-
-let dirty = false;
-
-const queryValForKey = (key) => {
-    location.search.substr(1).split('&').forEach((item) => {
-        const tmp = item.split('=');
-        if (tmp[0] === key) {
-            return decodeURIComponent(tmp[1]);
-        }
-    });
-    return NO_SUCH_KEY;
-}
-
-const pIDFromQuery = () => queryValForKey('pID');
-
-const jsonFileFromQuery = () => {
-    const pID = pIDFromQuery();
-    let f = null;
-    return pID == NO_SUCH_KEY ? null : `${pID}.json`;
-}
-*/
-
-
-const addParticipant = (participantData) => {
+const addParticipant = () => {
     const name = document.getElementById('newName').value.trim();
-    const participants = participantData.participants;
+    const participants = giftData.participants;
     if (! name || name in participants) {
         return;
     }
@@ -40,12 +15,12 @@ const addParticipant = (participantData) => {
         suggestions: [],
         code: name,
     }
-    buildParticipantTable(participantData);
+    buildParticipantTable(giftData);
 };
 
-const buildPairTable = (participantData, pairType) => {
+const buildPairTable = (pairType) => {
     
-    const pairs = participantData[pairType];
+    const pairs = giftData[pairType];
     const t = document.getElementById(`${pairType}Table`);
     
     for (let p of pairs) {
@@ -60,15 +35,15 @@ const buildPairTable = (participantData, pairType) => {
 };
 
 
-const buildParticipantTable = (participantData) => {
+const buildParticipantTable = () => {
     
     // non-anonymous so re-adding does not duplicate listeners
     function addParticipantListener() {
-        addParticipant(participantData);
+        addParticipant(giftData);
     }
     
-    //console.log(participantData);
-    const participants = participantData.participants;
+    //console.log(giftData);
+    const participants = giftData.participants;
     document.getElementById('addParticipant')
         .addEventListener('click', addParticipantListener);
     const nameField =  document.getElementById('newName');
@@ -88,14 +63,14 @@ const buildParticipantTable = (participantData) => {
     }
 
     for (let name in participants) {
-        t.appendChild(buildRow(name, participantData));
+        t.appendChild(buildRow(name, giftData));
     }
 };
 
 
-const buildRow = (name, participantData) => {
+const buildRow = (name) => {
     
-    const participants = participantData.participants;
+    const participants = giftData.participants;
     const p = participants[name];
     const row = document.createElement('tr');
     row.setAttribute('id', participantRowId(name));
@@ -128,7 +103,7 @@ const buildRow = (name, participantData) => {
     // "p" is not defined in the global scope
     b.addEventListener(
         'click',
-        () => { deleteParticipant(name, participantData); }
+        () => { deleteParticipant(name, giftData); }
     );
     el.appendChild(b);
     row.appendChild(el);
@@ -136,14 +111,14 @@ const buildRow = (name, participantData) => {
     return row;
 };
 
-const buildTables = (participantData) => {
-    buildParticipantTable(participantData);
-    ['inclusions', 'exclusions'].forEach(x => buildPairTable(participantData, x));
+const buildTables = () => {
+    buildParticipantTable(giftData);
+    ['inclusions', 'exclusions'].forEach(x => buildPairTable(x));
 }
 
-const deleteParticipant = (name, participantData) => {
-    delete participantData.participants[name];
-    buildParticipantTable(participantData);
+const deleteParticipant = (name) => {
+    delete giftData.participants[name];
+    buildParticipantTable(giftData);
 };
 
 const getAdminConfig = async () => {
@@ -151,14 +126,15 @@ const getAdminConfig = async () => {
     return cfg || {};
 };
 
-const init = (participantData) => {
+const initAdmin = () => {
     document
         .getElementById('regenerateButton')
         .addEventListener(
             'click',
             () => { regenerateExchanges(buildParticipantTable); }
     );
-    buildTables(participantData);
+
+    buildTables();
 };
 
 const loadGiftData = async (year) => {
@@ -197,6 +173,6 @@ const regenerateExchanges = async (callback) => {
     }
 };
 
-const saveParticipants = (participantData) => {
+const saveParticipants = (giftData) => {
     
 };
