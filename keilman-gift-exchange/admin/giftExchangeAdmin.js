@@ -180,8 +180,6 @@ const saveAdminConfig = async () => {
             adminConfig
         );
     updateAdmin(false);
-    //giftData = await loadData(`https://slickanix.com/giftExchange/data/${adminConfig.activeYear}.json`);
-    //buildTables();
 }
 
 const saveParticipants = (giftData) => {
