@@ -178,6 +178,11 @@ const initAdmin = async () => {
     );
 };
 
+const isNameValid = () => {
+    const v = document.getElementById('newName').value.trim();
+    return v.length > 0 && ! (v in giftData);
+}
+
 const loadAdminConfig = async () => {
     adminConfig = await loadData('https://slickanix.com/giftExchange/admin/config.json');
 };
@@ -233,4 +238,8 @@ const updateAdmin = async (reload=true) => {
     
     await loadGiftData();
     buildTables();
+};
+
+const validateName = () => {
+    document.getElementById('addParticipant').disabled = ! isNameValid();
 };
