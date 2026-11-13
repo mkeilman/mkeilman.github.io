@@ -2,6 +2,8 @@
 
 const PARTICIPANT_ROW_ID_PREFIX = 'participant-';
 
+let validYear;
+
 const addParticipant = () => {
     const name = document.getElementById('newName').value.trim();
     const participants = giftData.participants;
@@ -22,6 +24,7 @@ const buildPairTable = (pairType) => {
     
     const pairs = giftData[pairType];
     const t = document.getElementById(`${pairType}Table`);
+    clearPairTable(t);
     
     for (let p of pairs) {
         const row = document.createElement('tr');
@@ -50,8 +53,10 @@ const buildParticipantTable = () => {
     
     // clear the text fields
     nameField.value = '';
+    
+    clearParticipantTable();
 
-    const t = document.getElementById('participantTable');
+    /*
     
     // easiest to clear out all participants and regenerate them
     // start at the end so the row is always the "last"
@@ -61,7 +66,9 @@ const buildParticipantTable = () => {
             t.deleteRow(-1);
         }
     }
+    */
 
+    const t = document.getElementById('participantTable');
     for (let name in participants) {
         t.appendChild(buildRow(name));
     }
@@ -121,18 +128,46 @@ const changeYear = async () => {
     await saveAdminConfig();
 };
 
+const clearPairTable = (t) => {
+    if (! t || ! t.children) {
+        return;
+    }
+    for (let i = t.children.length - 1; i >= 0; --i) {
+        const r = t.children[t.children.length - 1];
+        t.deleteRow(-1);
+    }
+};
+
+const clearParticipantTable = () => {
+
+    const t = document.getElementById('participantTable');
+    if (! t || ! t.children) {
+        return;
+    }
+    
+    // easiest to clear out all participants and regenerate them
+    // start at the end so the row is always the "last"
+    for (let i = t.children.length - 1; i >= 0; --i) {
+        const r = t.children[t.children.length - 1];
+        if (r.id.startsWith(PARTICIPANT_ROW_ID_PREFIX)) {
+            t.deleteRow(-1);
+        }
+    }
+};
+
+const clearTables = () => {
+    clearParticipantTable();
+    ['inclusions', 'exclusions'].forEach(x => clearPairTable(x));
+}
+
 const deleteParticipant = (name) => {
     delete giftData.participants[name];
     buildParticipantTable();
 };
 
-const loadAdminConfig = async () => {
-    adminConfig = await loadData('https://slickanix.com/giftExchange/admin/config.json');
-    //return cfg || {};
-};
-
 const initAdmin = async () => {
     await updateAdmin();
+    validYear = adminConfig.activeYear;
     document.getElementById('yearText').value = adminConfig.activeYear;
     
     document
@@ -141,6 +176,10 @@ const initAdmin = async () => {
             'click',
             () => { regenerateExchanges(buildParticipantTable); }
     );
+};
+
+const loadAdminConfig = async () => {
+    adminConfig = await loadData('https://slickanix.com/giftExchange/admin/config.json');
 };
 
 const loadGiftData = async () => {
@@ -187,9 +226,11 @@ const saveParticipants = (giftData) => {
 };
 
 const updateAdmin = async (reload=true) => {
+    clearTables();
     if (reload) {
         await loadAdminConfig();
     }
+    
     await loadGiftData();
     buildTables();
 };
