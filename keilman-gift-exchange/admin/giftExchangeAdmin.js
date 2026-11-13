@@ -180,7 +180,7 @@ const initAdmin = async () => {
 
 const isNameValid = () => {
     const v = document.getElementById('newName').value.trim();
-    return v.length > 0 && ! (v in giftData);
+    return v.length > 0 && ! (v in giftData.participants);
 }
 
 const loadAdminConfig = async () => {
