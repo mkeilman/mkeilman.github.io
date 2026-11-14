@@ -71,7 +71,7 @@ const buildSuggestionTable = (participant) => {
         validateSuggestion();
     }
 
-    const t = document.getElementById(prefix + 'SuggestionsTable');
+    const t = document.getElementById(prefix + 'SuggestionsTable').tBodies[0];
     
     // easiest to clear out all data and regenerate them.
     // start at the end so the row is always the "last"

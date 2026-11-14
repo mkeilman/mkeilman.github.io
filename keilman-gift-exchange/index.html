@@ -25,16 +25,19 @@
         <div id="gifteeSuggestions">
           <span id="gifteeSuggestionsTableCaption"></span>
           <table id="gifteeSuggestionsTable">
+          <tbody></tbody>
           </table>
         </div>
+        <hr class="gifter-sep">
         <div id="gifterSuggestions">
+          <span>Add suggestions for your gifter below</span>
           <table id="gifterSuggestionsTable">
-            <caption>Gift Suggestions</caption>
+            <tbody>
             <tr id="newSuggestion">
                 <td><input id="newSuggestionText" type="text" placeholder="New Suggestion" onInput="validateSuggestion();"></td>
-                <td>&nbsp;</td>
-                <td><button id="addSuggestionButton" type="button" title="Add suggestion" value="Add" onClick="addSuggestion();" disabled="true">+</button></td>
+                <td><button id="addSuggestionButton" type="button" class="add-suggestion" title="Add suggestion" value="Add" onClick="addSuggestion();" disabled="true">+</button></td>
             </tr>
+            </tbody>
           </table>
         </div>
     </div>
