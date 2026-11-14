@@ -148,18 +148,21 @@ def main():
         action=argparse.BooleanOptionalAction,
         default=False,
         dest="new",
+        help="create a new file",
     )
     p.add_argument(
         "--regen-codes",
         action=argparse.BooleanOptionalAction,
         default=False,
         dest="regen_codes",
+        help="regenerate user codes",
     )
     p.add_argument(
         "--regift",
         action=argparse.BooleanOptionalAction,
         default=True,
         dest="regift",
+        help="create new gifter-giftee pairings",
     )
     a, _ = p.parse_known_args()
 
