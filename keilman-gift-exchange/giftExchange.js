@@ -24,9 +24,11 @@ const buildSuggestionRow = (participant, index) => {
 
     const row = document.createElement('tr');
     row.setAttribute('id', `${SUGGESTION_ROW_ID_PREFIX}${index}`);
-                
+
     let el = document.createElement('td');
     el.appendChild(document.createTextNode(suggestion));
+    const bg = index % 2 ? '#ffffff' : '#cccccc';
+    el.setAttribute('style', `background-color: ${bg};`);
     row.appendChild(el);
 
     if (participant !== gifter) {
@@ -39,6 +41,7 @@ const buildSuggestionRow = (participant, index) => {
     b.setAttribute('type', 'button');
     b.setAttribute('value', 'Delete');
     b.setAttribute('title', 'Delete this suggestion');
+    b.setAttribute('class', 'delete-suggestion');
     b.appendChild(document.createTextNode('\u20E0'));
     
     // note this cannot be done by setting the onclick attribute - 
@@ -86,7 +89,7 @@ const buildSuggestionTable = (participant) => {
             giftee.name + (
                 hasSuggestions ?
                 "'s Suggestions" :
-                ' has no suggestions yet'
+                ' has no suggestions yet. Check back later!'
             );
     }
 
@@ -117,7 +120,7 @@ const getParticipant = (participantCode) => {
 const isGiftee = (participant) => participant == giftee;
 const isGifter = (participant) => participant == gifter;
 
-const isSuggestionValid = () => document.getElementById('newSuggestionText').value.length > 0;
+const isSuggestionValid = () => document.getElementById('newSuggestionText').value.trim().length > 0;
 
 const loadMyGiftData = async () => {
     year = new URLSearchParams(window.location.search).get("year");
@@ -158,4 +161,4 @@ const setExchange = () => {
 
 const validateSuggestion = () => {
     document.getElementById('addSuggestionButton').disabled = ! isSuggestionValid();
-}
+};

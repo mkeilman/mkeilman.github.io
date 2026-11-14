@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" type="text/css" href="index.css">
   <title>Keilman Gift Exchange</title>
   <script src="giftExchangeData.js"></script>
   <script src="giftExchange.js"></script>
@@ -13,7 +14,7 @@
   <body>
       <h2>🎄 Keilman Gift Exchange! 🎄</h2>
     <div id="root">
-        <div>
+        <div id="gifterInfo">
             <span>
                 <span id="gifterLabel" style="font-weight:bold;">Nobody</span>
                 is giving to 
@@ -22,17 +23,17 @@
             </span>
         </div>
         <div id="gifteeSuggestions">
+          <span id="gifteeSuggestionsTableCaption"></span>
           <table id="gifteeSuggestionsTable">
-            <caption id="gifteeSuggestionsTableCaption"></caption>
           </table>
         </div>
-        <div id="mySuggestions">
+        <div id="gifterSuggestions">
           <table id="gifterSuggestionsTable">
             <caption>Gift Suggestions</caption>
             <tr id="newSuggestion">
                 <td><input id="newSuggestionText" type="text" placeholder="New Suggestion" onInput="validateSuggestion();"></td>
                 <td>&nbsp;</td>
-                <td><button id="addSuggestionButton" type="button" value="Add" onClick="addSuggestion();" disabled="true">+</button></td>
+                <td><button id="addSuggestionButton" type="button" title="Add suggestion" value="Add" onClick="addSuggestion();" disabled="true">+</button></td>
             </tr>
           </table>
         </div>
