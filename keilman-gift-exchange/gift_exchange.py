@@ -64,8 +64,8 @@ def random_exchanges(elements, inclusions=None, exclusions=None):
     # there are n(n - 1) / 2 possible exchanges, and each exclusion removes 2, so
     # check if enough remain to pair (at least n pairings)
     # (if only 1 pair (n == 2) and no exclusions, keep going)
-    if n > 2 and (n * (n - 1) // 2) - 2 * len(excl) < n:
-        raise ValueError(f"can exclude no more than {n * (n - 2) // 2} pairs")
+    if n > 2 and (n * (n - 1) // 2) - 1 * len(excl) < n:
+        raise ValueError(f"{n} elements can exclude no more than {(n * (n - 1) // 2) - 1 * len(excl)} pairs: {len(excl)}")
 
     # randomize the elements so any forced assignment is not always the same
     random.shuffle(elements)
@@ -98,6 +98,7 @@ def random_exchanges(elements, inclusions=None, exclusions=None):
 def main():
     import argparse
     import json
+    import pathlib
 
     KEY_CODE = "code"
     KEY_EXCLUSIONS = "exclusions"
@@ -108,6 +109,14 @@ def main():
     KEY_PARTICIPANTS = "participants"
     KEY_SUGGESTIONS = "suggestions"
 
+    PARTICIPANT_DICT = {
+        KEY_CODE: "",
+        KEY_NAME: "",
+        KEY_GIFTEE: "",
+        KEY_GIFTEE_CODE: "",
+        KEY_SUGGESTIONS: [],
+    }
+
     def _to_tuples(e):
         return [tuple(x) for x in e]
 
@@ -116,12 +125,8 @@ def main():
             p = input("Participant: ")
             if not p:
                 break
-            d["participants"][p] = {
-                KEY_CODE: "",
-                KEY_NAME: p,
-                KEY_GIFTEE: "",
-                KEY_GIFTEE_CODE: "",
-            }
+            d["participants"][p] = PARTICIPANT_DICT.copy()
+            d["participants"][p][KEY_NAME] = p
 
     def _input_inclusions(d):
         _input_exchange("Inclusion: ", KEY_INCLUSIONS, d)
@@ -130,7 +135,8 @@ def main():
          _input_exchange("Exclusion: ", KEY_EXCLUSIONS, d)
 
     def _input_exchange(prompt, key, d):
-        i = []
+        #i = []
+        i = d.get(key, [])
         while True:
             p = input(prompt)
             if not p:
@@ -164,10 +170,32 @@ def main():
         dest="regift",
         help="create new gifter-giftee pairings",
     )
+    p.add_argument(
+        "--use-previous-participants",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        dest="usePreviousParticipants",
+        help="use the participants from the previous year, if that file exists",
+    )
+    p.add_argument(
+        "--exclude-previous-pairs",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        dest="excludePreviousPairs",
+        help="attempt to exclude the pairings from the previous year, if that file exists",
+    )
     a, _ = p.parse_known_args()
 
     data_dict = None
     data_filename = f"./data/{a.year}.json"
+
+    prev_dict = None
+    prev_pairs = []
+    prev_filename = f"./data/{a.year - 1}.json"
+
+    if pathlib.Path(prev_filename).exists():
+        with open(prev_filename, "r") as f:
+            prev_dict = json.loads(f.read())
 
     if a.new:
         data_dict = {
@@ -175,26 +203,41 @@ def main():
             KEY_INCLUSIONS: [],
             KEY_EXCLUSIONS: [],
         }
-        _input_participants(data_dict)
+        if a.usePreviousParticipants and prev_dict:
+            for p in prev_dict[KEY_PARTICIPANTS]:
+                data_dict[KEY_PARTICIPANTS][p] = PARTICIPANT_DICT.copy()
+                data_dict[KEY_PARTICIPANTS][p][KEY_NAME] = p
+        else:
+            _input_participants(data_dict)
 
     else:
         with open(data_filename, "r") as f:
             data_dict = json.loads(f.read())
+
+    participants = data_dict[KEY_PARTICIPANTS]
+    p_names = participants.keys()
+
+    if a.excludePreviousPairs and prev_dict:
+        prev_pp = prev_dict.get(KEY_PARTICIPANTS, {})
+        for gifter in prev_pp.keys():
+            giftee = prev_pp[gifter][KEY_GIFTEE]
+            if gifter in p_names and giftee in p_names:
+                prev_pairs.append([gifter, giftee])
+
+    data_dict[KEY_EXCLUSIONS].extend(prev_pairs)
     
     # always collect in/exclusions
     _input_inclusions(data_dict)
     _input_exclusions(data_dict)
     
-    participants = data_dict[KEY_PARTICIPANTS]
-    k = participants.keys()
-    for p in k:
+    for p in p_names:
         if a.regen_codes or not participants[p][KEY_CODE]:
             participants[p][KEY_CODE] = random_base62(10)
         if not participants[p].get(KEY_SUGGESTIONS):
             participants[p][KEY_SUGGESTIONS] = []
 
     exchs = random_exchanges(
-        list(k),
+        list(p_names),
         inclusions=_to_tuples(data_dict.get(KEY_INCLUSIONS, [])),
         exclusions=_to_tuples(data_dict.get(KEY_EXCLUSIONS, []))
     )
