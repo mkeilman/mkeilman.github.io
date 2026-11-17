@@ -101,9 +101,24 @@ const buildSuggestionTable = (participant) => {
     }
 };
 
+const setNotifyVisibility = () => {
+    document.getElementById('notifyGifter').hidden = (getGiftersGifter(gifter.code) || {}).email == null;
+};
+
 const deleteSuggestion = async (participant, index) => {
     participant.suggestions.splice(index, 1);
     await saveMyGiftData();
+};
+
+const getGiftersGifter = (participantCode) => {
+    const participants = myGiftData.participants;
+    for (let n in participants) {
+        const p = participants[n];
+        if (p.gifteeCode == participantCode) {
+            return p;
+        }
+    }
+    return null;
 };
 
 const getParticipant = (participantCode) => {
@@ -128,6 +143,11 @@ const loadMyGiftData = async () => {
     myGiftData = await loadData(`https://slickanix.com/giftExchange/data/${year}.json`);
     setExchange();
 };
+
+const notifyGifter = async () => {
+    const g = getGiftersGifter(gifter.code);
+    const _ = await loadData(`https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&code=${gifter.code}&mode=notify`);
+}
 
 const saveMyGiftData = async () => {
     const _ = await saveData(
@@ -154,6 +174,8 @@ const setExchange = () => {
     }
     
     document.getElementById('gifteeLabel').innerHTML = giftee.name;
+    
+    setNotifyVisibility();
 
     buildSuggestionTable(gifter);
     buildSuggestionTable(giftee);

@@ -1,11 +1,12 @@
 'use strict';
 
-const loadData = async(url) => {
+const loadData = async (url) => {
     let data;
+    const q = url.includes('?') ? '&' : '?';
     try {
         // tack on the timestamp for cache-busting
         const res = await fetch (
-            url + `?t=${new Date().getTime()}`,
+            url + `${q}t=${new Date().getTime()}`,
             {
                 method: 'GET',
                 headers: {

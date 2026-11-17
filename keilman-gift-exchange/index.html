@@ -33,12 +33,16 @@
           <span>Add suggestions for your gifter below</span>
           <table id="gifterSuggestionsTable">
             <tbody>
-            <tr id="newSuggestion">
-                <td><input id="newSuggestionText" type="text" placeholder="New Suggestion" onInput="validateSuggestion();"></td>
-                <td><button id="addSuggestionButton" type="button" class="add-suggestion" title="Add suggestion" value="Add" onClick="addSuggestion();" disabled="true">+</button></td>
-            </tr>
+                <tr id="newSuggestion">
+                    <td><input id="newSuggestionText" type="text" placeholder="New Suggestion" onInput="validateSuggestion();"></td>
+                    <td><button id="addSuggestionButton" type="button" class="add-suggestion" title="Add suggestion" value="Add" onClick="addSuggestion();" disabled="true">+</button></td>
+                </tr>
             </tbody>
           </table>
+          <div id="notifyGifter">
+          <span>Click "Notify Gifter" to let them know you have new suggestions!</span>
+              <button id="notifyGifterButton" type="button" class="add-suggestion" title="Notify your gifter" value="Notify" onClick="notifyGifter();">Notify Gifter</button>
+          </div>
         </div>
     </div>
   </body>
