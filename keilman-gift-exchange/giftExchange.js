@@ -91,8 +91,12 @@ const buildSuggestionTable = (participant) => {
             giftee.name + (
                 hasSuggestions ?
                 "'s Suggestions" :
-                ' has no suggestions yet. Check back later!'
-            );
+                ' has no suggestions yet. '
+            ) + (
+                gifter.email ?
+                'Expect an email from support@slickanix.com or check' :
+                'Check'
+            ) + ' back later!';
     }
 
     if (! participant.suggestions) {
@@ -129,6 +133,10 @@ const getParticipant = (participantCode) => {
     }
     return null;
 };
+
+const giftersGifterHasEmail = () => {
+    return ! ! (getGiftersGifter(gifter.code) || {}).email;
+}
 
 const isGiftee = (participant) => participant == giftee;
 const isGifter = (participant) => participant == gifter;
@@ -198,7 +206,7 @@ const setNotifyEnabled = (doEnable) => {
 };
 
 const setNotifyVisibility = () => {
-    const h = (getGiftersGifter(gifter.code) || {}).email == null;
+    const h = ! giftersGifterHasEmail();
     document.getElementById('notifyGifter').hidden = h;
     document.getElementById('noGifterEmail').hidden = ! h;
 };
