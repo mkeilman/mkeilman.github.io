@@ -9,39 +9,46 @@
   <script>
         window.onload = (e) => { loadMyGiftData(); };
     </script>
-    <link rel="stylesheet" crossorigin href="/assets/giftExchange-B8yiszMg.css">
+    <link rel="stylesheet" crossorigin href="/assets/giftExchange-AV9w8k5c.css">
   </head>
   <body>
       <h2>🎄 Keilman Gift Exchange! 🎄</h2>
     <div id="root">
         <div id="gifterInfo">
-            <span>
+            <span class="exchange-info">
                 <span id="gifterLabel" style="font-weight:bold;">Nobody</span>
                 is giving to 
                 <span id="gifteeLabel" style="font-weight:bold;">No one</span> this year!
                 🎁
             </span>
         </div>
-        <div id="gifteeSuggestions">
+        <div id="gifteeSuggestions" class="suggestion-region">
           <span id="gifteeSuggestionsTableCaption"></span>
           <table id="gifteeSuggestionsTable">
           <tbody></tbody>
           </table>
         </div>
         <hr class="gifter-sep">
-        <div id="gifterSuggestions">
-          <span>Add suggestions for your gifter below</span>
+        <div id="gifterSuggestions" class="suggestion-region">
+          <span>Add suggestions for your gifter</span>
           <table id="gifterSuggestionsTable">
             <tbody>
                 <tr id="newSuggestion">
-                    <td><input id="newSuggestionText" type="text" placeholder="New Suggestion" onInput="validateSuggestion();"></td>
-                    <td><button id="addSuggestionButton" type="button" class="add-suggestion" title="Add suggestion" value="Add" onClick="addSuggestion();" disabled="true">+</button></td>
+                    <td class="suggestion-cell"><input id="newSuggestionText" type="text" placeholder="New Suggestion" onInput="validateSuggestion();"></td>
+                    <td class="suggestion-cell"><button id="addSuggestionButton" type="button" class="add-suggestion" title="Add suggestion" value="Add" onClick="addSuggestion();" disabled="true">+</button></td>
                 </tr>
             </tbody>
           </table>
-          <div id="notifyGifter">
-          <span>Click "Notify Gifter" to let them know you have new suggestions!</span>
+          <div id="noGifterEmail" hidden=false>
+              <span>Your gifter has not provided an email for notifications</span>
+          </div>
+          <div id="notifyGifter" hidden=true>
               <button id="notifyGifterButton" type="button" class="add-suggestion" title="Notify your gifter" value="Notify" onClick="notifyGifter();">Notify Gifter</button>
+              <div id="notificationResult">
+                  <span id="notificationDatestamp" class="notification"></span>
+                  <span id="notificationSuccess" class="notification notification-success"></span>
+                  <span id="notificationFailure" class="notification notification-failure"></span>
+              </div>
           </div>
         </div>
     </div>
