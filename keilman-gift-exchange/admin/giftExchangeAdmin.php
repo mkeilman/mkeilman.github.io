@@ -1,6 +1,12 @@
 <?php
 // not installed by default
-//use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\SMTP;
+use PHPMailer\PHPMailer\Exception;
+
+require '/home4/slickani/PHPMailer/PHPMailer/src/Exception.php';
+require '/home4/slickani/PHPMailer/PHPMailer/src/PHPMailer.php';
+require '/home4/slickani/PHPMailer/PHPMailer/src/SMTP.php';
 
 $res = null;
 $retVal = null;
@@ -119,22 +125,10 @@ if ($mode == 'notify') {
     $gifterURL = 'https://slickanix.com/giftExchange/index.html?year=' . $year . '&code=' . $g['code'];
     
     $headers = [
-        'From' => 'support@slickanix.com',
-        'Reply-To' => 'support@slickanix.com',
+        'From' => $from,
+        'Reply-To' => $from,
         'X-Mailer' => 'PHP/' . phpversion()
     ];
-    
-    // PHPMailer not on hostgator - maybe can install it manually?
-    /*
-    $mailer = new PHPMailer(true);
-    $mailer -> isSMTP();
-    $mailer -> Host = 'slickanix.com';
-    $mailer -> setFrom('support@slickanix.com', 'Keilman Gift Exchange');
-
-    $mailer -> Subject = 'Keilman Gift Exchange';
-    $mailer -> Body = 'Your giftee has new gift suggestions! Visit ' . $gifterURL . ' to see them!';
-    $mailer -> addAddress($email, gifter['name']);
-    */
     
     $mailRes = mail(
         $email,
@@ -147,6 +141,28 @@ if ($mode == 'notify') {
     if ($mailRes == false) {
         error_log(error_get_last());
         returnError(500, 'failed to send email to gifter. Please contact ' . $from);
+    }
+    */
+    
+    // PHPMailer not on hostgator - maybe can install it manually?
+    // answer: yes, but it's not working, probably port is blocked.
+    // leaving this here for future reference
+    /*
+    $mailer = new PHPMailer(true);
+    $mailer -> isSMTP();
+    $mailer -> Host = 'slickanix.com';
+    $mailer -> setFrom($from, 'Keilman Gift Exchange');
+
+    $mailer -> Subject = 'Keilman Gift Exchange';
+    $mailer -> Body = $msg;
+    $mailer -> addAddress($email, $g['name']);
+    
+    try {
+        error_log('SENDING TO ' . $email);
+        $mailer -> send();
+    }
+    catch (Exception $e) {
+        returnError(500, $mailer-> ErrorInfo);
     }
     */
     
