@@ -101,6 +101,7 @@ def main():
     import pathlib
 
     KEY_CODE = "code"
+    KEY_EMAIL = "email"
     KEY_EXCLUSIONS = "exclusions"
     KEY_GIFTEE = "giftee"
     KEY_GIFTEE_CODE = "gifteeCode"
@@ -112,6 +113,7 @@ def main():
     PARTICIPANT_DICT = {
         KEY_CODE: "",
         KEY_NAME: "",
+        KEY_EMAIL: "",
         KEY_GIFTEE: "",
         KEY_GIFTEE_CODE: "",
         KEY_SUGGESTIONS: [],
