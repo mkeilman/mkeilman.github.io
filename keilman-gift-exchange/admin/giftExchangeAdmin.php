@@ -1,12 +1,12 @@
 <?php
 // not installed by default
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
+//use PHPMailer\PHPMailer\PHPMailer;
+//use PHPMailer\PHPMailer\SMTP;
+//use PHPMailer\PHPMailer\Exception;
 
-require '/home4/slickani/PHPMailer/PHPMailer/src/Exception.php';
-require '/home4/slickani/PHPMailer/PHPMailer/src/PHPMailer.php';
-require '/home4/slickani/PHPMailer/PHPMailer/src/SMTP.php';
+//require '/home4/slickani/PHPMailer/PHPMailer/src/Exception.php';
+//require '/home4/slickani/PHPMailer/PHPMailer/src/PHPMailer.php';
+//require '/home4/slickani/PHPMailer/PHPMailer/src/SMTP.php';
 
 $res = null;
 $retVal = null;
@@ -182,13 +182,11 @@ if ($mode == 'update') {
     }
     
     $dataFile = dataFile($year);
-    //error_log('updating ' . $dataFile);
     $n = file_put_contents($dataFile, $dataIn, LOCK_EX);
     if ($n == false) {
         returnError(500, 'error writing to ' . $dataFile);
     }
     
-    //error_log('wrote ' . $n . ' bytes');
     echo $dataIn;
     return;
 }
