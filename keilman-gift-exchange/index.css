@@ -12,6 +12,20 @@
 
 #gifterSuggestions {padding: 8px;}
 
+.exchange-info {
+    font-size: larger;
+}
+
+.suggestion-region {
+    padding: 8px;
+}
+
+.suggestion-cell {
+    text-align: center;
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
 #newSuggestionText {
     width: 98%;
 }
@@ -36,4 +50,17 @@
     width: 25%;
     margin-left: 8px;
     margin-top: 8px;
+}
+
+.notification {
+    font-size: smaller;
+    font-style: italic;
+}
+
+.notification-error {
+    color: red;
+}
+
+.notification-success {
+    color: blue;
 }

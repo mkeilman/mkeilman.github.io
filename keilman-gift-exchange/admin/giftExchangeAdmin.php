@@ -1,4 +1,6 @@
 <?php
+// not installed by default
+//use PHPMailer\PHPMailer\PHPMailer;
 
 $res = null;
 $retVal = null;
@@ -97,12 +99,24 @@ if ($mode == 'notify') {
         returnError(404, 'no gifter assigned');
     }
     
-    $email = $g['email'];
+    $sugg = getParticipant($code, $data)['suggestions'] ?? null;
+    
+    if ($sugg == null) {
+        returnError(400, 'no suggestions provided');
+    }
+    
+    $email = $g['email'] ?? null;
     if ($email == null) {
         returnError(500, 'gifter has no email');
     }
     
-    $gifterURL = 'https://slickanix.com/giftExchange/index.html?year=' . $year . '&code=' . $code;
+    $DOUBLE_EOL = PHP_EOL . PHP_EOL;
+    
+    $from = 'support@slickanix.com';
+    $subj = 'Keilman Gift Exchange';
+    $msg = 'Your giftee has new suggestions!' . $DOUBLE_EOL . '----------' . $DOUBLE_EOL . implode($DOUBLE_EOL, $sugg);
+    
+    $gifterURL = 'https://slickanix.com/giftExchange/index.html?year=' . $year . '&code=' . $g['code'];
     
     $headers = [
         'From' => 'support@slickanix.com',
@@ -110,13 +124,38 @@ if ($mode == 'notify') {
         'X-Mailer' => 'PHP/' . phpversion()
     ];
     
-    mail(
+    // PHPMailer not on hostgator - maybe can install it manually?
+    /*
+    $mailer = new PHPMailer(true);
+    $mailer -> isSMTP();
+    $mailer -> Host = 'slickanix.com';
+    $mailer -> setFrom('support@slickanix.com', 'Keilman Gift Exchange');
+
+    $mailer -> Subject = 'Keilman Gift Exchange';
+    $mailer -> Body = 'Your giftee has new gift suggestions! Visit ' . $gifterURL . ' to see them!';
+    $mailer -> addAddress($email, gifter['name']);
+    */
+    
+    $mailRes = mail(
         $email,
-        'Keilman Gift Exchange',
-        'Your giftee has new gift suggestions! Visit ' . $gifterURL . ' to see them!',
+        $subj,
+        $msg,
         $headers
     );
     
+    /*
+    if ($mailRes == false) {
+        error_log(error_get_last());
+        returnError(500, 'failed to send email to gifter. Please contact ' . $from);
+    }
+    */
+    
+    echo json_encode(
+        [
+            'status' => 'ok',
+            'message' => 'Notified your gifter!'
+        ]
+    );
     return;
 }
 
@@ -137,7 +176,7 @@ if ($mode == 'update') {
     echo $dataIn;
     return;
 }
-exit();
+
 $execString = 'python3 ../gift_exchange.py ' . $year . ' --regift';
 
 //$res = shell_exec(escapeshellcmd('python3 gift_exchange.py 2025 --regift'));

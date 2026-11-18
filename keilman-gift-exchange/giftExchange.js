@@ -37,6 +37,7 @@ const buildSuggestionRow = (participant, index) => {
     
     // row deletion button
     el = document.createElement('td');
+    el.setAttribute('class', 'suggestion-cell');
     const b = document.createElement('button');
     b.setAttribute('type', 'button');
     b.setAttribute('value', 'Delete');
@@ -66,12 +67,13 @@ const buildSuggestionTable = (participant) => {
     
     const prefix = isGifter(participant) ? 'gifter' : 'giftee';
     
+    const t = document.getElementById(prefix + 'SuggestionsTable').tBodies[0];
+    
     if (isGifter(participant)) {
         document.getElementById('newSuggestionText').value = '';
         validateSuggestion();
+        setNotifyEnabled(participant.suggestions.length > 0);
     }
-
-    const t = document.getElementById(prefix + 'SuggestionsTable').tBodies[0];
     
     // easiest to clear out all data and regenerate them.
     // start at the end so the row is always the "last"
@@ -99,10 +101,6 @@ const buildSuggestionTable = (participant) => {
     for (let i = 0; i < participant.suggestions.length; ++i) {
         t.appendChild(buildSuggestionRow(participant, i));
     }
-};
-
-const setNotifyVisibility = () => {
-    document.getElementById('notifyGifter').hidden = (getGiftersGifter(gifter.code) || {}).email == null;
 };
 
 const deleteSuggestion = async (participant, index) => {
@@ -145,8 +143,22 @@ const loadMyGiftData = async () => {
 };
 
 const notifyGifter = async () => {
+    const now = new Date();
+    
+    document.getElementById('notificationDatestamp').innerHTML = '';
+    document.getElementById('notificationSuccess').innerHTML = '';
+    document.getElementById('notificationFailure').innerHTML = '';
+    
     const g = getGiftersGifter(gifter.code);
-    const _ = await loadData(`https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&code=${gifter.code}&mode=notify`);
+    const d = await loadData(`https://slickanix.com/giftExchange/admin/giftExchangeAdmin.php?year=${year}&code=${gifter.code}&mode=notify`);
+    
+    document.getElementById('notificationDatestamp').innerHTML = now.toLocaleDateString('en-CA') + ' ' + now.toLocaleTimeString();
+    if (d.status == 'ok') {
+        document.getElementById('notificationSuccess').innerHTML = d.message;
+    }
+    if (d.status == 'error') {
+        document.getElementById('notificationFailure').innerHTML = d.message;
+    }
 }
 
 const saveMyGiftData = async () => {
@@ -179,6 +191,16 @@ const setExchange = () => {
 
     buildSuggestionTable(gifter);
     buildSuggestionTable(giftee);
+};
+
+const setNotifyEnabled = (doEnable) => {
+    document.getElementById('notifyGifterButton').disabled = ! doEnable;
+};
+
+const setNotifyVisibility = () => {
+    const h = (getGiftersGifter(gifter.code) || {}).email == null;
+    document.getElementById('notifyGifter').hidden = h;
+    document.getElementById('noGifterEmail').hidden = ! h;
 };
 
 const validateSuggestion = () => {
