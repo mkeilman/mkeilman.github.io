@@ -144,7 +144,7 @@ const countdown = () => {
     const minutes = pad(Math.floor((xmasDiff % MILLIS_PER_HOUR) / MILLIS_PER_MIN));
     const seconds = pad(Math.floor((xmasDiff % MILLIS_PER_MIN) / MILLIS_PER_SEC));
 
-    return `${days}d ${hours}h ${minutes} : ${seconds}`;
+    return `~ ${days}d ${hours}h ${minutes}:${seconds} ~`;
 };
 
 const deleteSuggestion = async (participant, index) => {

@@ -1,3 +1,10 @@
+#countdown {
+    padding: 8px;
+    font-size: larger;
+    font-weight: bold;
+    color: darkGreen;
+}
+
 #gifteeSuggestionsTable {
     border: none;
     width: 25%;
