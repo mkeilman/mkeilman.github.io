@@ -119,15 +119,16 @@ const countdown = () => {
     const MILLIS_PER_MONTH = 30 * MILLIS_PER_DAY;
 
     const now = new Date();
-    const thisYear = now.getFullYear();
-    const xmas = new Date(`${thisYear}-12-25`);
-    const dayAfter = new Date(`${thisYear}-12-26`);
-    const xmasDiff = xmas.getTime() - now.getTime();
-
+    const xmas = new Date(`${now.getFullYear()}-12-25`);
+    const dayAfter = new Date(xmas);
+    dayAfter.setDate(dayAfter.getDate() + 1);
+    
     // xmas day
     if (now >= xmas && now < dayAfter) {
         return 'Today\'s the Day!';
     }
+    
+    const xmasDiff = xmas.getTime() - now.getTime();
 
     // after xmas, it's in the past until the new year
     if (xmasDiff < 0) {
@@ -144,7 +145,7 @@ const countdown = () => {
     const minutes = pad(Math.floor((xmasDiff % MILLIS_PER_HOUR) / MILLIS_PER_MIN));
     const seconds = pad(Math.floor((xmasDiff % MILLIS_PER_MIN) / MILLIS_PER_SEC));
 
-    return `~ ${days}d ${hours}h ${minutes}:${seconds} ~`;
+    return `${days}d ${hours}h ${minutes}:${seconds}`;
 };
 
 const deleteSuggestion = async (participant, index) => {
@@ -154,9 +155,9 @@ const deleteSuggestion = async (participant, index) => {
 
 const displayCountdown = () => {
     const el = document.getElementById('countdown');
-    el.innerHTML = countdown();
+    el.innerHTML = `~ ${countdown()} ~`;
     const _ = setInterval(() => {
-        el.innerHTML = countdown();
+        el.innerHTML = `~ ${countdown()} ~`;
     }, 1000);
 };
 
