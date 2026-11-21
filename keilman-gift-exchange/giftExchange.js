@@ -109,6 +109,8 @@ const buildSuggestionTable = (participant) => {
 
 const countdown = () => {
 
+    const pad = (n) => String(n).padStart(2, '0');
+
     const MILLIS_PER_SEC = 1000;
     const MILLIS_PER_MIN = 60 * MILLIS_PER_SEC;
     const MILLIS_PER_HOUR = 60 * MILLIS_PER_MIN;
@@ -137,10 +139,10 @@ const countdown = () => {
          return 'Jumping the Gun!';
     }
     
-    const days = Math.floor(xmasDiff / MILLIS_PER_DAY);
-    const hours = Math.floor((xmasDiff % MILLIS_PER_DAY) / MILLIS_PER_HOUR);
-    const minutes = Math.floor((xmasDiff % MILLIS_PER_HOUR) / MILLIS_PER_MIN);
-    const seconds = Math.floor((xmasDiff % MILLIS_PER_MIN) / MILLIS_PER_SEC);
+    const days = pad(Math.floor(xmasDiff / MILLIS_PER_DAY));
+    const hours = pad(Math.floor((xmasDiff % MILLIS_PER_DAY) / MILLIS_PER_HOUR));
+    const minutes = pad(Math.floor((xmasDiff % MILLIS_PER_HOUR) / MILLIS_PER_MIN));
+    const seconds = pad(Math.floor((xmasDiff % MILLIS_PER_MIN) / MILLIS_PER_SEC));
 
     return `${days}d ${hours}h ${minutes} : ${seconds}`;
 };
@@ -149,6 +151,7 @@ const deleteSuggestion = async (participant, index) => {
     participant.suggestions.splice(index, 1);
     await saveMyGiftData();
 };
+
 const displayCountdown = () => {
     const el = document.getElementById('countdown');
     el.innerHTML = countdown();
