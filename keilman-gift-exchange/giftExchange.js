@@ -107,9 +107,54 @@ const buildSuggestionTable = (participant) => {
     }
 };
 
+const countdown = () => {
+
+    const MILLIS_PER_SEC = 1000;
+    const MILLIS_PER_MIN = 60 * MILLIS_PER_SEC;
+    const MILLIS_PER_HOUR = 60 * MILLIS_PER_MIN;
+    const MILLIS_PER_DAY = 24 * MILLIS_PER_HOUR;
+
+    const MILLIS_PER_MONTH = 30 * MILLIS_PER_DAY;
+
+    const now = new Date();
+    const thisYear = now.getFullYear();
+    const xmas = new Date(`${thisYear}-12-25`);
+    const dayAfter = new Date(`${thisYear}-12-26`);
+    const xmasDiff = xmas.getTime() - now.getTime();
+
+    // xmas day
+    if (now >= xmas && now < dayAfter) {
+        return 'Today\'s the Day!';
+    }
+
+    // after xmas, it's in the past until the new year
+    if (xmasDiff < 0) {
+         return 'See you Next Year!';
+    }
+
+    // until two months out, too early
+    if (xmasDiff > 2 * MILLIS_PER_MONTH) {
+         return 'Jumping the Gun!';
+    }
+    
+    const days = Math.floor(xmasDiff / MILLIS_PER_DAY);
+    const hours = Math.floor((xmasDiff % MILLIS_PER_DAY) / MILLIS_PER_HOUR);
+    const minutes = Math.floor((xmasDiff % MILLIS_PER_HOUR) / MILLIS_PER_MIN);
+    const seconds = Math.floor((xmasDiff % MILLIS_PER_MIN) / MILLIS_PER_SEC);
+
+    return `${days}d ${hours}h ${minutes} : ${seconds}`;
+};
+
 const deleteSuggestion = async (participant, index) => {
     participant.suggestions.splice(index, 1);
     await saveMyGiftData();
+};
+const displayCountdown = () => {
+    const el = document.getElementById('countdown');
+    el.innerHTML = countdown();
+    const _ = setInterval(() => {
+        el.innerHTML = countdown();
+    }, 1000);
 };
 
 const getGiftersGifter = (participantCode) => {
@@ -144,6 +189,7 @@ const isGifter = (participant) => participant == gifter;
 const isSuggestionValid = () => document.getElementById('newSuggestionText').value.trim().length > 0;
 
 const loadMyGiftData = async () => {
+    displayCountdown();
     year = new URLSearchParams(window.location.search).get("year");
     
     myGiftData = await loadData(`https://slickanix.com/giftExchange/data/${year}.json`);
