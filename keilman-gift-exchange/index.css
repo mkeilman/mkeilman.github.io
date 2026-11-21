@@ -3,27 +3,17 @@
     width: 25%;
 }
 
-#gifterSuggestionsTable {
-    border: none;
-    width: 25%;
-}
-
-#gifterInfo {padding: 8px;}
-
-#gifterSuggestions {padding: 8px;}
-
-.exchange-info {
-    font-size: larger;
-}
-
-.suggestion-region {
+#gifterInfo {
     padding: 8px;
 }
 
-.suggestion-cell {
-    text-align: center;
-    padding-left: 4px;
-    padding-right: 4px;
+#gifterSuggestions {
+    padding: 8px;
+}
+
+#gifterSuggestionsTable {
+    border: none;
+    width: 25%;
 }
 
 #newSuggestionText {
@@ -46,6 +36,10 @@
     font-size: 18px;
 }
 
+.exchange-info {
+    font-size: larger;
+}
+
 .gifter-sep {
     width: 25%;
     margin-left: 8px;
@@ -63,4 +57,14 @@
 
 .notification-success {
     color: blue;
+}
+
+.suggestion-region {
+    padding: 8px;
+}
+
+.suggestion-cell {
+    text-align: center;
+    padding-left: 4px;
+    padding-right: 4px;
 }
