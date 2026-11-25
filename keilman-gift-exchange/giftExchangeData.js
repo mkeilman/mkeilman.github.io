@@ -11,6 +11,7 @@ const loadData = async (url) => {
                 method: 'GET',
                 headers: {
                     'Accept': 'application/json',
+                    'Authorization': 'Basic ' + 'c2xpY2thbml4R2lmdFg6Z3JlbmFkaW5lLWltbW9yYWwtY2hldnJvbg=='
                 }
             }
         );
@@ -35,6 +36,7 @@ const saveData = async (url, data) => {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
+                    'Authorization': 'Basic ' + 'c2xpY2thbml4R2lmdFg6Z3JlbmFkaW5lLWltbW9yYWwtY2hldnJvbg=='
                 },
                 body: json,
             }
